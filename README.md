@@ -1,2 +1,1 @@
-# ServerSync
-This app allows Discord server members to select channels to track and automatically sync the dates and events mentioned in that channel with iCalendar. It also allows server admins to see server statistics and automatically post at peak hours of server use.
+<script src="https://gist.github.com/chaytanc/d09f0a7f29d72d9dc7459d786663ea2b.js"></script>
