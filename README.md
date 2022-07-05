@@ -28,7 +28,7 @@ Modelvale is an app designed to bring machine learning to life. Each model is re
      * Other: Sound? Video?
  * User can upload a new pretrained model
  * One animation of some view
- * Sign out of Discord and app
+ * Sign out of the app
 
 **Optional Nice-to-have Stories**
 
