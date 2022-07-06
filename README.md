@@ -3,7 +3,7 @@ Modelvale
 
 ## Overview
 ### Description
-Modelvale is an app designed to bring machine learning to life. Each model is represented by an avatar with a dynamic health bar representing the overall model's performance. For instance, with a model classifying objects, the health bar can fill when the model correctly classifies an object, can decrease when more computation is used to train it, and more. When models die, you can choose to respawn it or start with a new model, and over time you can see the best performing models and their attributes!
+Modelvale is an app designed to bring machine learning to life. Each model is represented by an avatar with a dynamic health bar representing the overall model's performance. For instance, with a model classifying objects (e.g. if there is a picture of a dog, it will predict the label "dog"), the health bar can fill when the model correctly classifies an object, can decrease when more computation is used to train it, and more. When models die, you can choose to respawn it or start with a new model, and over time you can see the best performing models and their attributes!
 
 ## 1. User Stories (Required and Optional)
 
