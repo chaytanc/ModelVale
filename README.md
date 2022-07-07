@@ -71,8 +71,7 @@ Optional:
  * All Models
 
 ## Wireframes
-![](https://i.imgur.com/xzrqHVP.jpg)
-
+![IMG_0060](https://user-images.githubusercontent.com/35582442/177838999-1dac750c-efb7-4ad6-95c6-6cedf4e2cd83.JPG)
 
 ## Weekly Milestones
 
