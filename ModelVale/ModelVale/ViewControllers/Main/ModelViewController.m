@@ -10,8 +10,11 @@
 #import "UIViewController+PresentError.h"
 #import "LoginViewController.h"
 #import "SceneDelegate.h"
+#import "SqueezeNetInt8LUT.h"
+#import "CoreML/CoreML.h"
 
 @interface ModelViewController ()
+@property (weak, nonatomic) NSMutableArray* models;
 
 @end
 
@@ -20,6 +23,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+//    SqueezeNetInt8LUT* imageClassif = [[SqueezeNetInt8LUT init] initWithConfiguration:(nonnull UIListContentConfiguration *)];
+//    [self.models addObject: imageClassif];
+//    let imageClassifierWrapper = try? AnimalClassifier(configuration: defaultConfig)
+    
+
+}
+
+- (void) configureModel {
+    
 }
 
 - (IBAction)didTapLogout:(id)sender {
