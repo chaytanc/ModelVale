@@ -7,6 +7,7 @@ target 'ModelVale' do
 
   # Pods for ModelVale
   pod 'Parse'
+  pod 'CoreML'
 
   target 'ModelValeTests' do
     inherit! :search_paths
