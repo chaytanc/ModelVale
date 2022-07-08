@@ -8,12 +8,15 @@
 #import "AddDataViewController.h"
 #import "UIViewController+PresentError.h"
 #import "AddDataCell.h"
+#import "QBImagePickerController/QBImagePickerController.h"
 
-@interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource>
+@interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, QBImagePickerControllerDelegate>
 
-@property (nonatomic, strong) UIImagePickerController* imagePickerVC;
+@property (nonatomic, strong) QBImagePickerController* imagePickerVC;
+@property (nonatomic, strong) UIImagePickerController* cameraPickerVC;
 @property (nonatomic, strong) NSMutableArray* data;
 @property (weak, nonatomic) IBOutlet UICollectionView *addDataCollView;
+@property (strong, nonatomic) PHImageManager* phManager;
 
 @end
 
@@ -21,30 +24,73 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.imagePickerVC = [UIImagePickerController new];
+    self.imagePickerVC = [QBImagePickerController new];
     self.imagePickerVC.delegate = self;
-    self.imagePickerVC.allowsEditing = YES;
+    self.imagePickerVC.showsNumberOfSelectedAssets = YES;
+    self.imagePickerVC.allowsMultipleSelection = YES;
+    self.imagePickerVC.maximumNumberOfSelection = 10000;
+    
+    self.cameraPickerVC = [UIImagePickerController new];
+    self.cameraPickerVC.delegate = self;
+    self.cameraPickerVC.allowsEditing = YES;
     
     self.addDataCollView.delegate = self;
     self.addDataCollView.dataSource = self;
     self.data = [NSMutableArray new];
+    self.phManager = [PHImageManager new];
+    
 }
 - (IBAction)didTapSelectData:(id)sender {
     NSLog(@"Select Data Tapped");
-    self.imagePickerVC.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+
     [self presentViewController:self.imagePickerVC animated:YES completion:nil];
 }
 - (IBAction)didTapCreateData:(id)sender {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        self.imagePickerVC.sourceType = UIImagePickerControllerSourceTypeCamera;
+        self.cameraPickerVC.sourceType = UIImagePickerControllerSourceTypeCamera;
     }
     else {
         [self presentError:@"Cannot access Camera" message:@"Please check that a camera is available and access is enabled." error:nil];
     }
-    [self presentViewController:self.imagePickerVC animated:YES completion:nil];
+    [self presentViewController:self.cameraPickerVC animated:YES completion:nil];
 }
 
-// What to do with selection from camera roll
+//XXX working here to learn about dispatching queues in order to wait for completion of PHManager
+- (UIImage*) getImageFromPH: (PHAsset*) asset {
+    PHImageRequestOptions* opts = [PHImageRequestOptions new];
+    opts.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    __block UIImage* image;
+    
+    //XXX don't know what second arg does
+    dispatch_queue_t queue = dispatch_queue_create(@"phQueue", 0);
+    
+    [self.phManager requestImageForAsset:asset targetSize: CGSizeMake(asset.pixelWidth, asset.pixelHeight) contentMode: PHImageContentModeAspectFill options:opts resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+            if(result == nil) {
+                NSLog(@"Nil image from asset");
+            }
+            else {
+                image = result;
+            }
+    }];
+    
+    // wait until the nested async operation signals that its finished
+//    dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+    return image;
+}
+
+// MARK: Multiple Select QBImagePicker
+- (void) qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
+    for(id asset in assets) {
+        UIImage* im = [self getImageFromPH:asset];
+        [self.data addObject:im];
+    }
+//    [self.data addObjectsFromArray:assets];
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.addDataCollView reloadData];
+}
+
+// MARK: Camera Picker
+// What to do with selection from camera roll or photo from camera
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     
     // Get the image captured by the UIImagePickerController

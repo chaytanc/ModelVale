@@ -4,19 +4,23 @@ PODS:
     - Parse/Core (= 1.19.3)
   - Parse/Core (1.19.3):
     - Bolts/Tasks (= 1.9.1)
+  - QBImagePickerController (3.4.0)
 
 DEPENDENCIES:
   - Parse
+  - QBImagePickerController
 
 SPEC REPOS:
   trunk:
     - Bolts
     - Parse
+    - QBImagePickerController
 
 SPEC CHECKSUMS:
   Bolts: 8c1e8aab2f603387b8b9924f57d1d64f43d3ffdc
   Parse: 0abb63a0ff6fa34a3f64b81d595a294e2ece143a
+  QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
 
-PODFILE CHECKSUM: 4b3d808de99815d77b6118301def1f1ca36786b9
+PODFILE CHECKSUM: 6f38cf627b4df5e0e0bd8f4afa3ff902a9c191c8
 
 COCOAPODS: 1.11.3

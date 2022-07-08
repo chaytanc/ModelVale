@@ -6,8 +6,8 @@ target 'ModelVale' do
   #use_frameworks!
 
   # Pods for ModelVale
+  pod 'QBImagePickerController'
   pod 'Parse'
-  pod 'CoreML'
 
   target 'ModelValeTests' do
     inherit! :search_paths
