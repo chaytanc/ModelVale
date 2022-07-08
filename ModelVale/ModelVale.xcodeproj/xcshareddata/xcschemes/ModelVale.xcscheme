@@ -28,6 +28,20 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "9C74E5232872579B003FFFF7"
+               BuildableName = "ModelValeTests.xctest"
+               BlueprintName = "ModelValeTests"
+               ReferencedContainer = "container:ModelVale.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "NO"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "9C74E52D2872579B003FFFF7"
                BuildableName = "ModelValeUITests.xctest"
                BlueprintName = "ModelValeUITests"
@@ -42,16 +56,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9C74E5232872579B003FFFF7"
-               BuildableName = "ModelValeTests.xctest"
-               BlueprintName = "ModelValeTests"
-               ReferencedContainer = "container:ModelVale.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

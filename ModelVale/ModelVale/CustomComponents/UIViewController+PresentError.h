@@ -10,7 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController (PresentError)
-- (void) presentError: (NSString*)title message:(NSString*)message error:(NSError*)error ;
+- (void) presentError: (NSString*)title message:(NSString*)message error:(NSError* _Nullable)error ;
 
 @end
 

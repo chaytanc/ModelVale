@@ -8,7 +8,7 @@
 #import "UIViewController+PresentError.h"
 
 @implementation UIViewController (PresentError)
-- (void) presentError: (NSString*)title message:(NSString*)message error:(NSError*)error {
+- (void) presentError: (NSString*)title message:(NSString*)message error:(NSError* _Nullable)error {
     NSLog(@"Error: %@", error);
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
                                    message:message
@@ -20,4 +20,5 @@
     [alert addAction:defaultAction];
     [self presentViewController:alert animated:YES completion:nil];
 }
+
 @end
