@@ -29,6 +29,7 @@
 		9CB79C1828775C8A00F67E1C /* RetrainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1728775C8A00F67E1C /* RetrainViewController.m */; };
 		9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1A28775C9800F67E1C /* DataViewController.m */; };
 		9CB79C1E28775CB400F67E1C /* AddDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1D28775CB400F67E1C /* AddDataViewController.m */; };
+		9CB79C212877932200F67E1C /* TestTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C202877932200F67E1C /* TestTestViewController.swift */; };
 		D6B04C94D59A5042092AA4C1 /* libPods-ModelValeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80CA57C08C8AC61644B113A1 /* libPods-ModelValeTests.a */; };
 		E460E7C87D8ED9D93CD18647 /* libPods-ModelVale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69B4CACDAB7442AFE50EBC38 /* libPods-ModelVale.a */; };
 /* End PBXBuildFile section */
@@ -93,6 +94,8 @@
 		9CB79C1A28775C9800F67E1C /* DataViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataViewController.m; sourceTree = "<group>"; };
 		9CB79C1C28775CB400F67E1C /* AddDataViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddDataViewController.h; sourceTree = "<group>"; };
 		9CB79C1D28775CB400F67E1C /* AddDataViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddDataViewController.m; sourceTree = "<group>"; };
+		9CB79C1F2877932200F67E1C /* ModelVale-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ModelVale-Bridging-Header.h"; sourceTree = "<group>"; };
+		9CB79C202877932200F67E1C /* TestTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTestViewController.swift; sourceTree = "<group>"; };
 		9D94C2DA75F1B92CB1D70488 /* Pods-ModelVale-ModelValeUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModelVale-ModelValeUITests.debug.xcconfig"; path = "Target Support Files/Pods-ModelVale-ModelValeUITests/Pods-ModelVale-ModelValeUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		CFABD50928CDFA2BD208620D /* libPods-ModelVale-ModelValeUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModelVale-ModelValeUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF376F3548470D52FE3B403B /* Pods-ModelValeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModelValeTests.release.xcconfig"; path = "Target Support Files/Pods-ModelValeTests/Pods-ModelValeTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -238,6 +241,8 @@
 				9CB79C1A28775C9800F67E1C /* DataViewController.m */,
 				9CB79C1C28775CB400F67E1C /* AddDataViewController.h */,
 				9CB79C1D28775CB400F67E1C /* AddDataViewController.m */,
+				9CB79C202877932200F67E1C /* TestTestViewController.swift */,
+				9CB79C1F2877932200F67E1C /* ModelVale-Bridging-Header.h */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -337,6 +342,7 @@
 				TargetAttributes = {
 					9C74E50828725799003FFFF7 = {
 						CreatedOnToolsVersion = 13.4.1;
+						LastSwiftMigration = 1340;
 					};
 					9C74E5232872579B003FFFF7 = {
 						CreatedOnToolsVersion = 13.4.1;
@@ -511,6 +517,7 @@
 				9C74E54C28736DBD003FFFF7 /* LoginViewController.m in Sources */,
 				9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */,
 				9CB79C1E28775CB400F67E1C /* AddDataViewController.m in Sources */,
+				9CB79C212877932200F67E1C /* TestTestViewController.swift in Sources */,
 				9CB79C1528775C7900F67E1C /* TestViewController.m in Sources */,
 				9C74E50E28725799003FFFF7 /* AppDelegate.m in Sources */,
 				9CB79C0E2874F21800F67E1C /* UIViewController+PresentError.m in Sources */,
@@ -689,6 +696,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7U2A6R77J6;
@@ -707,6 +715,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.chaytanc.ModelVale;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ModelVale/ViewControllers/Main/ModelVale-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -717,6 +728,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7U2A6R77J6;
@@ -735,6 +747,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.chaytanc.ModelVale;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ModelVale/ViewControllers/Main/ModelVale-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -743,6 +757,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 82CCEE7F27B11B5A4BEB53E8 /* Pods-ModelValeTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -762,6 +777,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FF376F3548470D52FE3B403B /* Pods-ModelValeTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -781,6 +797,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9D94C2DA75F1B92CB1D70488 /* Pods-ModelVale-ModelValeUITests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7U2A6R77J6;
@@ -798,6 +815,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2D82A33E6CDF4298D17BA9C2 /* Pods-ModelVale-ModelValeUITests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7U2A6R77J6;

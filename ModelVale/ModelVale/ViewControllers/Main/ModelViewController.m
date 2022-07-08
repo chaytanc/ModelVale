@@ -23,10 +23,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-//    SqueezeNetInt8LUT* imageClassif = [[SqueezeNetInt8LUT init] initWithConfiguration:(nonnull UIListContentConfiguration *)];
-//    [self.models addObject: imageClassif];
-//    let imageClassifierWrapper = try? AnimalClassifier(configuration: defaultConfig)
-    
 
 }
 
