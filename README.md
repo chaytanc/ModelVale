@@ -42,7 +42,7 @@ Modelvale is an app designed to bring machine learning to life. Each model is re
  * Model leaderboards
  * In-game achievements
  
- ** Other Possible Technical Problems **
+ **Other Possible Technical Problems**
  * Planning for very large datasets and fetching in chunks to display data
  * Use multithreading and progress bars to retrain models in the background
 
