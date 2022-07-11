@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UICollectionView *addDataCollView;
 @property (strong, nonatomic) PHImageManager* phManager;
 
+
 @end
 
 @implementation AddDataViewController
@@ -55,37 +56,6 @@
     [self presentViewController:self.cameraPickerVC animated:YES completion:nil];
 }
 
-//XXX working here to learn about dispatching queues in order to wait for completion of PHManager
-//- (UIImage*) getImageFromPH: (PHAsset*)asset imageCompletion: (void (^) (UIImage* image) _Nullable)completion {
-//    PHImageRequestOptions* opts = [PHImageRequestOptions new];
-//    opts.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-////    __block UIImage* image;
-//
-//    //XXX don't know what second arg does
-//    dispatch_queue_t queue = dispatch_queue_create("phQueue", 0);
-//    // enqueue operation in queue
-//    dispatch_async(queue, ^{
-//        // create semaphore
-//        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
-//        // async call in queue that we want to wait for
-//        dispatch_async([self.phManager requestImageForAsset:asset targetSize: CGSizeMake(asset.pixelWidth, asset.pixelHeight) contentMode: PHImageContentModeAspectFill options:opts resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-//                if(result == nil) {
-//                    NSLog(@"Nil image from asset");
-//                }
-//                else {
-////                    image = result;
-////                    completion(result);
-//                }
-//        }]);
-//
-//        // wait until the nested async operation signals that its finished
-//        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-//    });
-//
-//    return image;
-//}
-
-//XXX working ehre to pass in handler
 - (void) getImageFromPH: (PHAsset*)asset imageCompletion: (void (^) (UIImage* image))completion {
     PHImageRequestOptions* opts = [PHImageRequestOptions new];
     opts.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
@@ -96,7 +66,6 @@
                     NSLog(@"Nil image from asset");
                 }
                 else {
-//                    image = result;
                     completion(result);
                 }
     }];
@@ -122,8 +91,6 @@
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
 
     [self.data addObject:editedImage];
-//    [self.data insertObject:editedImage atIndex:0];
-//    [self.picImageView setImage: editedImage];
     
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.addDataCollView reloadData];
