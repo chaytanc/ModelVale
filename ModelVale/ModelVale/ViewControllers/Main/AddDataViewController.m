@@ -8,12 +8,16 @@
 #import "AddDataViewController.h"
 #import "UIViewController+PresentError.h"
 #import "AddDataCell.h"
+#import "QBImagePickerController/QBImagePickerController.h"
 
-@interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource>
+@interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, QBImagePickerControllerDelegate>
 
-@property (nonatomic, strong) UIImagePickerController* imagePickerVC;
+@property (nonatomic, strong) QBImagePickerController* imagePickerVC;
+@property (nonatomic, strong) UIImagePickerController* cameraPickerVC;
 @property (nonatomic, strong) NSMutableArray* data;
 @property (weak, nonatomic) IBOutlet UICollectionView *addDataCollView;
+@property (strong, nonatomic) PHImageManager* phManager;
+
 
 @end
 
@@ -21,30 +25,65 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.imagePickerVC = [UIImagePickerController new];
+    self.imagePickerVC = [QBImagePickerController new];
     self.imagePickerVC.delegate = self;
-    self.imagePickerVC.allowsEditing = YES;
+    self.imagePickerVC.showsNumberOfSelectedAssets = YES;
+    self.imagePickerVC.allowsMultipleSelection = YES;
+    self.imagePickerVC.maximumNumberOfSelection = 10000;
+    
+    self.cameraPickerVC = [UIImagePickerController new];
+    self.cameraPickerVC.delegate = self;
+    self.cameraPickerVC.allowsEditing = YES;
     
     self.addDataCollView.delegate = self;
     self.addDataCollView.dataSource = self;
     self.data = [NSMutableArray new];
+    self.phManager = [PHImageManager new];
+    
 }
 - (IBAction)didTapSelectData:(id)sender {
     NSLog(@"Select Data Tapped");
-    self.imagePickerVC.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+
     [self presentViewController:self.imagePickerVC animated:YES completion:nil];
 }
 - (IBAction)didTapCreateData:(id)sender {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        self.imagePickerVC.sourceType = UIImagePickerControllerSourceTypeCamera;
+        self.cameraPickerVC.sourceType = UIImagePickerControllerSourceTypeCamera;
     }
     else {
         [self presentError:@"Cannot access Camera" message:@"Please check that a camera is available and access is enabled." error:nil];
     }
-    [self presentViewController:self.imagePickerVC animated:YES completion:nil];
+    [self presentViewController:self.cameraPickerVC animated:YES completion:nil];
 }
 
-// What to do with selection from camera roll
+- (void) getImageFromPH: (PHAsset*)asset imageCompletion: (void (^) (UIImage* image))completion {
+    PHImageRequestOptions* opts = [PHImageRequestOptions new];
+    opts.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    [self.phManager requestImageForAsset:asset targetSize: CGSizeMake(asset.pixelWidth, asset.pixelHeight)
+                             contentMode: PHImageContentModeAspectFill
+                                 options:opts resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+                if(result == nil) {
+                    NSLog(@"Nil image from asset");
+                }
+                else {
+                    completion(result);
+                }
+    }];
+}
+
+// MARK: Multiple Select QBImagePicker
+- (void) qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
+    for(id asset in assets) {
+        [self getImageFromPH:asset imageCompletion:^(UIImage *image) {
+            [self.data addObject:image];
+            [self.addDataCollView reloadData];
+        }];
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+// MARK: Camera Picker
+// What to do with selection from camera roll or photo from camera
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     
     // Get the image captured by the UIImagePickerController
@@ -52,8 +91,6 @@
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
 
     [self.data addObject:editedImage];
-//    [self.data insertObject:editedImage atIndex:0];
-//    [self.picImageView setImage: editedImage];
     
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.addDataCollView reloadData];
