@@ -12,11 +12,12 @@ Modelvale is an app designed to bring machine learning to life. Each model is re
      * User persistence
  * Unique avatars to represent each user's model(s)
      * Uses CoreML to package models and be able to use them for predictions and retraining
- * Health bar of the model to represent overall performance
+ * Health bar of the model to represent overall performance **Technical Problem**
      * Base off of correct to incorrect prediction ratio
      * Time slowly decreases health
      * Training computational resources drains health
      * Larger model size drains health
+     * Is a comparable, meaningful metric across disparate models (i.e. the health bar is one way to compare how "well" an image classifier is doing vs a object detection model, vs other different types)
 
  * User uploads or provides dataset link to data to test the model on
  *  See stats about best performing models across time
@@ -27,7 +28,7 @@ Modelvale is an app designed to bring machine learning to life. Each model is re
      * Copy pasted text (NLP models)
      * Other: Sound? Video?
  * User can upload a new pretrained model
- * One animation of some view
+ * Animation of the health bar as it increases or decreases after testing **Technical Problem**
  * Sign out of the app
 
 **Optional Nice-to-have Stories**
@@ -40,6 +41,10 @@ Modelvale is an app designed to bring machine learning to life. Each model is re
  * Have multiple avatars at once
  * Model leaderboards
  * In-game achievements
+ 
+ ** Other Possible Technical Problems **
+ * Planning for very large datasets and fetching in chunks to display data
+ * Use multithreading and progress bars to retrain models in the background
 
 ## 2. Screen Archetypes
 
@@ -49,14 +54,11 @@ Modelvale is an app designed to bring machine learning to life. Each model is re
 * Registration view
  * Model avatars view
 * Stats view
+* Data Management view
+* Testing view
+* Retraining view
 
 ## 3. Navigation
-
-**Tab Navigation** (Tab to Screen)
-
- * Stats
- * All Models
- * Model Details
 
 Optional:
 - Achievements
@@ -69,6 +71,10 @@ Optional:
  * Login
  * Registration
  * All Models
+ * Data Management
+ * Testing
+ * Training
+ * Stats
 
 ## Wireframes
 ![IMG_0060](https://user-images.githubusercontent.com/35582442/177838999-1dac750c-efb7-4ad6-95c6-6cedf4e2cd83.JPG)
