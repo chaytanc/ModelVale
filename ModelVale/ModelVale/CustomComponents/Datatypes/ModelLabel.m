@@ -10,20 +10,18 @@
 
 @implementation ModelLabel
 
-- (ModelLabel*) initEmptyLabel: (NSString*)label testTrainType: (testTrain)testTrainType sectionInd: (NSInteger)sectionInd {
+- (ModelLabel*) initEmptyLabel: (NSString*)label testTrainType: (testTrain)testTrainType {
     self.numPerLabel = 0;
     self.label = label;
     self.testTrainType = testTrainType;
-    self.sectionInd = sectionInd;
     self.labelModelData = [NSMutableArray new];
     return self;
 }
 
-- (ModelLabel*) initWithData: (NSString*)label testTrainType: (testTrain)testTrainType sectionInd: (NSInteger)sectionInd data: (NSMutableArray*) data {
+- (ModelLabel*) initWithData: (NSString*)label testTrainType: (testTrain)testTrainType data: (NSMutableArray*) data {
     self.numPerLabel = data.count;
     self.label = label;
     self.testTrainType = testTrainType;
-    self.sectionInd = sectionInd;
     self.labelModelData = data;
     return self;
 }

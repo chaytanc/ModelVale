@@ -19,21 +19,21 @@
 
 @implementation DataViewController
 
-// Need two section headers (or rather, num options in testTrainPickerView in AddData) for each label
+// Need two section headers (or rather, testTrainTypeArray.count from TestTrainEnum.h) for each label
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.modelLabels = [NSMutableArray new];
     self.userDataCollectionView.delegate = self;
     self.userDataCollectionView.dataSource = self;
     
-    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"mountain" testTrainType:Train sectionInd:0];
+    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"mountain" testTrainType:Train];
     UIImage* testImage = [UIImage imageNamed:@"mountain"];
     ModelData* fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel]; // Note: adds itself to the label passed
     testImage = [UIImage imageNamed:@"rivermountain"];
     fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
     [self.modelLabels addObject:fakeLabel];
     // Add one mountain to the label "hill" and add to dvc
-    fakeLabel = [[ModelLabel new] initEmptyLabel:@"hill" testTrainType:Train sectionInd:1];
+    fakeLabel = [[ModelLabel new] initEmptyLabel:@"hill" testTrainType:Train];
     testImage = [UIImage imageNamed:@"snowymountains"];
     fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
     [self.modelLabels addObject:fakeLabel];
@@ -43,7 +43,7 @@
 // Return the index of the section we're in given the row
 // Used to turn an indexPath.row that does *not* reset after a section into which section we're in etc...
 // Useful if you don't know that you can just do indexPath.section
-- (NSArray*) getSection: (NSInteger)row {
+- (NSArray*) getSectionFromRow: (NSInteger)row {
 
     NSInteger sectionInd = 0;
     NSInteger dataSoFar = ((ModelLabel*) self.modelLabels[0]).numPerLabel;
@@ -57,6 +57,7 @@
     dataSoFar -= numPerLabel; // After overshooting dataSoFar to find which section, subtract it again
     NSNumber *secInd = [NSNumber numberWithInteger:sectionInd];
     NSNumber *dataBeforeSection = [NSNumber numberWithInteger:dataSoFar];
+    // dataBeforeSection is noninclusive of the data in the current section
     return @[secInd, dataBeforeSection];
 }
 
