@@ -9,6 +9,7 @@
 #import "UIViewController+PresentError.h"
 #import "AddDataCell.h"
 #import "QBImagePickerController/QBImagePickerController.h"
+#import "TestTrainEnum.h"
 
 @interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, QBImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
@@ -40,7 +41,7 @@
     self.addDataCollView.dataSource = self;
     self.testTrainPickerView.dataSource = self;
     self.testTrainPickerView.delegate = self;
-    self.testTrainOptions = @[@"Test", @"Train"];
+    self.testTrainOptions = (NSArray*) testTrainTypeArray;
     
     self.data = [NSMutableArray new];
     self.phManager = [PHImageManager new];

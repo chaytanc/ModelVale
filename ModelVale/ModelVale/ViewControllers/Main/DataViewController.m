@@ -63,16 +63,8 @@
 // MARK: Collection view
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UserDataCell* cell = [self.userDataCollectionView dequeueReusableCellWithReuseIdentifier:@"userDataCell" forIndexPath:indexPath];
-    // WANT: data from modelLabels given indexpath.row
-    // 1) get section from indexpath.row and use to get correct label
-    NSArray* indAndData = [self getSection:indexPath.row];
-    NSInteger sectionInd = [((NSNumber*) indAndData[0]) integerValue];
     ModelLabel* sectionLabel = self.modelLabels[indexPath.section];
-    // 2) get offset into label.data given indexpath.row - prior sections' datapoints
-    NSInteger dataBeforeSection = [((NSNumber*) indAndData[1]) integerValue];
-    NSInteger labelDataOffset = indexPath.row - dataBeforeSection;
-    ModelData* rowData = sectionLabel.labelModelData[labelDataOffset];
-    // 3) use that data
+    ModelData* rowData = sectionLabel.labelModelData[indexPath.row];
     [cell.userDataImageView setImage:rowData.image];
     return cell;
 }
