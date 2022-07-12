@@ -10,14 +10,15 @@
 #import "AddDataCell.h"
 #import "QBImagePickerController/QBImagePickerController.h"
 
-@interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, QBImagePickerControllerDelegate>
+@interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, QBImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (nonatomic, strong) QBImagePickerController* imagePickerVC;
 @property (nonatomic, strong) UIImagePickerController* cameraPickerVC;
 @property (nonatomic, strong) NSMutableArray* data;
+@property (weak, nonatomic) IBOutlet UIPickerView *testTrainPickerView;
+@property (strong, nonatomic) NSArray* testTrainOptions;
 @property (weak, nonatomic) IBOutlet UICollectionView *addDataCollView;
 @property (strong, nonatomic) PHImageManager* phManager;
-
 
 @end
 
@@ -37,13 +38,15 @@
     
     self.addDataCollView.delegate = self;
     self.addDataCollView.dataSource = self;
+    self.testTrainPickerView.dataSource = self;
+    self.testTrainPickerView.delegate = self;
+    self.testTrainOptions = @[@"Test", @"Train"];
+    
     self.data = [NSMutableArray new];
     self.phManager = [PHImageManager new];
     
 }
 - (IBAction)didTapSelectData:(id)sender {
-    NSLog(@"Select Data Tapped");
-
     [self presentViewController:self.imagePickerVC animated:YES completion:nil];
 }
 - (IBAction)didTapCreateData:(id)sender {
@@ -109,5 +112,19 @@
     return self.data.count;
 }
 
+
+- (NSInteger)numberOfComponentsInPickerView:(nonnull UIPickerView *)pickerView {
+    return 1;
+}
+
+- (NSInteger)pickerView:(nonnull UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return self.testTrainOptions.count;
+}
+
+- (NSString *)pickerView:(UIPickerView *)pickerView
+             titleForRow:(NSInteger)row
+            forComponent:(NSInteger)component {
+    return self.testTrainOptions[row];
+}
 
 @end

@@ -10,6 +10,11 @@
 		0475F8902926AD8FE38768AB /* libPods-ModelVale-ModelValeUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CFABD50928CDFA2BD208620D /* libPods-ModelVale-ModelValeUITests.a */; };
 		9C69F7262878A8680001F608 /* AddDataCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F7252878A8680001F608 /* AddDataCell.m */; };
 		9C69F7282878D35A0001F608 /* Stats.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C69F7272878D35A0001F608 /* Stats.storyboard */; };
+		9C69F72B287CA94B0001F608 /* UserDataCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F72A287CA94B0001F608 /* UserDataCell.m */; };
+		9C69F72E287CAB970001F608 /* UserDataSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F72D287CAB970001F608 /* UserDataSectionHeader.m */; };
+		9C69F732287CAFDE0001F608 /* ModelData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F731287CAFDE0001F608 /* ModelData.m */; };
+		9C69F735287CCFC50001F608 /* ModelLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F734287CCFC40001F608 /* ModelLabel.m */; };
+		9C69F738287DF38E0001F608 /* TestTrainEnum.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F737287DF38E0001F608 /* TestTrainEnum.m */; };
 		9C74E50E28725799003FFFF7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C74E50D28725799003FFFF7 /* AppDelegate.m */; };
 		9C74E51128725799003FFFF7 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C74E51028725799003FFFF7 /* SceneDelegate.m */; };
 		9C74E51728725799003FFFF7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C74E51528725799003FFFF7 /* Main.storyboard */; };
@@ -63,6 +68,16 @@
 		9C69F7242878A8680001F608 /* AddDataCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddDataCell.h; sourceTree = "<group>"; };
 		9C69F7252878A8680001F608 /* AddDataCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddDataCell.m; sourceTree = "<group>"; };
 		9C69F7272878D35A0001F608 /* Stats.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Stats.storyboard; sourceTree = "<group>"; };
+		9C69F729287CA94B0001F608 /* UserDataCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserDataCell.h; sourceTree = "<group>"; };
+		9C69F72A287CA94B0001F608 /* UserDataCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserDataCell.m; sourceTree = "<group>"; };
+		9C69F72C287CAB970001F608 /* UserDataSectionHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserDataSectionHeader.h; sourceTree = "<group>"; };
+		9C69F72D287CAB970001F608 /* UserDataSectionHeader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserDataSectionHeader.m; sourceTree = "<group>"; };
+		9C69F730287CAFDE0001F608 /* ModelData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelData.h; sourceTree = "<group>"; };
+		9C69F731287CAFDE0001F608 /* ModelData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModelData.m; sourceTree = "<group>"; };
+		9C69F733287CCFC40001F608 /* ModelLabel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelLabel.h; sourceTree = "<group>"; };
+		9C69F734287CCFC40001F608 /* ModelLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModelLabel.m; sourceTree = "<group>"; };
+		9C69F736287CD85B0001F608 /* TestTrainEnum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestTrainEnum.h; sourceTree = "<group>"; };
+		9C69F737287DF38E0001F608 /* TestTrainEnum.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestTrainEnum.m; sourceTree = "<group>"; };
 		9C74E50928725799003FFFF7 /* ModelVale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModelVale.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C74E50C28725799003FFFF7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9C74E50D28725799003FFFF7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -139,8 +154,23 @@
 			children = (
 				9C69F7242878A8680001F608 /* AddDataCell.h */,
 				9C69F7252878A8680001F608 /* AddDataCell.m */,
+				9C69F729287CA94B0001F608 /* UserDataCell.h */,
+				9C69F72A287CA94B0001F608 /* UserDataCell.m */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		9C69F72F287CAF650001F608 /* Datatypes */ = {
+			isa = PBXGroup;
+			children = (
+				9C69F730287CAFDE0001F608 /* ModelData.h */,
+				9C69F731287CAFDE0001F608 /* ModelData.m */,
+				9C69F733287CCFC40001F608 /* ModelLabel.h */,
+				9C69F734287CCFC40001F608 /* ModelLabel.m */,
+				9C69F736287CD85B0001F608 /* TestTrainEnum.h */,
+				9C69F737287DF38E0001F608 /* TestTrainEnum.m */,
+			);
+			path = Datatypes;
 			sourceTree = "<group>";
 		};
 		9C74E50028725799003FFFF7 = {
@@ -224,9 +254,12 @@
 		9CB79C0B2874F13E00F67E1C /* CustomComponents */ = {
 			isa = PBXGroup;
 			children = (
+				9C69F72F287CAF650001F608 /* Datatypes */,
 				9C69F7212878A8210001F608 /* Cells */,
 				9CB79C0D2874F21800F67E1C /* UIViewController+PresentError.h */,
 				9CB79C0C2874F21700F67E1C /* UIViewController+PresentError.m */,
+				9C69F72C287CAB970001F608 /* UserDataSectionHeader.h */,
+				9C69F72D287CAB970001F608 /* UserDataSectionHeader.m */,
 			);
 			path = CustomComponents;
 			sourceTree = "<group>";
@@ -528,8 +561,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C69F735287CCFC50001F608 /* ModelLabel.m in Sources */,
 				9C74E54428736D12003FFFF7 /* ModelViewController.m in Sources */,
+				9C69F72E287CAB970001F608 /* UserDataSectionHeader.m in Sources */,
+				9C69F732287CAFDE0001F608 /* ModelData.m in Sources */,
 				9C74E54728736D7B003FFFF7 /* StatsViewController.m in Sources */,
+				9C69F72B287CA94B0001F608 /* UserDataCell.m in Sources */,
 				9CB79C0A28739ED200F67E1C /* SqueezeNetInt8LUT.mlmodel in Sources */,
 				9C74E54C28736DBD003FFFF7 /* LoginViewController.m in Sources */,
 				9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */,
@@ -541,6 +578,7 @@
 				9C69F7262878A8680001F608 /* AddDataCell.m in Sources */,
 				9C74E54F28736DED003FFFF7 /* RegisterViewController.m in Sources */,
 				9C74E51F2872579A003FFFF7 /* main.m in Sources */,
+				9C69F738287DF38E0001F608 /* TestTrainEnum.m in Sources */,
 				9CB79C1828775C8A00F67E1C /* RetrainViewController.m in Sources */,
 				9C74E51128725799003FFFF7 /* SceneDelegate.m in Sources */,
 			);
@@ -636,7 +674,7 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -693,7 +731,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
