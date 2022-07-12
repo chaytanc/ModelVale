@@ -40,26 +40,6 @@
     [self.userDataCollectionView reloadData];
 }
 
-// Return the index of the section we're in given the row
-// Used to turn an indexPath.row that does *not* reset after a section into which section we're in etc...
-// Useful if you don't know that you can just do indexPath.section
-- (NSArray*) getSectionFromRow: (NSInteger)row {
-
-    NSInteger sectionInd = 0;
-    NSInteger dataSoFar = ((ModelLabel*) self.modelLabels[0]).numPerLabel;
-    NSInteger numPerLabel = ((ModelLabel*) self.modelLabels[0]).numPerLabel;
-    while(dataSoFar <= row) { // Have to have the = since dataSoFar ind @ 1 and row ind @ 0
-        sectionInd += 1;
-        ModelLabel* section = self.modelLabels[sectionInd];
-        numPerLabel = section.numPerLabel;
-        dataSoFar += numPerLabel;
-    }
-    dataSoFar -= numPerLabel; // After overshooting dataSoFar to find which section, subtract it again
-    NSNumber *secInd = [NSNumber numberWithInteger:sectionInd];
-    NSNumber *dataBeforeSection = [NSNumber numberWithInteger:dataSoFar];
-    // dataBeforeSection is noninclusive of the data in the current section
-    return @[secInd, dataBeforeSection];
-}
 
 // MARK: Collection view
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {

@@ -10,8 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DataViewController : UIViewController
-- (NSArray*) getSectionFromRow: (NSInteger)row;
-// Array holding type ModelLabel at its particular section index, XXX working here to have each modelLabel contain an array of the userData it holds, no longer need allUserData
+// Array holding type ModelLabel at its particular section index
 @property (strong, nonatomic) NSMutableArray* modelLabels;
 @end
 
