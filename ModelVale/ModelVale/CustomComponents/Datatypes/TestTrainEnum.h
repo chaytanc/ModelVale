@@ -19,4 +19,5 @@ typedef enum {
 
 NSString *dataTypeEnumToString(testTrain enumVal);
 
+testTrain dataTypeStringToEnum(NSString* strVal);
 

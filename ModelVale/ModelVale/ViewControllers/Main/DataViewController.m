@@ -26,14 +26,14 @@
     self.userDataCollectionView.delegate = self;
     self.userDataCollectionView.dataSource = self;
     
-    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"mountain" testTrainType:Train];
+    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"mountain" testTrainType:dataTypeEnumToString(Train)];
     UIImage* testImage = [UIImage imageNamed:@"mountain"];
     ModelData* fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel]; // Note: adds itself to the label passed
     testImage = [UIImage imageNamed:@"rivermountain"];
     fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
     [self.modelLabels addObject:fakeLabel];
     // Add one mountain to the label "hill" and add to dvc
-    fakeLabel = [[ModelLabel new] initEmptyLabel:@"hill" testTrainType:Train];
+    fakeLabel = [[ModelLabel new] initEmptyLabel:@"hill" testTrainType:dataTypeEnumToString(Train)];
     testImage = [UIImage imageNamed:@"snowymountains"];
     fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
     [self.modelLabels addObject:fakeLabel];
@@ -68,7 +68,7 @@
     if([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         UserDataSectionHeader* sectionHeader = [self.userDataCollectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"userDataSectionHeader" forIndexPath:indexPath];
         ModelLabel* label = self.modelLabels[indexPath.section];
-        NSString* dataType = [dataTypeEnumToString(label.testTrainType) stringByAppendingString:@": "];
+        NSString* dataType = [label.testTrainType stringByAppendingString:@": "];
         sectionHeader.userDataLabel.text = [dataType stringByAppendingString: label.label];
         return sectionHeader;
     }
