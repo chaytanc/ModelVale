@@ -12,11 +12,14 @@
 
 @implementation ModelData
 
-- (ModelData*) initWithImage:(UIImage *)image label:(ModelLabel *)label {
-    self.image = image;
-    // Update reference within data to the label and then update the label's labelModelData list with the new datapoint
-    self.label = label;
-    [label addLabelModelData:@[self]];
+- (instancetype) initWithImage:(UIImage *)image label:(ModelLabel *)label {
+    self = [super init];
+    if (self) {
+        self.image = image;
+        // Update reference within data to the label and then update the label's labelModelData list with the new datapoint
+        self.label = label;
+        [label addLabelModelData:@[self]];
+    }
     return self;
 }
 
