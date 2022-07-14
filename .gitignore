@@ -7,6 +7,8 @@ Keys.plist
 xcuserdata/
 assets/
 ModelValeTests.m
+*\.DS_Store
+\.DS_Store
 .DS_Store
 
 ## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
@@ -70,3 +72,4 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+ModelVale/.DS_Store

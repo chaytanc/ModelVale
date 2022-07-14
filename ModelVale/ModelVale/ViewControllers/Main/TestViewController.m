@@ -6,7 +6,7 @@
 //
 
 #import "TestViewController.h"
-#import "SqueezeNetInt8LUT.h"
+#import "UpdatableSqueezeNet.h"
 #import "CoreML/CoreML.h"
 #import "Vision/Vision.h"
 
@@ -17,8 +17,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *testButton;
 @property (weak, nonatomic) IBOutlet UILabel *statsLabel;
 
-//@property (strong, nonatomic) MLModel* model;
-@property (strong, nonatomic) SqueezeNetInt8LUT* model;
+@property (strong, nonatomic) UpdatableSqueezeNet* model;
 //@property (strong, nonatomic) VNCoreMLModel* model;
 
 
@@ -31,14 +30,9 @@
     [super viewDidLoad];
     NSURL* modelURL = [[NSBundle mainBundle] URLForResource:@"SqueezeNetInt8LUT" withExtension:@"mlmodelc"];
     MLModelConfiguration* config = [MLModelConfiguration new];
-//    NSError* error;
-    self.model = [[SqueezeNetInt8LUT alloc] initWithContentsOfURL:modelURL error:nil];
-    
-//    self.model = [TestViewController createImageClassifier];
-}
+    self.model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:modelURL error:nil];
+    }
 - (IBAction)didTapTest:(id)sender {
-//    NSURL* imageURL = [[NSBundle mainBundle] URLForResource:@"mountain" withExtension:@"jpg"];
-
     UIImage* testImage = [UIImage imageNamed:@"mountain"];
     struct CGImage* cgtest = testImage.CGImage;
 
@@ -47,6 +41,7 @@
 
     MLImageConstraint* constraint = self.model.model.modelDescription.inputDescriptionsByName[@"image"].imageConstraint;
 
+    // Create fake data to predict on using CoreML classes like MLFeatureProvider
     MLFeatureValue* imageFeature = [MLFeatureValue featureValueWithCGImage:cgtest constraint:constraint options:nil error:nil];
     NSMutableDictionary* featureDict = [[NSMutableDictionary alloc] init];
     featureDict[@"image"] = imageFeature;
@@ -57,19 +52,5 @@
     self.statsLabel.text = output.stringValue;
 
 }
-
-//XXX Not sure what Vision lib is or if it is necessary for things later
-//+ (VNCoreMLModel*) createImageClassifier {
-//    // Use a default model configuration.
-//    MLModelConfiguration* defaultConfig = [MLModelConfiguration new];
-//    // Create an instance of the image classifier's wrapper class.
-//    SqueezeNetInt8LUT* sqWrapper = [[SqueezeNetInt8LUT new] initWithConfiguration:defaultConfig error:nil];
-//    // Get the underlying model instance.
-//    MLModel* model = sqWrapper.model;
-//    VNCoreMLModel* visionModel = [VNCoreMLModel modelForMLModel:model error:nil];
-//    return visionModel;
-//}
-
-
 
 @end

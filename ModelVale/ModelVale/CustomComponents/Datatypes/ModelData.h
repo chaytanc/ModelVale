@@ -7,7 +7,8 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "ModelLabel.h"
+#import "CoreML/CoreML.h"
+@class ModelLabel;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,7 +18,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) ModelLabel* label;
 @property (strong, nonatomic) UIImage* image;
 
-- (ModelData*) initWithImage: (UIImage*)image label: (ModelLabel*) label;
+- (ModelData*) initWithImage:(UIImage *)image label:(ModelLabel *)label;
+- (MLDictionaryFeatureProvider*) getDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
+- (MLFeatureValue*) getImageFeatureValue: (MLImageConstraint*)modelConstraints;
+- (MLDictionaryFeatureProvider*) getUpdatableDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
++ (NSMutableArray*) initModelDataArrayFromArray: (NSArray*) array label: (ModelLabel*)label;
+
 
 @end
 

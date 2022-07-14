@@ -15,6 +15,8 @@
 		9C69F732287CAFDE0001F608 /* ModelData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F731287CAFDE0001F608 /* ModelData.m */; };
 		9C69F735287CCFC50001F608 /* ModelLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F734287CCFC40001F608 /* ModelLabel.m */; };
 		9C69F738287DF38E0001F608 /* TestTrainEnum.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F737287DF38E0001F608 /* TestTrainEnum.m */; };
+		9C69F73C287E3E720001F608 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C69F73B287E3E720001F608 /* Keys.plist */; };
+		9C69F73F287E4DD50001F608 /* TrainBatchData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F73E287E4DD50001F608 /* TrainBatchData.m */; };
 		9C74E50E28725799003FFFF7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C74E50D28725799003FFFF7 /* AppDelegate.m */; };
 		9C74E51128725799003FFFF7 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C74E51028725799003FFFF7 /* SceneDelegate.m */; };
 		9C74E51728725799003FFFF7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C74E51528725799003FFFF7 /* Main.storyboard */; };
@@ -29,9 +31,9 @@
 		9C74E54928736D9E003FFFF7 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C74E54828736D9E003FFFF7 /* Login.storyboard */; };
 		9C74E54C28736DBD003FFFF7 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C74E54B28736DBD003FFFF7 /* LoginViewController.m */; };
 		9C74E54F28736DED003FFFF7 /* RegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C74E54E28736DED003FFFF7 /* RegisterViewController.m */; };
-		9CB79C0A28739ED200F67E1C /* SqueezeNetInt8LUT.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C0928739ED200F67E1C /* SqueezeNetInt8LUT.mlmodel */; };
+		9CB423FF287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9CB423FE287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel */; };
+		9CB42403287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9CB42402287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel */; };
 		9CB79C0E2874F21800F67E1C /* UIViewController+PresentError.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C0C2874F21700F67E1C /* UIViewController+PresentError.m */; };
-		9CB79C122875091800F67E1C /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CB79C112875091800F67E1C /* Keys.plist */; };
 		9CB79C1528775C7900F67E1C /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1428775C7900F67E1C /* TestViewController.m */; };
 		9CB79C1828775C8A00F67E1C /* RetrainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1728775C8A00F67E1C /* RetrainViewController.m */; };
 		9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1A28775C9800F67E1C /* DataViewController.m */; };
@@ -78,6 +80,9 @@
 		9C69F734287CCFC40001F608 /* ModelLabel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModelLabel.m; sourceTree = "<group>"; };
 		9C69F736287CD85B0001F608 /* TestTrainEnum.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestTrainEnum.h; sourceTree = "<group>"; };
 		9C69F737287DF38E0001F608 /* TestTrainEnum.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestTrainEnum.m; sourceTree = "<group>"; };
+		9C69F73B287E3E720001F608 /* Keys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
+		9C69F73D287E4DD50001F608 /* TrainBatchData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrainBatchData.h; sourceTree = "<group>"; };
+		9C69F73E287E4DD50001F608 /* TrainBatchData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrainBatchData.m; sourceTree = "<group>"; };
 		9C74E50928725799003FFFF7 /* ModelVale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ModelVale.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C74E50C28725799003FFFF7 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9C74E50D28725799003FFFF7 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -102,10 +107,10 @@
 		9C74E54B28736DBD003FFFF7 /* LoginViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		9C74E54D28736DED003FFFF7 /* RegisterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RegisterViewController.h; sourceTree = "<group>"; };
 		9C74E54E28736DED003FFFF7 /* RegisterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RegisterViewController.m; sourceTree = "<group>"; };
-		9CB79C0928739ED200F67E1C /* SqueezeNetInt8LUT.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = SqueezeNetInt8LUT.mlmodel; path = ../../../../Downloads/SqueezeNetInt8LUT.mlmodel; sourceTree = "<group>"; };
+		9CB423FE287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SqueezeNetInt8LUT.mlmodel; sourceTree = "<group>"; };
+		9CB42402287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = UpdatableSqueezeNet.mlmodel; path = ../../../mycoremltools/UpdatableSqueezeNet.mlmodel; sourceTree = "<group>"; };
 		9CB79C0C2874F21700F67E1C /* UIViewController+PresentError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+PresentError.m"; sourceTree = "<group>"; };
 		9CB79C0D2874F21800F67E1C /* UIViewController+PresentError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+PresentError.h"; sourceTree = "<group>"; };
-		9CB79C112875091800F67E1C /* Keys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		9CB79C1328775C7900F67E1C /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
 		9CB79C1428775C7900F67E1C /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
 		9CB79C1628775C8A00F67E1C /* RetrainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RetrainViewController.h; sourceTree = "<group>"; };
@@ -169,6 +174,8 @@
 				9C69F734287CCFC40001F608 /* ModelLabel.m */,
 				9C69F736287CD85B0001F608 /* TestTrainEnum.h */,
 				9C69F737287DF38E0001F608 /* TestTrainEnum.m */,
+				9C69F73D287E4DD50001F608 /* TrainBatchData.h */,
+				9C69F73E287E4DD50001F608 /* TrainBatchData.m */,
 			);
 			path = Datatypes;
 			sourceTree = "<group>";
@@ -211,7 +218,7 @@
 				9C74E5182872579A003FFFF7 /* Assets.xcassets */,
 				9C74E51A2872579A003FFFF7 /* LaunchScreen.storyboard */,
 				9C74E51D2872579A003FFFF7 /* Info.plist */,
-				9CB79C112875091800F67E1C /* Keys.plist */,
+				9C69F73B287E3E720001F608 /* Keys.plist */,
 				9C74E51E2872579A003FFFF7 /* main.m */,
 			);
 			path = ModelVale;
@@ -246,7 +253,8 @@
 		9CB79C0828739EC300F67E1C /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				9CB79C0928739ED200F67E1C /* SqueezeNetInt8LUT.mlmodel */,
+				9CB42402287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel */,
+				9CB423FE287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -428,12 +436,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C69F73C287E3E720001F608 /* Keys.plist in Resources */,
 				9C69F7282878D35A0001F608 /* Stats.storyboard in Resources */,
 				9C74E54928736D9E003FFFF7 /* Login.storyboard in Resources */,
 				9C74E51C2872579A003FFFF7 /* LaunchScreen.storyboard in Resources */,
 				9C74E5192872579A003FFFF7 /* Assets.xcassets in Resources */,
 				9C74E51728725799003FFFF7 /* Main.storyboard in Resources */,
-				9CB79C122875091800F67E1C /* Keys.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -567,7 +575,6 @@
 				9C69F732287CAFDE0001F608 /* ModelData.m in Sources */,
 				9C74E54728736D7B003FFFF7 /* StatsViewController.m in Sources */,
 				9C69F72B287CA94B0001F608 /* UserDataCell.m in Sources */,
-				9CB79C0A28739ED200F67E1C /* SqueezeNetInt8LUT.mlmodel in Sources */,
 				9C74E54C28736DBD003FFFF7 /* LoginViewController.m in Sources */,
 				9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */,
 				9CB79C1E28775CB400F67E1C /* AddDataViewController.m in Sources */,
@@ -580,6 +587,9 @@
 				9C74E51F2872579A003FFFF7 /* main.m in Sources */,
 				9C69F738287DF38E0001F608 /* TestTrainEnum.m in Sources */,
 				9CB79C1828775C8A00F67E1C /* RetrainViewController.m in Sources */,
+				9CB42403287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel in Sources */,
+				9CB423FF287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel in Sources */,
+				9C69F73F287E4DD50001F608 /* TrainBatchData.m in Sources */,
 				9C74E51128725799003FFFF7 /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

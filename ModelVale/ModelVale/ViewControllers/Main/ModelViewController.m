@@ -10,7 +10,7 @@
 #import "UIViewController+PresentError.h"
 #import "LoginViewController.h"
 #import "SceneDelegate.h"
-#import "SqueezeNetInt8LUT.h"
+#import "UpdatableSqueezeNet.h"
 #import "CoreML/CoreML.h"
 
 @interface ModelViewController ()
