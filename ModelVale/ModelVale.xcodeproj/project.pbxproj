@@ -39,6 +39,8 @@
 		9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1A28775C9800F67E1C /* DataViewController.m */; };
 		9CB79C1E28775CB400F67E1C /* AddDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1D28775CB400F67E1C /* AddDataViewController.m */; };
 		9CB79C212877932200F67E1C /* TestTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C202877932200F67E1C /* TestTestViewController.swift */; };
+		9CEEE36E2880D06900548963 /* Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEEE36D2880D06900548963 /* Model.m */; };
+		9CEEE3712880D71600548963 /* HealthBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEEE3702880D71600548963 /* HealthBar.m */; };
 		D6B04C94D59A5042092AA4C1 /* libPods-ModelValeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80CA57C08C8AC61644B113A1 /* libPods-ModelValeTests.a */; };
 		E460E7C87D8ED9D93CD18647 /* libPods-ModelVale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69B4CACDAB7442AFE50EBC38 /* libPods-ModelVale.a */; };
 /* End PBXBuildFile section */
@@ -121,6 +123,10 @@
 		9CB79C1D28775CB400F67E1C /* AddDataViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddDataViewController.m; sourceTree = "<group>"; };
 		9CB79C1F2877932200F67E1C /* ModelVale-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ModelVale-Bridging-Header.h"; sourceTree = "<group>"; };
 		9CB79C202877932200F67E1C /* TestTestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTestViewController.swift; sourceTree = "<group>"; };
+		9CEEE36C2880D06900548963 /* Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Model.h; sourceTree = "<group>"; };
+		9CEEE36D2880D06900548963 /* Model.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Model.m; sourceTree = "<group>"; };
+		9CEEE36F2880D71600548963 /* HealthBar.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HealthBar.h; sourceTree = "<group>"; };
+		9CEEE3702880D71600548963 /* HealthBar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HealthBar.m; sourceTree = "<group>"; };
 		9D94C2DA75F1B92CB1D70488 /* Pods-ModelVale-ModelValeUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModelVale-ModelValeUITests.debug.xcconfig"; path = "Target Support Files/Pods-ModelVale-ModelValeUITests/Pods-ModelVale-ModelValeUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		CFABD50928CDFA2BD208620D /* libPods-ModelVale-ModelValeUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModelVale-ModelValeUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF376F3548470D52FE3B403B /* Pods-ModelValeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModelValeTests.release.xcconfig"; path = "Target Support Files/Pods-ModelValeTests/Pods-ModelValeTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -176,6 +182,8 @@
 				9C69F737287DF38E0001F608 /* TestTrainEnum.m */,
 				9C69F73D287E4DD50001F608 /* TrainBatchData.h */,
 				9C69F73E287E4DD50001F608 /* TrainBatchData.m */,
+				9CEEE36C2880D06900548963 /* Model.h */,
+				9CEEE36D2880D06900548963 /* Model.m */,
 			);
 			path = Datatypes;
 			sourceTree = "<group>";
@@ -268,6 +276,8 @@
 				9CB79C0C2874F21700F67E1C /* UIViewController+PresentError.m */,
 				9C69F72C287CAB970001F608 /* UserDataSectionHeader.h */,
 				9C69F72D287CAB970001F608 /* UserDataSectionHeader.m */,
+				9CEEE36F2880D71600548963 /* HealthBar.h */,
+				9CEEE3702880D71600548963 /* HealthBar.m */,
 			);
 			path = CustomComponents;
 			sourceTree = "<group>";
@@ -578,12 +588,14 @@
 				9C74E54C28736DBD003FFFF7 /* LoginViewController.m in Sources */,
 				9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */,
 				9CB79C1E28775CB400F67E1C /* AddDataViewController.m in Sources */,
+				9CEEE3712880D71600548963 /* HealthBar.m in Sources */,
 				9CB79C212877932200F67E1C /* TestTestViewController.swift in Sources */,
 				9CB79C1528775C7900F67E1C /* TestViewController.m in Sources */,
 				9C74E50E28725799003FFFF7 /* AppDelegate.m in Sources */,
 				9CB79C0E2874F21800F67E1C /* UIViewController+PresentError.m in Sources */,
 				9C69F7262878A8680001F608 /* AddDataCell.m in Sources */,
 				9C74E54F28736DED003FFFF7 /* RegisterViewController.m in Sources */,
+				9CEEE36E2880D06900548963 /* Model.m in Sources */,
 				9C74E51F2872579A003FFFF7 /* main.m in Sources */,
 				9C69F738287DF38E0001F608 /* TestTrainEnum.m in Sources */,
 				9CB79C1828775C8A00F67E1C /* RetrainViewController.m in Sources */,
