@@ -86,7 +86,7 @@
                                                         <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lif-Wb-8dq" userLabel="healthBarView">
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lif-Wb-8dq" userLabel="healthBarView" customClass="HealthBarView">
                                                         <rect key="frame" x="0.0" y="35.5" width="248" height="80"/>
                                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                         <constraints>
@@ -317,7 +317,7 @@
         <!--Add Data View Controller-->
         <scene sceneID="gso-ef-DCv">
             <objects>
-                <viewController id="XDb-gl-3KP" userLabel="Add Data View Controller" customClass="AddDataViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="addDataViewController" id="XDb-gl-3KP" userLabel="Add Data View Controller" customClass="AddDataViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="fx1-Ll-zq1">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -555,9 +555,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Data" id="0Vk-QV-FRV">
-                        <barButtonItem key="rightBarButtonItem" image="plus" catalog="system" id="OuF-vb-cIY">
+                        <barButtonItem key="rightBarButtonItem" image="plus" catalog="system" id="OuF-vb-cIY" userLabel="addDataBarButton">
                             <connections>
-                                <segue destination="XDb-gl-3KP" kind="show" id="0cO-vc-eSa"/>
+                                <segue destination="XDb-gl-3KP" kind="show" id="t6S-V2-wIR"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
