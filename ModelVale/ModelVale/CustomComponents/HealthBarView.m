@@ -31,18 +31,19 @@
     [super drawRect:rect];
     [self initPoints];
     self.shapeLayer = [CAShapeLayer new];
-//    self.shapeLayer.fillColor = UIColor.blueColor.CGColor;
     self.shapeLayer.fillColor = self.backgroundColor.CGColor;
     self.shapeLayer.strokeColor = UIColor.blueColor.CGColor ;
     self.shapeLayer.lineWidth = 1;
-    // todo should be health bar view size
-    self.shapeLayer.frame = CGRectMake(0, 0, 500, 500);
+    // shapeLayer.frame is the drawable area
+    self.shapeLayer.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     
     // Todo make into function for drawing bar object
     // Draw the top line
-//    [self drawLines:100 thickness:10.0];
-    UIBezierPath* path = [UIBezierPath bezierPathWithRoundedRect:self.barRect cornerRadius:10];
-    self.shapeLayer.path = path.CGPath;
+//    UIBezierPath* path = [UIBezierPath bezierPathWithRoundedRect:self.barRect cornerRadius:10];
+//    UIBezierPath* path = [UIBezierPath bezierPathWithRoundedRect:self.barRect byRoundingCorners:UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadii:(CGSize) {10, 10}];
+//    self.shapeLayer.path = path.CGPath
+    ;
+    [self drawNoArcHealthBar:10 thickness:10];
 
     [self.layer addSublayer:self.shapeLayer];
 }
@@ -67,30 +68,48 @@
 }
 
 // https://stackoverflow.com/questions/50527832/how-to-draw-a-curved-line-using-cashapelayer-and-bezierpath-in-swift-4
-- (void) drawLines: (CGFloat)endRoundness thickness: (CGFloat)thickness {
+- (void) drawNoArcHealthBar: (CGFloat)endRoundness thickness: (CGFloat)thickness {
     
     CGPoint pointsCenter = CGPointMake((self.leftTopPoint.x+self.rightTopPoint.x)*0.5, (self.leftTopPoint.y+self.rightTopPoint.y)*0.5);
+    
     NSLog(@"to: (%f, %f)",self.rightTopPoint.x, self.rightTopPoint.y);
     NSLog(@"from: (%f, %f)",self.leftTopPoint.x, self.leftTopPoint.y);
     NSLog(@"center: (%f, %f)",pointsCenter.x, pointsCenter.y);
     // XXX Hypothesis: displaces x by
 //    CGPoint centerDisplacement = CGPointMake((from.y-to.y), (from.x-to.x));
+    
+    //todo XXX make middlepoint independent of endroundness or always further out than control point
+    CGPoint leftMiddlePoint = CGPointMake(self.leftTopPoint.x - endRoundness*1.1, self.leftTopPoint.y + 0.5*self.barHeight);
+    CGPoint rightMiddlePoint = CGPointMake(self.rightTopPoint.x + endRoundness*1.1, self.rightTopPoint.y + 0.5*self.barHeight);
+    
     // Drawing from top left to top right then down and back around, clockwise
-    CGPoint rightControlPoint = CGPointMake(self.rightTopPoint.x + endRoundness, self.rightTopPoint.y + self.barHeight*0.5);
-    CGPoint leftControlPoint = CGPointMake(self.leftTopPoint.x - endRoundness, self.leftTopPoint.y + self.barHeight*0.5);
+    CGPoint rightTopControlPoint = CGPointMake(self.rightTopPoint.x + endRoundness, self.rightTopPoint.y + endRoundness*0.5);
+
+    CGPoint rightBottomControlPoint = CGPointMake(self.rightBottomPoint.x + endRoundness, self.rightTopPoint.y - endRoundness*0.5);
+
+    CGPoint leftTopControlPoint = CGPointMake(self.leftTopPoint.x - endRoundness, self.leftTopPoint.y + self.barHeight*0.5);
+
+    CGPoint leftBottomControlPoint = CGPointMake(self.leftBottomPoint.x - endRoundness, self.leftBottomPoint.y - endRoundness*0.5);
+
     
     UIBezierPath* path = [UIBezierPath new];
     [path moveToPoint:self.leftTopPoint];
     [path addLineToPoint:self.rightTopPoint];
-    [path addQuadCurveToPoint:self.rightBottomPoint controlPoint:rightControlPoint];
+    [path addQuadCurveToPoint:rightMiddlePoint controlPoint:rightTopControlPoint];
+    [path addQuadCurveToPoint:self.rightBottomPoint controlPoint:rightBottomControlPoint];
     [path addLineToPoint:self.leftBottomPoint];
-    [path addQuadCurveToPoint:self.leftTopPoint controlPoint:leftControlPoint];
+    [path addQuadCurveToPoint:leftMiddlePoint controlPoint:leftBottomControlPoint];
+    [path addQuadCurveToPoint:self.leftTopPoint controlPoint:leftTopControlPoint];
 //    [path addQuadCurveToPoint:endPoint controlPoint:CGPointMake(150, 0)];
 //    [path addCurveToPoint:endPoint controlPoint1:CGPointMake(150, 0) controlPoint2:CGPointMake(170, 0)];
-    
 //    [path addQuadCurveToPoint:from controlPoint:pointsCenter];
     [path closePath];
     self.shapeLayer.path = path.CGPath;
+}
+
+// Todo
+- (void) drawArchedHealthBar {
+    
 }
 
 @end
