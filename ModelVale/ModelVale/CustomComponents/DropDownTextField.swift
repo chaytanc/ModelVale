@@ -8,6 +8,7 @@
 import UIKit
 import iOSDropDown
 
+// Source: https://github.com/jriosdev/iOSDropDown
 @objc class DropDownTextField: DropDown {
 
     @objc func initProperties(options: [String]) {
@@ -23,9 +24,6 @@ import iOSDropDown
     @objc func wasTapped() {
         self.showList();
     }
-    
-    
-
 
 
 }
