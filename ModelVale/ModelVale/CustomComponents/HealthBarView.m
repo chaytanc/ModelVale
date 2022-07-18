@@ -36,26 +36,19 @@
     self.shapeLayer.lineWidth = 1;
     // shapeLayer.frame is the drawable area
     self.shapeLayer.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    
-    // Todo make into function for drawing bar object
-    // Draw the top line
-//    UIBezierPath* path = [UIBezierPath bezierPathWithRoundedRect:self.barRect cornerRadius:10];
-//    UIBezierPath* path = [UIBezierPath bezierPathWithRoundedRect:self.barRect byRoundingCorners:UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadii:(CGSize) {10, 10}];
-//    self.shapeLayer.path = path.CGPath
-    ;
     [self drawNoArcHealthBar:10 thickness:10];
-
     [self.layer addSublayer:self.shapeLayer];
 }
 
 - (void) initPoints {
     // Top left is 0,0
     // todo make these points represent the four corners of the health bar, not the frame
-    NSInteger margin = 50; // todo calc margin based on width
-    NSInteger top = self.bounds.origin.y + margin;
-    NSInteger left = self.bounds.origin.x + margin;
-    NSInteger bottom = self.bounds.size.height - margin;
-    NSInteger right = self.bounds.size.width - margin;
+    NSInteger horiMargin = self.bounds.size.width * 0.17; // todo calc margin based on width
+    NSInteger vertMargin = self.bounds.size.height * 0.4;
+    NSInteger top = self.bounds.origin.y + vertMargin;
+    NSInteger left = self.bounds.origin.x + horiMargin;
+    NSInteger bottom = self.bounds.size.height - vertMargin;
+    NSInteger right = self.bounds.size.width - horiMargin;
 
     self.leftTopPoint = CGPointMake(left, top);
     self.rightTopPoint = CGPointMake(right, top);
@@ -75,8 +68,6 @@
     NSLog(@"to: (%f, %f)",self.rightTopPoint.x, self.rightTopPoint.y);
     NSLog(@"from: (%f, %f)",self.leftTopPoint.x, self.leftTopPoint.y);
     NSLog(@"center: (%f, %f)",pointsCenter.x, pointsCenter.y);
-    // XXX Hypothesis: displaces x by
-//    CGPoint centerDisplacement = CGPointMake((from.y-to.y), (from.x-to.x));
     
     //todo XXX make middlepoint independent of endroundness or always further out than control point
     CGPoint leftMiddlePoint = CGPointMake(self.leftTopPoint.x - endRoundness*1.1, self.leftTopPoint.y + 0.5*self.barHeight);
@@ -95,20 +86,29 @@
     UIBezierPath* path = [UIBezierPath new];
     [path moveToPoint:self.leftTopPoint];
     [path addLineToPoint:self.rightTopPoint];
-    [path addQuadCurveToPoint:rightMiddlePoint controlPoint:rightTopControlPoint];
-    [path addQuadCurveToPoint:self.rightBottomPoint controlPoint:rightBottomControlPoint];
-    [path addLineToPoint:self.leftBottomPoint];
-    [path addQuadCurveToPoint:leftMiddlePoint controlPoint:leftBottomControlPoint];
-    [path addQuadCurveToPoint:self.leftTopPoint controlPoint:leftTopControlPoint];
+//    [path addQuadCurveToPoint:rightMiddlePoint controlPoint:rightTopControlPoint];
+//    [path addQuadCurveToPoint:self.rightBottomPoint controlPoint:rightBottomControlPoint];
+//    [path addLineToPoint:self.leftBottomPoint];
+//    [path addQuadCurveToPoint:leftMiddlePoint controlPoint:leftBottomControlPoint];
+//    [path addQuadCurveToPoint:self.leftTopPoint controlPoint:leftTopControlPoint];
 //    [path addQuadCurveToPoint:endPoint controlPoint:CGPointMake(150, 0)];
 //    [path addCurveToPoint:endPoint controlPoint1:CGPointMake(150, 0) controlPoint2:CGPointMake(170, 0)];
 //    [path addQuadCurveToPoint:from controlPoint:pointsCenter];
+    
+    [path addArcWithCenter:rightMiddlePoint radius:self.barHeight*0.5 startAngle:3*M_PI_2 endAngle:M_PI_2 clockwise:YES];
+    [path addLineToPoint:self.leftBottomPoint];
+    [path addArcWithCenter:leftMiddlePoint radius:self.barHeight*0.5 startAngle:M_PI_2 endAngle:3*M_PI_2 clockwise:YES];
     [path closePath];
     self.shapeLayer.path = path.CGPath;
 }
 
-// Todo
+//XXX Todo
 - (void) drawArchedHealthBar {
+    
+}
+
+//XXX todo
+- (void) fillProgressBar {
     
 }
 
