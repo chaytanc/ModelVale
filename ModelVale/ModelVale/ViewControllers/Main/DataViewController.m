@@ -12,9 +12,11 @@
 #import "ModelLabel.h"
 #import "TestTrainEnum.h"
 #import "UIViewController+PresentError.h"
+#import "AvatarMLModel.h"
 
 @interface DataViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UICollectionView *userDataCollectionView;
+@property (strong, nonatomic) AvatarMLModel* model;
 @end
 
 @implementation DataViewController
@@ -77,6 +79,8 @@
         return nil;
     }
 }
+
+//XXX todo prepare for segue with adddata and set model property
 
 
 @end

@@ -10,6 +10,8 @@
 #import "AddDataCell.h"
 #import "QBImagePickerController/QBImagePickerController.h"
 #import "TestTrainEnum.h"
+#import "ModelVale-Swift.h"
+#import "AvatarMLModel.h"
 
 @interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, QBImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
@@ -20,14 +22,19 @@
 @property (strong, nonatomic) NSArray* testTrainOptions;
 @property (weak, nonatomic) IBOutlet UICollectionView *addDataCollView;
 @property (strong, nonatomic) PHImageManager* phManager;
+@property (weak, nonatomic) IBOutlet DropDownTextField *labelField;
+@property (strong, nonatomic) AvatarMLModel* model;
 
 @end
 
-//XXX TODO crashes from unrecognized selector, plus button on manageData; I redid the segue from the plus button but didn't fix it
 @implementation AddDataViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.testTrainOptions = (NSArray*) testTrainTypeArray;
+    self.data = [NSMutableArray new];
+    self.phManager = [PHImageManager new];
+
     self.imagePickerVC = [QBImagePickerController new];
     self.imagePickerVC.delegate = self;
     self.imagePickerVC.showsNumberOfSelectedAssets = YES;
@@ -42,15 +49,21 @@
     self.addDataCollView.dataSource = self;
     self.testTrainPickerView.dataSource = self;
     self.testTrainPickerView.delegate = self;
-    self.testTrainOptions = (NSArray*) testTrainTypeArray;
-    
-    self.data = [NSMutableArray new];
-    self.phManager = [PHImageManager new];
+
+    //XXX Todo set the model property based on which model we selected initally in ModelViewController
+    [self.labelField initPropertiesWithOptions: self.model.model.model.modelDescription.classLabels];
+    [self.labelField addTarget:self action:@selector(didTapDropDown:) forControlEvents:UIControlEventTouchUpInside];
     
 }
+
+- (void) didTapDropDown:(id) obj {
+    [self.labelField wasTapped];
+}
+
 - (IBAction)didTapSelectData:(id)sender {
     [self presentViewController:self.imagePickerVC animated:YES completion:nil];
 }
+
 - (IBAction)didTapCreateData:(id)sender {
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         self.cameraPickerVC.sourceType = UIImagePickerControllerSourceTypeCamera;
@@ -113,7 +126,6 @@
 - (NSInteger)collectionView:(nonnull UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.data.count;
 }
-
 
 - (NSInteger)numberOfComponentsInPickerView:(nonnull UIPickerView *)pickerView {
     return 1;

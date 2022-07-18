@@ -1,4 +1,4 @@
-framework module Pods_ModelVale {
+module Pods_ModelVale {
   umbrella header "Pods-ModelVale-umbrella.h"
 
   export *

@@ -8,6 +8,7 @@ target 'ModelVale' do
   # Pods for ModelVale
   pod 'QBImagePickerController'
   pod 'Parse'
+  pod 'iOSDropDown'
 
   target 'ModelValeTests' do
     inherit! :search_paths

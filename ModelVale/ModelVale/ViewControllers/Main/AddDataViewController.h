@@ -6,6 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
+@class DropDownTextField;
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -1,4 +1,4 @@
-framework module Pods_ModelVale_ModelValeUITests {
+module Pods_ModelVale_ModelValeUITests {
   umbrella header "Pods-ModelVale-ModelValeUITests-umbrella.h"
 
   export *

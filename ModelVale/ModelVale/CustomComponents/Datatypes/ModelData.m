@@ -56,9 +56,7 @@
     for (id modelDataResponse in array) {
         ModelData* md = [ModelData new];
         //XXX todo may have to change way we do this if UIImage is not stored in response dict
-    //        PFFileObject* imageObj = (PFFileObject*) self.user[@"profilePic"];
-    //        NSString *URLString = imageObj.url;
-    //        NSURL *url = [NSURL URLWithString:URLString];
+
         md.image = modelDataResponse[@"image"];
         md.label = label;
         [label addLabelModelData:@[md]];

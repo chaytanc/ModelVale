@@ -16,6 +16,9 @@
 @interface ModelViewController ()
 @property (weak, nonatomic) NSMutableArray* models;
 @property (weak, nonatomic) IBOutlet UIView *healthBarView;
+@property (weak, nonatomic) IBOutlet UIButton *testButton;
+@property (weak, nonatomic) IBOutlet UIButton *trainButton;
+@property (weak, nonatomic) IBOutlet UIButton *dataButton;
 
 @end
 
@@ -23,7 +26,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    self.testButton.layer.cornerRadius = 10;
+    self.trainButton.layer.cornerRadius = 10;
+    self.dataButton.layer.cornerRadius = 10;
 
 }
 

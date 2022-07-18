@@ -95,15 +95,17 @@
     UIBezierPath* path = [UIBezierPath new];
     [path moveToPoint:self.leftTopPoint];
     [path addLineToPoint:self.rightTopPoint];
-    [path addQuadCurveToPoint:rightMiddlePoint controlPoint:rightTopControlPoint];
-    [path addQuadCurveToPoint:self.rightBottomPoint controlPoint:rightBottomControlPoint];
+//    [path addQuadCurveToPoint:rightMiddlePoint controlPoint:rightTopControlPoint];
+//    [path addQuadCurveToPoint:self.rightBottomPoint controlPoint:rightBottomControlPoint];
+    [path addArcWithCenter:rightMiddlePoint radius:self.barHeight*0.5 startAngle:M_PI_2 endAngle:3*M_PI_2 clockwise:YES];
     [path addLineToPoint:self.leftBottomPoint];
-    [path addQuadCurveToPoint:leftMiddlePoint controlPoint:leftBottomControlPoint];
-    [path addQuadCurveToPoint:self.leftTopPoint controlPoint:leftTopControlPoint];
+//    [path addQuadCurveToPoint:leftMiddlePoint controlPoint:leftBottomControlPoint];
+//    [path addQuadCurveToPoint:self.leftTopPoint controlPoint:leftTopControlPoint];
+    [path addArcWithCenter:leftMiddlePoint radius:self.barHeight*0.5 startAngle:3*M_PI_2 endAngle:M_PI_2 clockwise:YES];
 //    [path addQuadCurveToPoint:endPoint controlPoint:CGPointMake(150, 0)];
 //    [path addCurveToPoint:endPoint controlPoint1:CGPointMake(150, 0) controlPoint2:CGPointMake(170, 0)];
 //    [path addQuadCurveToPoint:from controlPoint:pointsCenter];
-    [path closePath];
+//    [path closePath];
     self.shapeLayer.path = path.CGPath;
 }
 
