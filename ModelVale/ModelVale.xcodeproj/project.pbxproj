@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0475F8902926AD8FE38768AB /* libPods-ModelVale-ModelValeUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CFABD50928CDFA2BD208620D /* libPods-ModelVale-ModelValeUITests.a */; };
 		9C0759342884D240005493D1 /* DropDownTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0759332884D240005493D1 /* DropDownTextField.swift */; };
+		9C623CC5288743BB00264F50 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C623CC4288743BB00264F50 /* Keys.plist */; };
 		9C69F7262878A8680001F608 /* AddDataCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F7252878A8680001F608 /* AddDataCell.m */; };
 		9C69F7282878D35A0001F608 /* Stats.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C69F7272878D35A0001F608 /* Stats.storyboard */; };
 		9C69F72B287CA94B0001F608 /* UserDataCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C69F72A287CA94B0001F608 /* UserDataCell.m */; };
@@ -40,7 +41,6 @@
 		9CB79C1E28775CB400F67E1C /* AddDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1D28775CB400F67E1C /* AddDataViewController.m */; };
 		9CEEE36E2880D06900548963 /* AvatarMLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEEE36D2880D06900548963 /* AvatarMLModel.m */; };
 		9CEEE3712880D71600548963 /* HealthBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEEE3702880D71600548963 /* HealthBarView.m */; };
-		9CEEE3732880EB5D00548963 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CEEE3722880EB5D00548963 /* Keys.plist */; };
 		D6B04C94D59A5042092AA4C1 /* libPods-ModelValeTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80CA57C08C8AC61644B113A1 /* libPods-ModelValeTests.a */; };
 		E460E7C87D8ED9D93CD18647 /* libPods-ModelVale.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 69B4CACDAB7442AFE50EBC38 /* libPods-ModelVale.a */; };
 /* End PBXBuildFile section */
@@ -70,6 +70,7 @@
 		80CA57C08C8AC61644B113A1 /* libPods-ModelValeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModelValeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		82CCEE7F27B11B5A4BEB53E8 /* Pods-ModelValeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModelValeTests.debug.xcconfig"; path = "Target Support Files/Pods-ModelValeTests/Pods-ModelValeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9C0759332884D240005493D1 /* DropDownTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownTextField.swift; sourceTree = "<group>"; };
+		9C623CC4288743BB00264F50 /* Keys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		9C69F7242878A8680001F608 /* AddDataCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddDataCell.h; sourceTree = "<group>"; };
 		9C69F7252878A8680001F608 /* AddDataCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddDataCell.m; sourceTree = "<group>"; };
 		9C69F7272878D35A0001F608 /* Stats.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Stats.storyboard; sourceTree = "<group>"; };
@@ -126,7 +127,6 @@
 		9CEEE36D2880D06900548963 /* AvatarMLModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AvatarMLModel.m; sourceTree = "<group>"; };
 		9CEEE36F2880D71600548963 /* HealthBarView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HealthBarView.h; sourceTree = "<group>"; };
 		9CEEE3702880D71600548963 /* HealthBarView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HealthBarView.m; sourceTree = "<group>"; };
-		9CEEE3722880EB5D00548963 /* Keys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		9D94C2DA75F1B92CB1D70488 /* Pods-ModelVale-ModelValeUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModelVale-ModelValeUITests.debug.xcconfig"; path = "Target Support Files/Pods-ModelVale-ModelValeUITests/Pods-ModelVale-ModelValeUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		CFABD50928CDFA2BD208620D /* libPods-ModelVale-ModelValeUITests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ModelVale-ModelValeUITests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF376F3548470D52FE3B403B /* Pods-ModelValeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModelValeTests.release.xcconfig"; path = "Target Support Files/Pods-ModelValeTests/Pods-ModelValeTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -226,7 +226,7 @@
 				9C74E5182872579A003FFFF7 /* Assets.xcassets */,
 				9C74E51A2872579A003FFFF7 /* LaunchScreen.storyboard */,
 				9C74E51D2872579A003FFFF7 /* Info.plist */,
-				9CEEE3722880EB5D00548963 /* Keys.plist */,
+				9C623CC4288743BB00264F50 /* Keys.plist */,
 				9C74E51E2872579A003FFFF7 /* main.m */,
 			);
 			path = ModelVale;
@@ -446,10 +446,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C623CC5288743BB00264F50 /* Keys.plist in Resources */,
 				9C69F7282878D35A0001F608 /* Stats.storyboard in Resources */,
 				9C74E54928736D9E003FFFF7 /* Login.storyboard in Resources */,
 				9C74E51C2872579A003FFFF7 /* LaunchScreen.storyboard in Resources */,
-				9CEEE3732880EB5D00548963 /* Keys.plist in Resources */,
 				9C74E5192872579A003FFFF7 /* Assets.xcassets in Resources */,
 				9C74E51728725799003FFFF7 /* Main.storyboard in Resources */,
 			);
