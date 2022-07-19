@@ -15,9 +15,10 @@ typedef enum {
     Test,
     Train,
 } testTrain;
-#define testTrainTypeArray @"Test", @"Train", nil
+
+#define testTrainTypeArray [NSArray arrayWithObjects:@"Test", @"Train", nil]
 
 NSString *dataTypeEnumToString(testTrain enumVal);
-
+//
 testTrain dataTypeStringToEnum(NSString* strVal);
 

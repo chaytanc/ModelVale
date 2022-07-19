@@ -54,8 +54,7 @@
     return model;
 }
 
-//XXX how to pass in data to retrain with?? that is based on how trainBatch is constructed
-// todo: use retrain data passed to this controller or found with query to retrain
+//XXX todo use retrain data passed to this controller or found with query to retrain
 // https://betterprogramming.pub/how-to-train-a-core-ml-model-on-your-device-cccd0bee19d
 - (IBAction)didTapRetrain:(id)sender {
     
