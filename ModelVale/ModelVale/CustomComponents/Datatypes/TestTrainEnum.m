@@ -8,7 +8,6 @@
 #import <Foundation/Foundation.h>
 #import "TestTrainEnum.h"
 
-// https://stackoverflow.com/questions/13171907/best-way-to-enum-nsstring
 NSString* dataTypeEnumToString(testTrain enumVal) {
     NSArray *dataTypeArray = testTrainTypeArray;
     return [dataTypeArray objectAtIndex:enumVal];

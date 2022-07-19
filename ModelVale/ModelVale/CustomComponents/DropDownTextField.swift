@@ -13,8 +13,6 @@ import iOSDropDown
 
     @objc func initProperties(options: [String]) {
         self.optionArray = options
-        print("DropDownTextField options: ")
-        print(self.optionArray)
         self.isSearchEnable = true
         self.didSelect{(selectedText , index ,id) in
             print("Selected String: \(selectedText) \n index: \(index)")
