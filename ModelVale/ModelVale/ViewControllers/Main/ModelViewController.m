@@ -15,6 +15,7 @@
 
 @interface ModelViewController ()
 @property (weak, nonatomic) NSMutableArray* models;
+@property (weak, nonatomic) IBOutlet UIView *healthBarView;
 
 @end
 
