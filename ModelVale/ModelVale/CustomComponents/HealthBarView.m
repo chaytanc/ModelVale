@@ -6,11 +6,15 @@
 //
 
 #import "HealthBarView.h"
+#import "GameplayKit/GameplayKit.h"
 #include <stdlib.h>
+#import "XPCluster.h"
+#import "XP.h"
 
 CGFloat const widthMarginMultiple = 0.12f;
 CGFloat const heightMarginMultiple = 0.4f;
 CGFloat const animationDuration = 2.5f;
+NSInteger const xpSize = 20;
 
 @interface HealthBarView()
 @property (nonatomic, strong) CAShapeLayer* barShapeLayer;
@@ -24,12 +28,10 @@ CGFloat const animationDuration = 2.5f;
 @property (nonatomic, assign) CGPoint rightBottomPoint;
 @property (nonatomic, assign) CGPoint barCenter;
 @property (nonatomic, assign) CGPoint barCenterRelativeToScreen;
-//XXX todo are these midpoint properties necessary
-@property (nonatomic, assign) CGPoint topMidPoint;
-@property (nonatomic, assign) CGPoint bottomMidPoint;
 @property (nonatomic, assign) CGFloat health;
 @property (nonatomic, assign) CGFloat maxHealth;
 @property (nonatomic, weak) UIView* uberview;
+@property (nonatomic,strong) NSMutableArray<XPCluster*>* clusters;
 
 @end
 
@@ -37,9 +39,30 @@ CGFloat const animationDuration = 2.5f;
 
 //XXX todo init health and maxHealth properties
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
 
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)coder
+{
+    self = [super initWithCoder:coder];
+    if (self) {
+        self.layer.cornerRadius = 24;
+        self.clipsToBounds = TRUE;
+        
+        //XXX blocked, why does this break when here but not in drawRect
+        CGPoint seed = CGPointMake(self.uberview.frame.size.width - 5, self.uberview.frame.size.height - 100);
+        NSMutableArray<XPCluster*>* XPClusters = [self getXPClusters:20 avgNumPerCluster:20 seed:seed];
+        self.clusters = XPClusters;
+        [self createAllClusterXPImViewAndLayer];
+    }
+    return self;
+}
+
 - (void)drawRect:(CGRect)rect {
     [super drawRect:rect];
     self.uberview = self.superview.superview.superview;
@@ -63,19 +86,11 @@ CGFloat const animationDuration = 2.5f;
     
     [self.layer addSublayer:self.barShapeLayer];
     [self.layer addSublayer:self.healthShapeLayer];
-    
-    // XP animations
-    CGPoint XPStart = CGPointMake(self.uberview.frame.size.width - 5, self.uberview.frame.size.height - 100);
-    NSMutableArray* XPStarts = [self getXPStarts:20 center:XPStart];
-    [self animateXP:XPStarts];
-    
-    XPStart = CGPointMake(self.uberview.frame.size.width - 12, self.uberview.frame.size.height - 200);
-    XPStarts = [self getXPStarts:20 center:XPStart];
-    [self animateXP:XPStarts];
 
-//    [self animateXP:XPStart];
+    [self animateXPClusters:self.clusters];
 }
 
+//MARK: Bar Animations
 - (void) initPoints {
     // Top left is 0,0
     // todo make these points represent the four corners of the health bar, not the frame
@@ -99,6 +114,7 @@ CGFloat const animationDuration = 2.5f;
 
 }
 
+//XXX todo do we ever use endRoundness??
 // https://stackoverflow.com/questions/50527832/how-to-draw-a-curved-line-using-cashapelayer-and-bezierpath-in-swift-4
 - (UIBezierPath*) getBarPath: (CGFloat)endRoundness withWidthPercent: (CGFloat)widthPercent {
     // The left side of the arc always begins at the same place, but partially filled progress bars end at different x positions on the right based on widthPercent
@@ -118,40 +134,6 @@ CGFloat const animationDuration = 2.5f;
     return path;
 }
 
-- (UIBezierPath*) getArchedBarPath: (CGFloat)endRoundness withWidthPercent: (CGFloat)widthPercent {
-    // The left side of the arc always begins at the same place, but partially filled progress bars end at different x positions on the right based on widthPercent
-    CGFloat adjustedRightX = self.leftTopPoint.x + self.barWidth * widthPercent;
-    CGPoint rightTopPoint = CGPointMake(adjustedRightX, self.rightTopPoint.y);
-    CGPoint leftMiddlePoint = CGPointMake(self.leftTopPoint.x, self.barCenter.y);
-    CGPoint rightMiddlePoint = CGPointMake(adjustedRightX, self.barCenter.y);
-    CGFloat midX = (self.leftTopPoint.x + self.rightTopPoint.x) * 0.5;
-    CGPoint topMiddlePoint = CGPointMake(midX, self.leftTopPoint.y - 20);
-    CGPoint bottomMiddlePoint = CGPointMake(midX, self.leftBottomPoint.y - 20);
-
-    UIBezierPath* path = [UIBezierPath new];
-    [path moveToPoint:self.leftTopPoint];
-    [path addQuadCurveToPoint:rightTopPoint controlPoint:topMiddlePoint];
-    [path addArcWithCenter:rightMiddlePoint radius:self.barHeight*0.5 startAngle:3*M_PI_2 endAngle:M_PI_2 clockwise:YES];
-    [path addQuadCurveToPoint:self.leftBottomPoint controlPoint:bottomMiddlePoint];
-    [path addArcWithCenter:leftMiddlePoint radius:self.barHeight*0.5 startAngle:M_PI_2 endAngle:3*M_PI_2 clockwise:YES];
-    [path closePath];
-    return path;
-}
-
-
-//XXX todo
-- (void) drawArchedHealthBar {
-    // Draw bezier path of inner / filled health
-        // width calculated based on health percentage of max -- done
-    UIBezierPath* startPath = [self getBarPath:10 withWidthPercent:0];
-    CABasicAnimation * pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
-    pathAnimation.fromValue = (__bridge id)[startPath CGPath];
-//    pathAnimation.toValue = (__bridge id)[filledBarPath CGPath];
-    pathAnimation.duration = animationDuration;
-    [self.healthShapeLayer addAnimation:pathAnimation forKey:@"archBar"];
-    [self.barShapeLayer addAnimation:pathAnimation forKey:@"archBar"];
-}
-
 - (void) fillProgressBar: (UIBezierPath*) filledBarPath {
 
     UIBezierPath* startPath = [self getBarPath:10 withWidthPercent:0];
@@ -160,6 +142,15 @@ CGFloat const animationDuration = 2.5f;
     pathAnimation.toValue = (__bridge id)[filledBarPath CGPath];
     pathAnimation.duration = animationDuration;
     [self.healthShapeLayer addAnimation:pathAnimation forKey:@"fillBar"];
+}
+
+//Todo working here on adding gradient to progress bar
+- (void) gradientProgBar: (CALayer*) barLayer innerBarPath: (UIBezierPath*) innerBarPath {
+    CAShapeLayer* gradient = [CAGradientLayer barLayer];
+    gradient.frame = innerBarPath.bounds;
+    gradient.colors = [NSArray arrayWithObjects:(id) [UIColor systemTealColor].cgColor, (id) [UIColor systemGreenColor].CGColor];
+    gradient color
+
 }
 
 //MARK: XP Animations
@@ -171,23 +162,31 @@ CGFloat const animationDuration = 2.5f;
     return xpImView;
 }
 
-- (CAShapeLayer*) getXPBubbleLayer: (CGPoint) XPStart {
+- (CAShapeLayer*) getXPBubbleLayer {
     CAShapeLayer* XPLayer = [CAShapeLayer new];
     XPLayer.fillColor = [UIColor colorWithWhite:1 alpha:0].CGColor; // transparent
     return XPLayer;
 }
 
-- (UIBezierPath*) getXPPath: (CGPoint)XPStart XPEnd: (CGPoint) XPEnd {
-    //ASSUMPTION Moving right to left and up
+- (UIBezierPath*) getXPLoopPath: (CGPoint)XPStart XPEnd: (CGPoint) XPEnd {
     UIBezierPath* path = [UIBezierPath new];
     [path moveToPoint:XPStart];
     CGPoint controlOne = CGPointMake(XPEnd.x - 0.5*(XPStart.x - XPEnd.x), XPStart.y - 50);
-    CGPoint controlTwo = CGPointMake(XPStart.x + 0.9*(XPStart.x - XPEnd.x), XPStart.y - 0.5*(XPStart.y - XPEnd.y));
+    CGPoint controlTwo = CGPointMake(XPStart.x + 0.9*(XPStart.x - XPEnd.x), XPStart.y + 0.5*(XPStart.y - XPEnd.y));
     [path addCurveToPoint:XPEnd controlPoint1:controlOne controlPoint2:controlTwo];
     return path;
 }
 
-- (void) animateXPPath: (CALayer*) XPLayer path: (UIBezierPath*) XPPath {
+- (UIBezierPath*) getXPBigCurvePath: (CGPoint)XPStart XPEnd: (CGPoint) XPEnd {
+    UIBezierPath* path = [UIBezierPath new];
+    [path moveToPoint:XPStart];
+    CGPoint controlOne = CGPointMake(XPStart.x + 300, XPStart.y - 300);
+    CGPoint controlTwo = CGPointMake(XPEnd.x - 150, XPEnd.y + 200);
+    [path addCurveToPoint:XPEnd controlPoint1:controlOne controlPoint2:controlTwo];
+    return path;
+}
+
+- (void) addXPPathAnimation: (CALayer*) XPLayer path: (UIBezierPath*) XPPath {
     CAKeyframeAnimation * pathAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
     pathAnimation.path = XPPath.CGPath;
     pathAnimation.duration = animationDuration;
@@ -196,22 +195,39 @@ CGFloat const animationDuration = 2.5f;
     [XPLayer addAnimation:pathAnimation forKey:@"flyingXP"];
 }
 
-- (void) animateXP: (NSMutableArray*) XPStarts {
-    for (NSValue* value in XPStarts) {
-        CGPoint XPStart = value.CGPointValue;
-        UIImageView* XPImView = [self getXPImageView: 20 label: @"xp"];
-        [self.uberview addSubview: XPImView];
-        CAShapeLayer* XPLayer = [self getXPBubbleLayer: XPStart];
-        XPLayer.strokeColor = [UIColor redColor].CGColor;
-        XPLayer.lineWidth = 3;
-        [self.uberview.layer addSublayer:XPLayer];
-        UIBezierPath* XPPath = [self getXPPath:XPStart XPEnd:self.barCenterRelativeToScreen];
-        [self animateXPPath:XPImView.layer path:XPPath];
+- (void) createAllClusterXPImViewAndLayer {
+    for (XPCluster* cluster in self.clusters) {
+        for (XP* xp in cluster.cluster) {
+            UIImageView* XPImView = [self getXPImageView: 20 label: @"xp"];
+            [self.uberview addSubview: XPImView];
+            xp.XPImView = XPImView;
+            CAShapeLayer* XPLayer = [self getXPBubbleLayer];
+            //        XPLayer.strokeColor = [UIColor redColor].CGColor;
+            XPLayer.lineWidth = 3;
+            [self.uberview.layer addSublayer:XPLayer];
+            xp.CALayer = XPLayer;
+        }
+    }
+}
+
+- (void) animateXPCluster: (XPCluster*) XPCluster {
+    for (XP* xp in XPCluster.cluster) {
+//        CAShapeLayer* XPLayer = [self createXP: xp];
+        CAShapeLayer* XPLayer = xp.CALayer;
+        UIBezierPath* XPPath = xp.path;
+        [self addXPPathAnimation:xp.XPImView.layer path:XPPath];
         XPLayer.path = XPPath.CGPath;
     }
 }
 
-- (NSMutableArray*) getXPStarts: (NSInteger) numXP center: (CGPoint) center {
+- (void) animateXPClusters: (NSMutableArray<XPCluster*>*) XPClusters {
+    
+    for (XPCluster* XPCluster in XPClusters) {
+        [self animateXPCluster:XPCluster];
+    }
+}
+
+- (NSMutableArray*) getXPStartsAroundCentroid: (NSInteger) numXP center: (CGPoint) center {
     NSMutableArray* XPStarts = [NSMutableArray new];
     int xMax = 20;
     int yMax = 25;
@@ -225,4 +241,42 @@ CGFloat const animationDuration = 2.5f;
     return XPStarts;
 }
 
+- (CGPoint) getClusterCenter: (CGPoint) seedOnUberview {
+    int sigma_x = self.uberview.frame.size.width / 5;
+    int sigma_y = self.uberview.frame.size.height / 5;
+    GKRandomSource* rand = [GKRandomSource new];
+    GKGaussianDistribution* gaussian_x = [[GKGaussianDistribution new] initWithRandomSource:rand mean:seedOnUberview.x deviation:sigma_x];
+    GKGaussianDistribution* gaussian_y = [[GKGaussianDistribution new] initWithRandomSource:rand mean:seedOnUberview.y deviation:sigma_y];
+    CGPoint center = CGPointMake([gaussian_x nextInt], [gaussian_y nextInt]);
+    return center;
+}
+
+- (NSMutableArray*) getXPClusters: (NSInteger)numClusters avgNumPerCluster: (NSInteger) avgNumPerCluster seed: (CGPoint) seed {
+    int clusterHalfRange = 5;
+    int clusterMin = 2;
+    int numInCluster;
+    
+    NSMutableArray* XPClusters = [NSMutableArray new];
+    numInCluster = (avgNumPerCluster-clusterHalfRange) + arc4random_uniform(clusterHalfRange*2);
+    numInCluster = (numInCluster <= clusterMin) ? clusterMin : numInCluster;
+
+    for(int i=0; i < numClusters; i++) {
+        CGPoint clusterCenter = [self getClusterCenter:seed];
+        NSMutableArray* XPStarts = [self getXPStartsAroundCentroid:numInCluster center:clusterCenter];
+        NSMutableArray* xpInCluster = [NSMutableArray new];
+        for(NSValue* value in XPStarts) {
+            CGPoint center = value.CGPointValue;
+            UIBezierPath* XPPath = [self getXPLoopPath:center XPEnd:self.barCenterRelativeToScreen];
+            XP* xp = [[XP new] initXP:center path:XPPath];
+            [xpInCluster addObject:xp];
+        }
+        XPCluster* cluster = [[XPCluster new] initEmptyCluster:clusterCenter];
+        cluster.cluster = xpInCluster;
+        [XPClusters addObject:cluster];
+    }
+    return XPClusters;
+}
+
 @end
+
+
