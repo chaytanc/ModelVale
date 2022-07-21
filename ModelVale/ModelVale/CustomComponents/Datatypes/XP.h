@@ -10,10 +10,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface XP : NSObject
-@property (nonatomic, assign) CGPoint center;
+@interface XP : NSObject //XXX todo make this subclass UIImageView
+@property (nonatomic, assign) CGPoint center; 
 @property (nonatomic, strong) UIBezierPath* path;
-@property (nonatomic, strong) UIImageView* XPImView;
+@property (nonatomic, strong) UIImageView* XPImView; //XXX todo remove this when subclassing
 @property (nonatomic, strong) CAShapeLayer* CALayer;
 
 - (instancetype) initXP: (CGPoint)center path: (UIBezierPath*)path;

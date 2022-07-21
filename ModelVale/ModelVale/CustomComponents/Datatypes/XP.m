@@ -14,7 +14,7 @@
     if (self) {
         self.center = center;
         self.path = path;
-        self.XPImView = [UIImageView new];
+        self.XPImView = [UIImageView new]; //XXX todo refactor when subclassing imageview
         self.CALayer = [CAShapeLayer new];
     }
     return self;

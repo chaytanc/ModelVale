@@ -12,9 +12,9 @@ NS_ASSUME_NONNULL_BEGIN
 @interface XPCluster : NSObject
 
 @property (nonatomic, strong) NSMutableArray<XP*>* cluster;
-@property (nonatomic, assign) CGPoint seed;
+@property (nonatomic, assign) CGPoint center;
 
-- (instancetype) initCluster: (CGPoint)seed centers: (NSMutableArray*)centers paths: (NSMutableArray<UIBezierPath*>*)paths;
+- (instancetype) initCluster: (CGPoint)seed XPCenters: (NSMutableArray*)centers paths: (NSMutableArray<UIBezierPath*>*)paths;
 
 - (instancetype) initEmptyCluster: (CGPoint)seed;
 
