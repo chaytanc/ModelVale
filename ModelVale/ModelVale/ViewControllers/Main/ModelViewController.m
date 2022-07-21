@@ -46,31 +46,26 @@ BOOL const debugAnimations = YES;
     self.trainButton.layer.cornerRadius = 10;
     self.dataButton.layer.cornerRadius = 10;
     
-    self.numClusters = 3;
-    
+    self.numClusters = 2;
     
     //XXX todo configure healthbarview
-    [self initializeHealthBarView];
     [self.healthBarView initializeAnimationsWithDuration:animationDuration maxHealth:90 health:50];
     [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
     
-    // init imageviews of clusters
+    [self setHealthBarPropsForXP];
+    self.clusters = [self initializeXPClusters:self.numClusters avgNumPerCluster:20 seed:self.seed];
+    [self animateXPClusters:self.clusters];
     // call animations on those image views
-    
-
 }
 
-- (void) initializeHealthBarView {
-    //XXX todo make an init to call for healthbarview
-
-//    self.healthBarView.health =
-//    self.healthBarView.maxHealth =
+- (void) setHealthBarPropsForXP {
     self.seed = CGPointMake(self.view.frame.size.width - 15, self.view.frame.size.height -100);
-    //XXX todo ensure that these get inited before we init endpoint using them
+    //XXX todo this calculation is slightly off (to the left and up too much)
+    CGPoint healthBarViewOrigin = [self.view convertPoint:self.healthBarView.bounds.origin fromView:self.healthBarView];
     CGFloat filledHealthXCoord = self.healthBarView.leftTopPoint.x + self.healthBarView.barWidth * self.healthBarView.filledHealthWidthPercent;
     CGFloat middleHealthYCoord = self.healthBarView.rightTopPoint.y + 0.5*self.healthBarView.barHeight;
-    self.XPEndPoint = CGPointMake(self.view.bounds.origin.x + filledHealthXCoord, self.view.bounds.origin.y + middleHealthYCoord);
-    [self initializeClusters:self.numClusters avgNumPerCluster:15 seed:self.seed];
+    self.XPEndPoint = CGPointMake(healthBarViewOrigin.x + filledHealthXCoord, healthBarViewOrigin.y + middleHealthYCoord);
+
 }
 
 //XXX todo, config model name, type, etc
@@ -136,52 +131,18 @@ BOOL const debugAnimations = YES;
     //XXX todo should hide singular xp at a time and pass into hideXP function which one to hide
 }
 
-//MARK: XXX working here
-// 1) init empty clusters w num xp in each defined
-    // num xp per cluster will stay the same, center of cluster will change
-// 2) Init the XP for each required XP of a cluster
-//[self initializeClusters: self.numClusters avgNumPerCluster: 10 seed: self.seed];
-
-// 2.5) calculate and set the center of each cluster
-//center = [getClusterCenter: self.seed]
-//[getXPStartsAroundCenter: center];
-
-// 3) reanimate method to update the centers for each xp and calc the path and update, without reinitializing XP object
-// 4) when animating from retrain or test completion block finishes, call reanimate to recalc centers, paths, and call animateXPClusters
-// ** the init method can call getcenters, but getcenters shoudl not imply initing new objects **
-
-- (void) reanimateXPClusters {
-    for (XPCluster* cluster in self.clusters) {
-        CGPoint clusterCenter = [self getClusterCenter:self.seed];
-        cluster.center = clusterCenter;
-        // Recalc centers and paths for each XP given new cluster center
-        NSMutableArray* XPStarts = [self getXPStartsAroundCenter:cluster.cluster.count center:clusterCenter];
-        for(int i=0; i< XPStarts.count; i++) {
-            NSValue* centerValue = XPStarts[i];
-            CGPoint center = centerValue.CGPointValue;
-            XP* xp = cluster.cluster[i];
-            UIBezierPath* XPPath = [self getXPLoopPath:center XPEnd:self.XPEndPoint];
-            xp.path = XPPath;
-            xp.center = center;
-        }
+- (void) addXPSubview: (XP*) xp {
+    xp.frame = CGRectMake(0, 0, xpSize, xpSize);
+    xp.image = [UIImage imageNamed:@"xp"];
+    [self.view addSubview: xp];
+    CAShapeLayer* XPLayer = [self getXPBubbleLayer];
+    XPLayer.lineWidth = 0;
+    if(debugAnimations) {
+        XPLayer.strokeColor = [UIColor redColor].CGColor;
+        XPLayer.lineWidth = 3;
     }
-}
-
-- (void) createAllClusterXPImViewAndLayer {
-    for (XPCluster* cluster in self.clusters) {
-        for (XP* xp in cluster.cluster) {
-            xp.frame = CGRectMake(0, 0, xpSize, xpSize);
-            xp.image = [UIImage imageNamed:@"xp"];
-            [self.view addSubview: xp];
-            CAShapeLayer* XPLayer = [self getXPBubbleLayer];
-            if(debugAnimations) {
-                XPLayer.strokeColor = [UIColor redColor].CGColor;
-            }
-            XPLayer.lineWidth = 3;
-            [self.view.layer addSublayer:XPLayer];
-            xp.CALayer = XPLayer;
-        }
-    }
+    [self.view.layer addSublayer:XPLayer];
+    xp.CALayer = XPLayer;
 }
 
 - (void) hideAllXPImageViews {
@@ -231,19 +192,19 @@ BOOL const debugAnimations = YES;
 }
 
 // This function generates a cluster center by sampling from normal distributions describing how far away the x and y are from the seed of all clusters. For example, if sigma_x=50 and the seed is (0,0) then according to the 68-95-99.7 rule of Gaussian (normal) distributions, center.x will be between range(-50, 50) 68% of the time, between range(-100, 100) 95% of the time, etc...
-- (CGPoint) getClusterCenter: (CGPoint) seedOnUberview {
+- (CGPoint) getClusterCenter: (CGPoint) seed {
     //XXX todo move sigma_x and sigma_y to constants in ModelViewController when XP animation code is moved there
-    int sigma_x = self.view.frame.size.width / 5;
-    int sigma_y = self.view.frame.size.height / 5;
+    int sigma_x = self.view.frame.size.width / 6;
+    int sigma_y = self.view.frame.size.height / 6;
     GKRandomSource* rand = [GKRandomSource new];
-    GKGaussianDistribution* gaussian_x = [[GKGaussianDistribution new] initWithRandomSource:rand mean:seedOnUberview.x deviation:sigma_x];
-    GKGaussianDistribution* gaussian_y = [[GKGaussianDistribution new] initWithRandomSource:rand mean:seedOnUberview.y deviation:sigma_y];
+    GKGaussianDistribution* gaussian_x = [[GKGaussianDistribution new] initWithRandomSource:rand mean:seed.x deviation:sigma_x];
+    GKGaussianDistribution* gaussian_y = [[GKGaussianDistribution new] initWithRandomSource:rand mean:seed.y deviation:sigma_y];
     CGPoint center = CGPointMake([gaussian_x nextInt], [gaussian_y nextInt]);
     return center;
 }
 
 // Given the desired number of clusters and the average number of XP per cluster and the seed, which is the center of ALL clusters, this function randomly chooses the number of XP in each cluster within +/- 7 of avgNumPerCluster, keeping in mind minXPPerCluster
-- (NSMutableArray*) initializeClusters: (NSInteger)numClusters avgNumPerCluster: (NSInteger) avgNumPerCluster seed: (CGPoint)seed {
+- (NSMutableArray*) initializeXPClusters: (NSInteger)numClusters avgNumPerCluster: (NSInteger) avgNumPerCluster seed: (CGPoint)seed {
     int clusterHalfRange = 7;
     int numInCluster;
     NSMutableArray* XPClusters = [NSMutableArray new];
@@ -263,6 +224,7 @@ BOOL const debugAnimations = YES;
             UIBezierPath* XPPath = [self getXPLoopPath:center XPEnd:self.XPEndPoint];
             XP* xp = [[XP new] initXP:center path:XPPath];
             [xpInCluster addObject:xp];
+            [self addXPSubview:xp];
         }
         XPCluster* cluster = [[XPCluster new] initEmptyCluster:clusterCenter];
         cluster.cluster = xpInCluster;
@@ -270,6 +232,23 @@ BOOL const debugAnimations = YES;
         [XPClusters addObject:cluster];
     }
     return XPClusters;
+}
+
+- (void) reanimateXPClusters {
+    for (XPCluster* cluster in self.clusters) {
+        CGPoint clusterCenter = [self getClusterCenter:self.seed];
+        cluster.center = clusterCenter;
+        // Recalc centers and paths for each XP given new cluster center
+        NSMutableArray* XPStarts = [self getXPStartsAroundCenter:cluster.cluster.count center:clusterCenter];
+        for(int i=0; i< XPStarts.count; i++) {
+            NSValue* centerValue = XPStarts[i];
+            CGPoint center = centerValue.CGPointValue;
+            XP* xp = cluster.cluster[i];
+            UIBezierPath* XPPath = [self getXPLoopPath:center XPEnd:self.XPEndPoint];
+            xp.path = XPPath;
+            xp.center = center;
+        }
+    }
 }
 
 @end

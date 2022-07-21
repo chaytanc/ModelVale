@@ -8,8 +8,6 @@
 #import "HealthBarView.h"
 #import "GameplayKit/GameplayKit.h"
 #include <stdlib.h>
-#import "XPCluster.h"
-#import "XP.h"
 
 CGFloat const widthMarginMultiple = 0.12f;
 CGFloat const heightMarginMultiple = 0.4f;
@@ -18,13 +16,6 @@ CGFloat const heightMarginMultiple = 0.4f;
 @end
 
 @implementation HealthBarView
-
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-    }
-    return self;
-}
 
 - (id)initWithCoder:(NSCoder *)coder
 {
