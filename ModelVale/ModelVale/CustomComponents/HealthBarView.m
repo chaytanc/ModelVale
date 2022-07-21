@@ -184,6 +184,7 @@ BOOL const debug = NO;
 
 //MARK: XP Animations
 
+//XXX todo remove
 - (UIImageView*) getXPImageView: (CGFloat) size label: (NSString*) label {
     UIImageView* xpImView = [UIImageView new];
     xpImView.frame = CGRectMake(0, 0, size, size);
@@ -232,9 +233,9 @@ BOOL const debug = NO;
 - (void) createAllClusterXPImViewAndLayer {
     for (XPCluster* cluster in self.clusters) {
         for (XP* xp in cluster.cluster) {
-            UIImageView* XPImView = [self getXPImageView: 20 label: @"xp"];
-            [self.uberview addSubview: XPImView];
-            xp.XPImView = XPImView;
+            xp.frame = CGRectMake(0, 0, xpSize, xpSize);
+            xp.image = [UIImage imageNamed:@"xp"];
+            [self.uberview addSubview: xp];
             CAShapeLayer* XPLayer = [self getXPBubbleLayer];
             if(debug) {
                 XPLayer.strokeColor = [UIColor redColor].CGColor;
@@ -249,7 +250,7 @@ BOOL const debug = NO;
 - (void) hideAllXPImageViews {
     for (XPCluster* cluster in self.clusters) {
         for (XP* xp in cluster.cluster) {
-            [xp.XPImView setHidden:YES];
+            [xp setHidden:YES];
         }
     }
 }
@@ -257,7 +258,7 @@ BOOL const debug = NO;
 - (void) showAllXPImageViews {
     for (XPCluster* cluster in self.clusters) {
         for (XP* xp in cluster.cluster) {
-            [xp.XPImView setHidden:NO];
+            [xp setHidden:NO];
         }
     }
 }
@@ -266,7 +267,7 @@ BOOL const debug = NO;
     for (XP* xp in XPCluster.cluster) {
         CAShapeLayer* XPLayer = xp.CALayer;
         UIBezierPath* XPPath = xp.path;
-        [self addXPPathAnimation:xp.XPImView.layer path:XPPath];
+        [self addXPPathAnimation:xp.layer path:XPPath];
         XPLayer.path = XPPath.CGPath;
     }
 }
