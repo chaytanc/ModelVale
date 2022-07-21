@@ -90,6 +90,7 @@
                                                     </view>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Health" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Dw-8a-C3F" userLabel="healthLabel">
                                                         <rect key="frame" x="0.0" y="95" width="248" height="20.5"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
@@ -172,7 +173,8 @@
                     </navigationItem>
                     <connections>
                         <outlet property="dataButton" destination="ESa-hG-I2C" id="LSy-Fe-i1D"/>
-                        <outlet property="healthBarView" destination="lif-Wb-8dq" id="2xL-17-0QC"/>
+                        <outlet property="healthBarView" destination="lif-Wb-8dq" id="iCK-3i-t66"/>
+                        <outlet property="healthLabel" destination="1Dw-8a-C3F" id="uhB-w5-guc"/>
                         <outlet property="testButton" destination="mGs-eG-41X" id="S8B-f2-Fih"/>
                         <outlet property="trainButton" destination="ef4-9f-J2e" id="qhN-7z-W6h"/>
                     </connections>

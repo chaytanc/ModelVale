@@ -9,10 +9,10 @@
 
 @implementation XPCluster
 
-- (instancetype) initCluster: (CGPoint)center XPCenters: (NSMutableArray*)XPCenters paths: (NSMutableArray<UIBezierPath*>*)paths {
+- (instancetype) initCluster: (CGPoint)clusterCenter XPCenters: (NSMutableArray*)XPCenters paths: (NSMutableArray<UIBezierPath*>*)paths {
     self = [super init];
     if(self) {
-        self.center = center;
+        self.center = clusterCenter;
         for(int i=0; i < XPCenters.count; i++) {
             NSValue* centerVal = XPCenters[i];
             CGPoint center = centerVal.CGPointValue;
@@ -22,10 +22,10 @@
     return self;
 }
 
-- (instancetype) initEmptyCluster: (CGPoint)seed {
+- (instancetype) initEmptyCluster: (CGPoint)clusterCenter {
     self = [super init];
     if(self) {
-        self.center = seed;
+        self.center = clusterCenter;
         self.cluster = [NSMutableArray new];
     }
     return self;
