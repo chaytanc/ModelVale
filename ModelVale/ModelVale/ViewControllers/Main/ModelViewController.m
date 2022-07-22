@@ -20,11 +20,13 @@
 CGFloat const animationDuration = 2.5f;
 NSInteger const xpSize = 20;
 NSInteger const minXPPerCluster = 10;
-BOOL const debugAnimations = YES;
+BOOL const debugAnimations = NO;
 
 
 @interface ModelViewController () <CAAnimationDelegate>
 @property (weak, nonatomic) NSMutableArray* models;
+@property (weak, nonatomic) IBOutlet UIView *detailsView;
+@property (weak, nonatomic) IBOutlet UIStackView *avatarStackView;
 @property (weak, nonatomic) IBOutlet HealthBarView *healthBarView;
 @property (weak, nonatomic) IBOutlet UILabel *healthLabel;
 @property (weak, nonatomic) IBOutlet UIButton *testButton;
@@ -48,23 +50,30 @@ BOOL const debugAnimations = YES;
     
     self.numClusters = 2;
     
-    //XXX todo configure healthbarview
-    [self.healthBarView initializeAnimationsWithDuration:animationDuration maxHealth:90 health:50];
+    [self.healthBarView initializeAnimationsWithDuration:animationDuration maxHealth:90 health:80];
     [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
     
     [self setHealthBarPropsForXP];
     self.clusters = [self initializeXPClusters:self.numClusters avgNumPerCluster:20 seed:self.seed];
     [self animateXPClusters:self.clusters];
-    // call animations on those image views
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    [self reanimateXPClusters];
 }
 
 - (void) setHealthBarPropsForXP {
     self.seed = CGPointMake(self.view.frame.size.width - 15, self.view.frame.size.height -100);
     //XXX todo this calculation is slightly off (to the left and up too much)
-    CGPoint healthBarViewOrigin = [self.view convertPoint:self.healthBarView.bounds.origin fromView:self.healthBarView];
-    CGFloat filledHealthXCoord = self.healthBarView.leftTopPoint.x + self.healthBarView.barWidth * self.healthBarView.filledHealthWidthPercent;
-    CGFloat middleHealthYCoord = self.healthBarView.rightTopPoint.y + 0.5*self.healthBarView.barHeight;
-    self.XPEndPoint = CGPointMake(healthBarViewOrigin.x + filledHealthXCoord, healthBarViewOrigin.y + middleHealthYCoord);
+    // Hierarchy
+    // self.view --> self.detailsView --> self.avatarStackView --> self.healthBarView
+    CGPoint healthBarViewOrigin1 = [self.view convertRect:self.avatarStackView.frame fromView:self.detailsView].origin; // Is actually the avatarStackView origin
+    CGPoint healthBarViewOrigin2 = [self.view convertRect:self.healthBarView.barRect fromView:self.avatarStackView].origin;
+    
+    CGFloat filledHealthXCoord = self.healthBarView.filledBarEndPoint.x + 8; //XXX todo this is a magic number that makes it work with healthBarOrigin1. 8 seems like a layoutMargin constant, but as for the 18.5, I have no idea
+    CGFloat middleHealthYCoord = self.healthBarView.filledBarEndPoint.y + 18.5; //XXX todo magic healthBarOrigin1 offset that makes it centered...
+    
+    self.XPEndPoint = CGPointMake(healthBarViewOrigin1.x + filledHealthXCoord, healthBarViewOrigin1.y + middleHealthYCoord);
 
 }
 
@@ -117,18 +126,14 @@ BOOL const debugAnimations = YES;
     return path;
 }
 
-- (void) addXPPathAnimation: (CALayer*) XPLayer path: (UIBezierPath*) XPPath {
+- (void) addXPPathAnimation: (XP*)xp {
     CAKeyframeAnimation * pathAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
-    pathAnimation.path = XPPath.CGPath;
+    pathAnimation.path = xp.path.CGPath;
     pathAnimation.duration = animationDuration;
     pathAnimation.fillMode = kCAFillModeForwards;
     pathAnimation.removedOnCompletion = NO;
-    pathAnimation.delegate = self;
-    [XPLayer addAnimation:pathAnimation forKey:@"flyingXP"];
-}
-
-- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
-    //XXX todo should hide singular xp at a time and pass into hideXP function which one to hide
+    pathAnimation.delegate = xp;
+    [xp.layer addAnimation:pathAnimation forKey:@"flyingXP"];
 }
 
 - (void) addXPSubview: (XP*) xp {
@@ -163,10 +168,9 @@ BOOL const debugAnimations = YES;
 
 - (void) animateXPCluster: (XPCluster*) XPCluster {
     for (XP* xp in XPCluster.cluster) {
-        CAShapeLayer* XPLayer = xp.CALayer;
-        UIBezierPath* XPPath = xp.path;
-        [self addXPPathAnimation:xp.layer path:XPPath];
-        XPLayer.path = XPPath.CGPath;
+        
+        [self addXPPathAnimation:xp];
+        ((CAShapeLayer*)xp.CALayer).path = xp.path.CGPath;
     }
 }
 

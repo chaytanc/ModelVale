@@ -10,11 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface XP : UIImageView //XXX todo make this subclass UIImageView
+@interface XP : UIImageView <CAAnimationDelegate>
 @property (nonatomic, strong) UIBezierPath* path;
 @property (nonatomic, strong) CAShapeLayer* CALayer;
 
 - (instancetype) initXP: (CGPoint)center path: (UIBezierPath*)path;
+//- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag;
+
 @end
 
 NS_ASSUME_NONNULL_END

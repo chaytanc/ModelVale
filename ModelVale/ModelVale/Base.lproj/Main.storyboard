@@ -172,7 +172,9 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="avatarStackView" destination="6kY-bT-WRU" id="jp3-ne-RuK"/>
                         <outlet property="dataButton" destination="ESa-hG-I2C" id="LSy-Fe-i1D"/>
+                        <outlet property="detailsView" destination="vbN-tA-qOH" id="LaR-f9-fn8"/>
                         <outlet property="healthBarView" destination="lif-Wb-8dq" id="iCK-3i-t66"/>
                         <outlet property="healthLabel" destination="1Dw-8a-C3F" id="uhB-w5-guc"/>
                         <outlet property="testButton" destination="mGs-eG-41X" id="S8B-f2-Fih"/>

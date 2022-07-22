@@ -43,12 +43,12 @@ CGFloat const heightMarginMultiple = 0.4f;
 
 - (void) initBarPoints {
     // Top left is 0,0
-    NSInteger widthMargin = self.bounds.size.width * widthMarginMultiple; // todo calc margin based on width
+    NSInteger widthMargin = self.bounds.size.width * widthMarginMultiple;
     NSInteger heightMargin = self.bounds.size.height * heightMarginMultiple;
-    NSInteger top = self.bounds.origin.y + heightMargin;
-    NSInteger left = self.bounds.origin.x + widthMargin;
-    NSInteger bottom = self.bounds.size.height - heightMargin;
-    NSInteger right = self.bounds.size.width - widthMargin;
+    NSInteger top = self.frame.origin.y + heightMargin;
+    NSInteger left = self.frame.origin.x + widthMargin;
+    NSInteger bottom = self.frame.size.height - heightMargin;
+    NSInteger right = self.frame.size.width - widthMargin;
 
     self.leftTopPoint = CGPointMake(left, top);
     self.rightTopPoint = CGPointMake(right, top);
@@ -58,6 +58,8 @@ CGFloat const heightMarginMultiple = 0.4f;
     self.barHeight = bottom - top;
     self.barCenter = CGPointMake(self.barWidth*0.5 + widthMargin, self.barHeight*0.5 + heightMargin);
     self.barRect = CGRectMake(left, top, self.barWidth, self.barHeight);
+    CGFloat adjustedRightX = self.leftTopPoint.x + self.barWidth * self.filledHealthWidthPercent;
+    self.filledBarEndPoint = CGPointMake(adjustedRightX, self.rightTopPoint.y + 0.5*self.barHeight);
 
 }
 
@@ -85,8 +87,8 @@ CGFloat const heightMarginMultiple = 0.4f;
 - (UIBezierPath*) getBarPath: (CGFloat)widthPercent {
     // The left side of the arc always begins at the same place, but partially filled progress bars end at different x positions on the right based on widthPercent
     CGFloat adjustedRightX = self.leftTopPoint.x + self.barWidth * widthPercent;
-    CGPoint rightTopPoint = CGPointMake(adjustedRightX, self.rightTopPoint.y);
     CGPoint rightMiddlePoint = CGPointMake(adjustedRightX, self.rightTopPoint.y + 0.5*self.barHeight);
+    CGPoint rightTopPoint = CGPointMake(adjustedRightX, self.rightTopPoint.y);
     CGPoint leftMiddlePoint = CGPointMake(self.leftTopPoint.x, self.leftTopPoint.y + 0.5*self.barHeight);
     
     UIBezierPath* path = [UIBezierPath new];

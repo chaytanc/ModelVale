@@ -8,6 +8,8 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
+extern CGFloat const widthMarginMultiple;
+extern CGFloat const heightMarginMultiple;
 
 @interface HealthBarView : UIView
 @property (nonatomic, strong) CAShapeLayer* barShapeLayer;
@@ -16,12 +18,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIBezierPath* healthPath;
 @property (nonatomic, assign) NSInteger barWidth;
 @property (nonatomic, assign) NSInteger barHeight;
-//XXX todo is barRect used
 @property (nonatomic, assign) CGRect barRect;
 @property (nonatomic, assign) CGPoint leftTopPoint;
 @property (nonatomic, assign) CGPoint rightTopPoint;
 @property (nonatomic, assign) CGPoint leftBottomPoint;
 @property (nonatomic, assign) CGPoint rightBottomPoint;
+@property (nonatomic, assign) CGPoint filledBarEndPoint;
 @property (nonatomic, assign) CGPoint barCenter;
 @property (nonatomic, assign) CGFloat health;
 @property (nonatomic, assign) CGFloat maxHealth;

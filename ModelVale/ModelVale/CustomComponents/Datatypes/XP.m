@@ -19,4 +19,20 @@
     return self;
 }
 
+- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
+    //XXX todo should hide singular xp at a time and pass into hideXP function which one to hide
+}
+
+- (void) addXPFadeOutAnimation: (XP*)xp {
+    CAKeyframeAnimation * fadeAnimation = [CAKeyframeAnimation animationWithKeyPath:@"opacity"];
+    fadeAnimation.duration = 1.5;
+    fadeAnimation.autoreverses = NO;
+    fadeAnimation.keyTimes = [NSArray arrayWithObjects:  [NSNumber numberWithFloat:0.0],
+                                                            [NSNumber numberWithFloat:1.5], nil];
+
+    fadeAnimation.values = [NSArray arrayWithObjects:    [NSNumber numberWithFloat:1.0],
+                                                    [NSNumber numberWithFloat:0.0], nil];
+    fadeAnimation.removedOnCompletion = YES;
+    [xp.layer addAnimation:fadeAnimation forKey:@"fadeOut"];
+}
 @end
