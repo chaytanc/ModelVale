@@ -12,9 +12,14 @@
 #import "SceneDelegate.h"
 #import "UpdatableSqueezeNet.h"
 #import "CoreML/CoreML.h"
+#import "AvatarMLModel.h"
+
+
 
 @interface ModelViewController ()
-@property (weak, nonatomic) NSMutableArray* models;
+@property (weak, nonatomic) NSMutableArray<AvatarMLModel*>* models;
+@property (nonatomic, assign) NSInteger modelInd;
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UIView *healthBarView;
 @property (weak, nonatomic) IBOutlet UIButton *testButton;
 @property (weak, nonatomic) IBOutlet UIButton *trainButton;
@@ -29,12 +34,26 @@
     self.testButton.layer.cornerRadius = 10;
     self.trainButton.layer.cornerRadius = 10;
     self.dataButton.layer.cornerRadius = 10;
+    [self configureModel];
+    self.modelInd = 0;
+}
+//XXX todo update modelInd based on didTapLeft, didTapRight
 
+- (AvatarMLModel*) getCurrModel: (NSInteger) ind {
+    NSInteger relInd = ind % self.models.count;
+    return self.models[relInd];
 }
 
 - (void) configureModel {
-    
+    NSString* name = self.nameLabel.text;
+    AvatarMLModel* model = [[AvatarMLModel new] initWithName:name model:[UpdatableSqueezeNet new]];
+    [self.models addObject:model];
 }
+
+- (void) uploadModels {
+    //XXX working here
+}
+
 
 - (IBAction)didTapLogout:(id)sender {
     NSLog(@"Logout Tapped");
@@ -55,3 +74,4 @@
 }
 
 @end
+

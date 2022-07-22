@@ -173,6 +173,7 @@
                     <connections>
                         <outlet property="dataButton" destination="ESa-hG-I2C" id="LSy-Fe-i1D"/>
                         <outlet property="healthBarView" destination="lif-Wb-8dq" id="2xL-17-0QC"/>
+                        <outlet property="nameLabel" destination="pnT-HL-fPk" id="Nex-bb-A9X"/>
                         <outlet property="testButton" destination="mGs-eG-41X" id="S8B-f2-Fih"/>
                         <outlet property="trainButton" destination="ef4-9f-J2e" id="qhN-7z-W6h"/>
                     </connections>
@@ -431,6 +432,9 @@
                                                         <rect key="frame" x="170" y="38.5" width="58.5" height="31"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="plain" title="Done"/>
+                                                        <connections>
+                                                            <action selector="didTapDone:" destination="XDb-gl-3KP" eventType="touchUpInside" id="9S4-Ac-1fT"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -483,7 +487,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="osr-jM-vEk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1550.7246376811595" y="1501.3392857142856"/>
+            <point key="canvasLocation" x="1348" y="1497"/>
         </scene>
         <!--Data View Controller-->
         <scene sceneID="kVh-Qa-Yh2">
@@ -714,7 +718,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="HSQ-2g-ZFu"/>
+        <segue reference="1lD-79-zWl"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.left.circle.fill" catalog="system" width="128" height="121"/>

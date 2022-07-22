@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 // TODO add properties for database
 // owner, labeledData, weights, architecture
 // TODO update these properties in retrain and test
-
+- (instancetype) initWithName: (NSString*)name model: (UpdatableSqueezeNet*)model;
 @end
 
 NS_ASSUME_NONNULL_END

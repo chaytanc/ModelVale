@@ -74,6 +74,20 @@
     [self presentViewController:self.cameraPickerVC animated:YES completion:nil];
 }
 
+- (void) uploadModel {}
+
+
+- (IBAction)didTapDone:(id)sender {
+    // Get model object based on model we selected at main from database
+    //XXX todo in AppDelegate make a method to create starterModel objects and upload to user database if it is their first time ever logging in (is that possible?)
+//     For each image added, make a ModelData obj??
+    // Upload ModelData obj to Parse
+    // Add to corresponding ModelLabel in Model obj in Parse
+    // If ModelLabel does not already exist, create and add to object
+    //
+    
+}
+
 - (void) getImageFromPH: (PHAsset*)asset imageCompletion: (void (^) (UIImage* image))completion {
     PHImageRequestOptions* opts = [PHImageRequestOptions new];
     opts.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
