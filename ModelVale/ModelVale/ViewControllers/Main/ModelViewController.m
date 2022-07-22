@@ -251,6 +251,7 @@ BOOL const debugAnimations = NO;
             UIBezierPath* XPPath = [self getXPLoopPath:center XPEnd:self.XPEndPoint];
             xp.path = XPPath;
             xp.center = center;
+            [self addXPPathAnimation:xp];
         }
     }
 }
