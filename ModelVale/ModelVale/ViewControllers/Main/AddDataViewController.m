@@ -51,7 +51,8 @@
     self.testTrainPickerView.delegate = self;
 
     //XXX Todo set the model property based on which model we selected initally in ModelViewController
-    [self.labelField initPropertiesWithOptions: self.model.model.model.modelDescription.classLabels];
+    MLModel* model = [self.model getMLModelFromModelName];
+    [self.labelField initPropertiesWithOptions: model.modelDescription.classLabels];
     [self.labelField addTarget:self action:@selector(didTapDropDown:) forControlEvents:UIControlEventTouchUpInside];
     
 }

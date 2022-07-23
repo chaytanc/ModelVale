@@ -12,6 +12,10 @@
 
 @implementation ModelData
 
++ (nonnull NSString *)parseClassName {
+    return @"ModelData";
+}
+
 - (instancetype) initWithImage:(UIImage *)image label:(ModelLabel *)label {
     self = [super init];
     if (self) {

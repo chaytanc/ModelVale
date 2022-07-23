@@ -8,12 +8,13 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "CoreML/CoreML.h"
+#import "Parse/Parse.h"
 @class ModelLabel;
 
 NS_ASSUME_NONNULL_BEGIN
 
 // One piece of user data with the data it references and the label
-@interface ModelData : NSObject
+@interface ModelData : PFObject<PFSubclassing>
 
 @property (strong, nonatomic) ModelLabel* label;
 @property (strong, nonatomic) UIImage* image;

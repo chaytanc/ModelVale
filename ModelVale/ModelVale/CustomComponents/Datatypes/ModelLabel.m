@@ -12,6 +12,11 @@
 
 @implementation ModelLabel
 
++ (nonnull NSString *)parseClassName {
+    return @"ModelLabel";
+}
+
+
 - (instancetype) initEmptyLabel: (NSString*)label testTrainType: (NSString*)testTrainType {
     self = [super init];
     if (self) {

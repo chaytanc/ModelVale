@@ -18,20 +18,17 @@
 @property (weak, nonatomic) IBOutlet UILabel *statsLabel;
 
 @property (strong, nonatomic) UpdatableSqueezeNet* model;
-//@property (strong, nonatomic) VNCoreMLModel* model;
-
 
 @end
 
 @implementation TestViewController
 
-// TODO send testVC which model to test with from modelVC
+//XXX TODO send testVC which model to test with from modelVC
 - (void)viewDidLoad {
     [super viewDidLoad];
     NSURL* modelURL = [[NSBundle mainBundle] URLForResource:@"SqueezeNetInt8LUT" withExtension:@"mlmodelc"];
-    MLModelConfiguration* config = [MLModelConfiguration new];
     self.model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:modelURL error:nil];
-    }
+}
 - (IBAction)didTapTest:(id)sender {
     UIImage* testImage = [UIImage imageNamed:@"mountain"];
     struct CGImage* cgtest = testImage.CGImage;

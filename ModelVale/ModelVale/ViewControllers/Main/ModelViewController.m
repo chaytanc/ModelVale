@@ -24,6 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *testButton;
 @property (weak, nonatomic) IBOutlet UIButton *trainButton;
 @property (weak, nonatomic) IBOutlet UIButton *dataButton;
+@property (nonatomic, strong) PFUser* user;
 
 @end
 
@@ -34,8 +35,11 @@
     self.testButton.layer.cornerRadius = 10;
     self.trainButton.layer.cornerRadius = 10;
     self.dataButton.layer.cornerRadius = 10;
-    [self configureModel];
     self.modelInd = 0;
+    self.user = [PFUser currentUser];
+//    self.models = [StarterModels getModels]; //XXX todo upload baseline models to user in registration
+    [self configureModel];
+
 }
 //XXX todo update modelInd based on didTapLeft, didTapRight
 
@@ -46,14 +50,10 @@
 
 - (void) configureModel {
     NSString* name = self.nameLabel.text;
-    AvatarMLModel* model = [[AvatarMLModel new] initWithName:name model:[UpdatableSqueezeNet new]];
+    AvatarMLModel* model = [[AvatarMLModel new] initWithModelName:@"UpdatableSqueezeNet" avatarName: name user: self.user];
     [self.models addObject:model];
+    [model uploadModelToUserWithViewController:self.user vc:self];
 }
-
-- (void) uploadModels {
-    //XXX working here
-}
-
 
 - (IBAction)didTapLogout:(id)sender {
     NSLog(@"Logout Tapped");

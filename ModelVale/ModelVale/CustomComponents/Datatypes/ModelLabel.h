@@ -7,11 +7,12 @@
 
 #import <Foundation/Foundation.h>
 #import "TestTrainEnum.h"
+#import "Parse/Parse.h"
 @class ModelData;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ModelLabel : NSObject {
+@interface ModelLabel : PFObject<PFSubclassing> {
     testTrain mode;
 }
 @property (nonatomic, weak) NSString* label;
