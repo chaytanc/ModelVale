@@ -13,7 +13,7 @@
 #import "UpdatableSqueezeNet.h"
 #import "CoreML/CoreML.h"
 #import "AvatarMLModel.h"
-
+#import "StarterModels.h"
 
 
 @interface ModelViewController ()
@@ -37,11 +37,10 @@
     self.dataButton.layer.cornerRadius = 10;
     self.modelInd = 0;
     self.user = [PFUser currentUser];
-//    self.models = [StarterModels getModels]; //XXX todo upload baseline models to user in registration
+    self.models = [[StarterModels new] initStarterModels: self.user]; //XXX todo upload baseline models to user in registration
     [self configureModel];
 
 }
-//XXX todo update modelInd based on didTapLeft, didTapRight
 
 - (AvatarMLModel*) getCurrModel: (NSInteger) ind {
     NSInteger relInd = ind % self.models.count;
@@ -54,11 +53,19 @@
     [self.models addObject:model];
     [model uploadModelToUserWithViewController:self.user vc:self];
 }
+- (IBAction)didTapLeftNext:(id)sender {
+    self.modelInd -= 1;
+    //XXX todo update which model is showing by fetching etc
+
+}
+- (IBAction)didTapRightNext:(id)sender {
+    self.modelInd += 1;
+    //XXX todo update which model is showing by fetching etc
+}
 
 - (IBAction)didTapLogout:(id)sender {
     NSLog(@"Logout Tapped");
     [PFUser logOutInBackgroundWithBlock:^(NSError * _Nullable error) {
-        // PFUser.current() will now be nil
         if(error != nil) {
             [self presentError:@"Logout Failed" message:error.localizedDescription error:error];
         }
