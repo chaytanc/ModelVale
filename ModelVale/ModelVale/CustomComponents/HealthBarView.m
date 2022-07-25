@@ -9,8 +9,8 @@
 #import "GameplayKit/GameplayKit.h"
 #include <stdlib.h>
 
-CGFloat const widthMarginMultiple = 0.12f;
-CGFloat const heightMarginMultiple = 0.4f;
+CGFloat const kWidthMarginMultiple = 0.12f;
+CGFloat const kHeightMarginMultiple = 0.4f;
 //UIColor* const violet = [UIColor colorWithRed:125.0f/255.0f green:65.0f/255.0f blue:205.0f/255.0f alpha:1.0f];
 
 @interface HealthBarView() <CAAnimationDelegate>
@@ -47,8 +47,8 @@ CGFloat const heightMarginMultiple = 0.4f;
 
 - (void) initBarPoints {
     // Top left is 0,0
-    NSInteger widthMargin = self.bounds.size.width * widthMarginMultiple;
-    NSInteger heightMargin = self.bounds.size.height * heightMarginMultiple;
+    NSInteger widthMargin = self.bounds.size.width * kWidthMarginMultiple;
+    NSInteger heightMargin = self.bounds.size.height * kHeightMarginMultiple;
     NSInteger top = self.frame.origin.y + heightMargin;
     NSInteger left = self.frame.origin.x + widthMargin;
     NSInteger bottom = self.frame.size.height - heightMargin;

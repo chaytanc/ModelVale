@@ -17,15 +17,15 @@
 #import "XP.h"
 #import "GameplayKit/GameplayKit.h"
 
-CGFloat const animationDuration = 2.5f;
-NSInteger const xpSize = 20;
-NSInteger const minXPPerCluster = 10;
-BOOL const debugAnimations = NO;
-NSInteger const seedXOffset = 15;
-NSInteger const seedYOffset = 100;
-NSInteger const maxHealth = 100;
-NSInteger const sigma_xDivisor = 6;
-NSInteger const sigma_yDivisor = 6;
+CGFloat const kAnimationDuration = 2.5f;
+NSInteger const kXPSize = 20;
+NSInteger const kMinXPPerCluster = 10;
+BOOL const kDebugAnimations = NO;
+NSInteger const kSeedXOffset = 15;
+NSInteger const kSeedYOffset = 100;
+NSInteger const kMaxHealth = 100;
+NSInteger const kSigmaXDivisor = 6;
+NSInteger const kSigmaYDivisor = 6;
 
 @interface ModelViewController () <CAAnimationDelegate>
 @property (weak, nonatomic) NSMutableArray* models;
@@ -55,7 +55,7 @@ NSInteger const sigma_yDivisor = 6;
     self.numClusters = 2;
     NSInteger avgNumXPPerCluster = 20;
     
-    [self.healthBarView initWithAnimationsOfDuration:animationDuration maxHealth:maxHealth health:80];
+    [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:kMaxHealth health:80];
     [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
     
     [self setHealthBarPropsForXP];
@@ -69,7 +69,7 @@ NSInteger const sigma_yDivisor = 6;
 }
 
 - (void) setHealthBarPropsForXP {
-    self.seed = CGPointMake(self.view.frame.size.width - seedXOffset, self.view.frame.size.height - seedYOffset);
+    self.seed = CGPointMake(self.view.frame.size.width - kSeedXOffset, self.view.frame.size.height - kSeedYOffset);
     //XXX todo this calculation is slightly off (to the left and up too much)
     // Hierarchy
     // self.view --> self.detailsView --> self.avatarStackView --> self.healthBarView
@@ -135,7 +135,7 @@ NSInteger const sigma_yDivisor = 6;
 - (void) addXPPathAnimation: (XP*)xp {
     CAKeyframeAnimation * pathAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
     pathAnimation.path = xp.path.CGPath;
-    pathAnimation.duration = animationDuration;
+    pathAnimation.duration = kAnimationDuration;
     pathAnimation.fillMode = kCAFillModeForwards;
     pathAnimation.removedOnCompletion = NO;
     pathAnimation.delegate = xp;
@@ -143,12 +143,12 @@ NSInteger const sigma_yDivisor = 6;
 }
 
 - (void) addXPSubview: (XP*) xp {
-    xp.frame = CGRectMake(0, 0, xpSize, xpSize);
+    xp.frame = CGRectMake(0, 0, kXPSize, kXPSize);
     xp.image = [UIImage imageNamed:@"xp"];
     [self.view addSubview: xp];
     CAShapeLayer* XPLayer = [self getXPBubbleLayer];
     XPLayer.lineWidth = 0;
-    if(debugAnimations) {
+    if(kDebugAnimations) {
         XPLayer.strokeColor = [UIColor redColor].CGColor;
         XPLayer.lineWidth = 3;
     }
@@ -203,8 +203,8 @@ NSInteger const sigma_yDivisor = 6;
 
 // This function generates a cluster center by sampling from normal distributions describing how far away the x and y are from the seed of all clusters. For example, if sigma_x=50 and the seed is (0,0) then according to the 68-95-99.7 rule of Gaussian (normal) distributions, center.x will be between range(-50, 50) 68% of the time, between range(-100, 100) 95% of the time, etc...
 - (CGPoint) getClusterCenter: (CGPoint) seed {
-    int sigma_x = self.view.frame.size.width / sigma_xDivisor;
-    int sigma_y = self.view.frame.size.height / sigma_yDivisor;
+    int sigma_x = self.view.frame.size.width / kSigmaXDivisor;
+    int sigma_y = self.view.frame.size.height / kSigmaYDivisor;
     GKRandomSource* rand = [GKRandomSource new];
     GKGaussianDistribution* gaussian_x = [[GKGaussianDistribution new] initWithRandomSource:rand mean:seed.x deviation:sigma_x];
     GKGaussianDistribution* gaussian_y = [[GKGaussianDistribution new] initWithRandomSource:rand mean:seed.y deviation:sigma_y];
@@ -222,7 +222,7 @@ NSInteger const sigma_yDivisor = 6;
     for(int i=0; i < numClusters; i++) {
         // Randomly choose num XP in cluster
         numInCluster = (avgNumPerCluster-clusterHalfRange) + arc4random_uniform(clusterHalfRange*2);
-        numInCluster = (numInCluster <= minXPPerCluster) ? minXPPerCluster : numInCluster;
+        numInCluster = (numInCluster <= kMinXPPerCluster) ? kMinXPPerCluster : numInCluster;
         
         // Gets a randomly generated cluster probabilistically drawn based on distance from seed
         CGPoint clusterCenter = [self getClusterCenter:seed];
