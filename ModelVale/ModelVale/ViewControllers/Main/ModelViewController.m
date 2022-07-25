@@ -21,7 +21,11 @@ CGFloat const animationDuration = 2.5f;
 NSInteger const xpSize = 20;
 NSInteger const minXPPerCluster = 10;
 BOOL const debugAnimations = NO;
-
+NSInteger const seedXOffset = 15;
+NSInteger const seedYOffset = 100;
+NSInteger const maxHealth = 100;
+NSInteger const sigma_xDivisor = 6;
+NSInteger const sigma_yDivisor = 6;
 
 @interface ModelViewController () <CAAnimationDelegate>
 @property (weak, nonatomic) NSMutableArray* models;
@@ -49,21 +53,23 @@ BOOL const debugAnimations = NO;
     self.dataButton.layer.cornerRadius = 10;
     
     self.numClusters = 2;
+    NSInteger avgNumXPPerCluster = 20;
     
-    [self.healthBarView initializeAnimationsWithDuration:animationDuration maxHealth:90 health:80];
+    [self.healthBarView initWithAnimationsOfDuration:animationDuration maxHealth:maxHealth health:80];
     [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
     
     [self setHealthBarPropsForXP];
-    self.clusters = [self initializeXPClusters:self.numClusters avgNumPerCluster:20 seed:self.seed];
+    self.clusters = [self initializeXPClusters:self.numClusters avgNumPerCluster:avgNumXPPerCluster seed:self.seed];
     [self animateXPClusters:self.clusters];
 }
 
 - (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     [self reanimateXPClusters];
 }
 
 - (void) setHealthBarPropsForXP {
-    self.seed = CGPointMake(self.view.frame.size.width - 15, self.view.frame.size.height -100);
+    self.seed = CGPointMake(self.view.frame.size.width - seedXOffset, self.view.frame.size.height - seedYOffset);
     //XXX todo this calculation is slightly off (to the left and up too much)
     // Hierarchy
     // self.view --> self.detailsView --> self.avatarStackView --> self.healthBarView
@@ -197,9 +203,8 @@ BOOL const debugAnimations = NO;
 
 // This function generates a cluster center by sampling from normal distributions describing how far away the x and y are from the seed of all clusters. For example, if sigma_x=50 and the seed is (0,0) then according to the 68-95-99.7 rule of Gaussian (normal) distributions, center.x will be between range(-50, 50) 68% of the time, between range(-100, 100) 95% of the time, etc...
 - (CGPoint) getClusterCenter: (CGPoint) seed {
-    //XXX todo move sigma_x and sigma_y to constants in ModelViewController when XP animation code is moved there
-    int sigma_x = self.view.frame.size.width / 6;
-    int sigma_y = self.view.frame.size.height / 6;
+    int sigma_x = self.view.frame.size.width / sigma_xDivisor;
+    int sigma_y = self.view.frame.size.height / sigma_yDivisor;
     GKRandomSource* rand = [GKRandomSource new];
     GKGaussianDistribution* gaussian_x = [[GKGaussianDistribution new] initWithRandomSource:rand mean:seed.x deviation:sigma_x];
     GKGaussianDistribution* gaussian_y = [[GKGaussianDistribution new] initWithRandomSource:rand mean:seed.y deviation:sigma_y];

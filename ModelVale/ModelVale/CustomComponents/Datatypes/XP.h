@@ -15,7 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) CAShapeLayer* CALayer;
 
 - (instancetype) initXP: (CGPoint)center path: (UIBezierPath*)path;
-//- (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag;
 
 @end
 

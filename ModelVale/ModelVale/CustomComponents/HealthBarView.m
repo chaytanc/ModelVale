@@ -11,6 +11,7 @@
 
 CGFloat const widthMarginMultiple = 0.12f;
 CGFloat const heightMarginMultiple = 0.4f;
+//UIColor* const violet = [UIColor colorWithRed:125.0f/255.0f green:65.0f/255.0f blue:205.0f/255.0f alpha:1.0f];
 
 @interface HealthBarView() <CAAnimationDelegate>
 @end
@@ -27,17 +28,20 @@ CGFloat const heightMarginMultiple = 0.4f;
     return self;
 }
 
-- (instancetype) initializeAnimationsWithDuration: (NSInteger) animationDuration maxHealth: (NSInteger)maxHealth health: (NSInteger)health {
-    self.animationDuration = animationDuration;
-    self.health = health;
-    self.maxHealth = maxHealth;
-    self.filledHealthWidthPercent = self.health / self.maxHealth;
-    [self initBarPoints];
-    self.barPath = [self createBarShapeLayerWithWidthPercent:1];
-    [self.layer addSublayer:self.barShapeLayer];
-    self.healthPath = [self createHealthShapeLayerWithWidthPercent];
-    [self.layer addSublayer:self.healthShapeLayer];
-    [self addGradientToHealthBar: self.healthShapeLayer gradWidth:self.barWidth*self.filledHealthWidthPercent];
+- (instancetype) initWithAnimationsOfDuration: (NSInteger) animationDuration maxHealth: (NSInteger)maxHealth health: (NSInteger)health {
+    self = [super init];
+    if(self) {
+        self.animationDuration = animationDuration;
+        self.health = health;
+        self.maxHealth = maxHealth;
+        self.filledHealthWidthPercent = self.health / self.maxHealth;
+        [self initBarPoints];
+        self.barPath = [self createBarShapeLayerWithWidthPercent:1];
+        [self.layer addSublayer:self.barShapeLayer];
+        self.healthPath = [self createHealthShapeLayerWithWidthPercent];
+        [self.layer addSublayer:self.healthShapeLayer];
+        [self addGradientToHealthBar: self.healthShapeLayer gradWidth:self.barWidth*self.filledHealthWidthPercent];
+    }
     return self;
 }
 
