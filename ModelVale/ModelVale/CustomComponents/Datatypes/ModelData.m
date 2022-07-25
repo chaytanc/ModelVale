@@ -10,23 +10,58 @@
 #import "CoreML/CoreML.h"
 #import "UpdatableSqueezeNet.h"
 
+@interface ModelData()
+ @property (retain) PFFileObject *imageFile;
+@end
+
 @implementation ModelData
+
+@dynamic label;
+//@dynamic image;
+@dynamic imageFile;
+@synthesize image = _image;
 
 + (nonnull NSString *)parseClassName {
     return @"ModelData";
 }
 
-- (instancetype) initWithImage:(UIImage *)image label:(ModelLabel *)label {
-    self = [super init];
-    if (self) {
-        self.image = image;
-        // Update reference within data to the label and then update the label's labelModelData list with the new datapoint
-        self.label = label;
-        [label addLabelModelData:@[self]];
-    }
-    return self;
++ (instancetype) initWithImage: (UIImage *)image label:(ModelLabel *)label {
+    ModelData* md = [ModelData new];
+    md.image = image;
+    md.label = label;
+    [label addLabelModelData:@[md]];
+    return md;
 }
 
++ (NSMutableArray*) initModelDataArrayFromArray: (NSArray*) array label: (ModelLabel*)label {
+    NSMutableArray* modelDatas = [NSMutableArray new];
+    for (id modelDataResponse in array) {
+        ModelData* md = [ModelData new];
+        //XXX todo may have to change way we do this if UIImage is not stored in response dict
+
+        md.image = [UIImage imageWithData:modelDataResponse[@"image"]];
+//        md.imageFile = [PFFileObject fileObjectWithName:@"image.png" data:modelDataResponse[@"image"]];
+        md.label = label;
+        [label addLabelModelData:@[md]];
+        [modelDatas addObject:md];
+    }
+    return modelDatas;
+}
+
+-(UIImage *)image {
+    if (!_image){
+        [self fetchIfNeeded];
+        _image = [UIImage imageWithData:[self.imageFile getData]];
+    }
+    return _image;
+}
+
+-(void)setImage:(UIImage *)image {
+    _image = image;
+    self.imageFile = [PFFileObject fileObjectWithData:UIImagePNGRepresentation(image)];
+}
+
+//MARK: CoreML
 - (MLFeatureValue*) getImageFeatureValue: (MLImageConstraint*)modelConstraints {
     struct CGImage* cgtest = self.image.CGImage;
     MLFeatureValue* imageFeature = [MLFeatureValue featureValueWithCGImage:cgtest constraint:modelConstraints options:nil error:nil];
@@ -56,20 +91,6 @@
     featureDict[@"classLabel"] = labelFeature;
     MLDictionaryFeatureProvider* featureProv = (MLDictionaryFeatureProvider*)[[MLDictionaryFeatureProvider new] initWithDictionary:featureDict error:nil];
     return featureProv;
-}
-
-+ (NSMutableArray*) initModelDataArrayFromArray: (NSArray*) array label: (ModelLabel*)label {
-    NSMutableArray* modelDatas = [NSMutableArray new];
-    for (id modelDataResponse in array) {
-        ModelData* md = [ModelData new];
-        //XXX todo may have to change way we do this if UIImage is not stored in response dict
-
-        md.image = modelDataResponse[@"image"];
-        md.label = label;
-        [label addLabelModelData:@[md]];
-        [modelDatas addObject:md];
-    }
-    return modelDatas;
 }
 
 @end

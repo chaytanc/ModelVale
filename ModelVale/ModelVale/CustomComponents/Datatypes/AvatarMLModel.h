@@ -26,6 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName user: (PFUser*)user;
 - (MLModel*) getMLModelFromModelName;
 - (void) uploadModelToUserWithViewController: (PFUser*) user vc: (UIViewController*)vc;
+- (void) updateModel: (UIViewController*)vc;
 
 @end
 

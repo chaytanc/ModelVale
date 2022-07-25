@@ -14,6 +14,7 @@
 #import "CoreML/CoreML.h"
 #import "AvatarMLModel.h"
 #import "StarterModels.h"
+#import "DataViewController.h"
 
 
 @interface ModelViewController ()
@@ -80,5 +81,11 @@
     }];
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if([[segue identifier] isEqualToString:@"modelToData"]) {
+        DataViewController* targetController = (DataViewController*) [segue destinationViewController];
+        targetController.model = [self getCurrModel:self.modelInd];
+    }
+}
 @end
 

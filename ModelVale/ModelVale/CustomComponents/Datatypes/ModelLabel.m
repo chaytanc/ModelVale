@@ -9,12 +9,18 @@
 #import "ModelData.h"
 #import "TestTrainEnum.h"
 #import "Parse/Parse.h"
+#import "UIViewController+PresentError.h"
 
 @implementation ModelLabel
 
 + (nonnull NSString *)parseClassName {
     return @"ModelLabel";
 }
+
+@dynamic label;
+@dynamic testTrainType;
+@dynamic labelModelData;
+@dynamic numPerLabel;
 
 
 - (instancetype) initEmptyLabel: (NSString*)label testTrainType: (NSString*)testTrainType {
@@ -40,23 +46,23 @@
     return self;
 }
 
-// Init from database response
-//XXX todo check that Parse response is actually pfobject, maybe rename argument better
-- (instancetype) initWithResponse: (PFObject*) response {
-    self = [super init];
-    if(self) {
-        self.numPerLabel = response[@"numPerLabel"];
-        self.label = response[@"label"];
-        self.testTrainType = response[@"testTrainType"];
-        NSMutableArray* dataArray = response[@"labelModelData"]; // TODO XXX verify that Parse has ModelData type in this array
-        self.labelModelData = [ModelData initModelDataArrayFromArray:dataArray label:self];
-    }
-    return self;
-}
-
 - (void) addLabelModelData:(NSArray *)objects {
     [self.labelModelData addObjectsFromArray:objects];
     self.numPerLabel += objects.count;
 }
+
+
+- (void) updateModelLabelWithCompletion: (PFBooleanResultBlock  _Nullable)completion withVC: (UIViewController*)vc {
+    [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if(succeeded) {
+            NSLog(@"ModelLabel saved!");
+        }
+        else {
+            [vc presentError:@"Failed to update label" message:error.localizedDescription error:error];
+        }
+        completion(succeeded, error);
+    }];
+}
+
 
 @end

@@ -49,7 +49,6 @@ CGFloat const MAXHEALTH = 500;
 
 
 - (void) uploadModelToUserWithViewController: (PFUser*) user vc: (UIViewController*)vc {
-    //XXX todo make function that only allows user to have unique model name
     //XXX todo make function where UpdatableSqueezeNet and baseline models are automatically uploaded to Model and added to user.models
     NSMutableArray* userModels = user[@"models"];
     if(userModels == nil) { //XXX todo once we upload startermodels, we can guarantee this won't be nil
@@ -70,26 +69,32 @@ CGFloat const MAXHEALTH = 500;
         }
         // Model didn't already exist and there was no error querying means we need to create model and add to user
         else {
-            // Add model to User.models
-            [userModels addObject:self];
-            user[@"models"] = userModels;
-            [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                    if(succeeded) {
-                        NSLog(@"User.models updated");
-                    }
-                    else {
-                        [vc presentError:@"Failed to upload model to User" message:error.localizedDescription error:error];
-                    }
-            }];
-            // Upload Model object to database
-            [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                if(succeeded) {
-                    NSLog(@"Model uploaded!");
-                }
-                else {
-                    [vc presentError:@"Failed to create Model" message:error.localizedDescription error:error];
-                }
-            }];
+            [self updateUserModels:user userModels:userModels vc:vc];
+            [self updateModel: vc];
+        }
+    }];
+}
+
+- (void) updateUserModels: (PFUser*)user userModels: (NSMutableArray*)userModels vc: (UIViewController*)vc {
+    [userModels addObject:self];
+    user[@"models"] = userModels;
+    [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if(succeeded) {
+                NSLog(@"User.models updated");
+            }
+            else {
+                [vc presentError:@"Failed to upload model to User" message:error.localizedDescription error:error];
+            }
+    }];
+}
+
+- (void) updateModel: (UIViewController*)vc {
+    [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if(succeeded) {
+            NSLog(@"Model uploaded!");
+        }
+        else {
+            [vc presentError:@"Failed to create Model" message:error.localizedDescription error:error];
         }
     }];
 }

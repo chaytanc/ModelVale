@@ -17,9 +17,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ModelData : PFObject<PFSubclassing>
 
 @property (strong, nonatomic) ModelLabel* label;
-@property (strong, nonatomic) UIImage* image;
+//@property (strong, nonatomic) UIImage* image;
+@property (retain) UIImage *image;
 
-- (ModelData*) initWithImage:(UIImage *)image label:(ModelLabel *)label;
++ (instancetype) initWithImage: (UIImage *)image label:(ModelLabel *)label;
 - (MLDictionaryFeatureProvider*) getDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
 - (MLFeatureValue*) getImageFeatureValue: (MLImageConstraint*)modelConstraints;
 - (MLDictionaryFeatureProvider*) getUpdatableDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
@@ -27,5 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 @end
+
 
 NS_ASSUME_NONNULL_END

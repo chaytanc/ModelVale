@@ -12,18 +12,20 @@
 #import "TestTrainEnum.h"
 #import "ModelVale-Swift.h"
 #import "AvatarMLModel.h"
+#import "ModelData.h"
+#import "ModelLabel.h"
 
 @interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, QBImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (nonatomic, strong) QBImagePickerController* imagePickerVC;
 @property (nonatomic, strong) UIImagePickerController* cameraPickerVC;
-@property (nonatomic, strong) NSMutableArray* data;
+@property (nonatomic, strong) NSMutableArray<ModelData*>* data;
 @property (weak, nonatomic) IBOutlet UIPickerView *testTrainPickerView;
 @property (strong, nonatomic) NSArray* testTrainOptions;
 @property (weak, nonatomic) IBOutlet UICollectionView *addDataCollView;
 @property (strong, nonatomic) PHImageManager* phManager;
 @property (weak, nonatomic) IBOutlet DropDownTextField *labelField;
-@property (strong, nonatomic) AvatarMLModel* model;
+@property (strong, nonatomic) ModelLabel* label;
 
 @end
 
@@ -34,6 +36,8 @@
     self.testTrainOptions = (NSArray*) testTrainTypeArray;
     self.data = [NSMutableArray new];
     self.phManager = [PHImageManager new];
+    self.testTrainPickerView.tag = 0;
+    self.label = [[ModelLabel new] initEmptyLabel:self.labelField.text testTrainType:dataTypeEnumToString(Train)];
 
     self.imagePickerVC = [QBImagePickerController new];
     self.imagePickerVC.delegate = self;
@@ -57,6 +61,14 @@
     
 }
 
+- (void)pickerView:(UIPickerView *)pickerView
+      didSelectRow:(NSInteger)row
+       inComponent:(NSInteger)component {
+    if (pickerView.tag == 0) {
+        self.label.testTrainType = dataTypeEnumToString(self.testTrainOptions[row]);
+    }
+}
+
 - (void) didTapDropDown:(id) obj {
     [self.labelField wasTapped];
 }
@@ -75,9 +87,44 @@
     [self presentViewController:self.cameraPickerVC animated:YES completion:nil];
 }
 
-- (void) uploadModel {}
+- (void) uploadModelDataWithCompletion: (PFBooleanResultBlock  _Nullable)completion  {
+    self.label.label = self.labelField.text;
+    // Save batch of all ModelData created from images selected
+    [PFObject saveAllInBackground:self.data block:completion];
+    self.label.labelModelData = self.data;
+    [self saveModelLabelWithCompletion:completion];
+}
 
+- (void) saveModelLabelWithCompletion: (PFBooleanResultBlock  _Nullable)completion {
+    
+    // Label is the same if the .label and .testTrainType match
+    PFQuery* query = [PFQuery queryWithClassName:@"ModelLabel"];
+    query = [query whereKey:@"label" matchesText:self.label.label];
+    query = [query whereKey:@"testTrainType" matchesText:self.label.testTrainType];
+    // Find duplicate label if it exists and update its data, otherwise create a new label
+    [query findObjectsInBackgroundWithBlock:^(NSArray *labels, NSError *error) {
+        if(error != nil){
+            [self presentError:@"Failed to retrieve labels" message:error.localizedDescription error:error];
+        }
+        else if (labels.count != 0) {
+            NSLog(@"Label already exists, updating properties");
+            ModelLabel* label = labels[0];
+            label.labelModelData = self.label.labelModelData;
+            label.numPerLabel = self.label.numPerLabel;
+            [label updateModelLabelWithCompletion:completion withVC:self];
+            self.label = label;
+            assert([self.model.labeledData containsObject:self.label]);
+        }
+        else {
+            NSLog(@"Uploading new label");
+            [self.label updateModelLabelWithCompletion:completion withVC:self];
+            [self.model.labeledData addObject:self.label];
+        }
+        [self.model updateModel:self];
+    }];
+}
 
+//XXX todo add data added to users' data in Parse, as well as test / train setting, the label they provided for the data
 - (IBAction)didTapDone:(id)sender {
     // Get model object based on model we selected at main from database
     //XXX todo in AppDelegate make a method to create starterModel objects and upload to user database if it is their first time ever logging in (is that possible?)
@@ -95,12 +142,12 @@
     [self.phManager requestImageForAsset:asset targetSize: CGSizeMake(asset.pixelWidth, asset.pixelHeight)
                              contentMode: PHImageContentModeAspectFill
                                  options:opts resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                if(result == nil) {
-                    NSLog(@"Nil image from asset");
-                }
-                else {
-                    completion(result);
-                }
+        if(result == nil) {
+            NSLog(@"Nil image from asset");
+        }
+        else {
+            completion(result);
+        }
     }];
 }
 
@@ -108,7 +155,9 @@
 - (void) qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
     for(id asset in assets) {
         [self getImageFromPH:asset imageCompletion:^(UIImage *image) {
-            [self.data addObject:image];
+            ModelData* data = [ModelData initWithImage:image label:self.label];
+            [self.data addObject:data];
+            [self.label addLabelModelData:@[data]];
             [self.addDataCollView reloadData];
         }];
     }
@@ -120,21 +169,19 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     
     // Get the image captured by the UIImagePickerController
-    UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
+    ModelData* data = [ModelData initWithImage:editedImage label:self.label];
+    [self.data addObject:data];
+    [self.label addLabelModelData:@[data]];
 
-    [self.data addObject:editedImage];
-    
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.addDataCollView reloadData];
 }
 
-//XXX todo add data added to users' data in Parse, as well as test / train setting, the label they provided for the data
-
 //XXX todo stretch add Google Drive integration
 - (nonnull __kindof UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
     AddDataCell* cell = [self.addDataCollView dequeueReusableCellWithReuseIdentifier:@"addDataCell" forIndexPath:indexPath];
-    [cell.addDataImageView setImage:self.data[indexPath.row]];
+    [cell.addDataImageView setImage:self.data[indexPath.row].image];
     return cell;
 }
 

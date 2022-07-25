@@ -589,7 +589,7 @@
                     <navigationItem key="navigationItem" title="Data" id="0Vk-QV-FRV">
                         <barButtonItem key="rightBarButtonItem" image="plus" catalog="system" id="OuF-vb-cIY" userLabel="addDataBarButton">
                             <connections>
-                                <segue destination="XDb-gl-3KP" kind="show" id="t6S-V2-wIR"/>
+                                <segue destination="XDb-gl-3KP" kind="show" identifier="dataToAddData" id="t6S-V2-wIR"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

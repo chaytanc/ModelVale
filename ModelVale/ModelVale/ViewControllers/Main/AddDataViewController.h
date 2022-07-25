@@ -7,10 +7,12 @@
 
 #import <UIKit/UIKit.h>
 @class DropDownTextField;
+@class AvatarMLModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface AddDataViewController : UIViewController
+@property (strong, nonatomic) AvatarMLModel* model;
 
 @end
 

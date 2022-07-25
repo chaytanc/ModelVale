@@ -22,13 +22,13 @@
     // We create two labels, the first has two images the second has one image, this represents all the training data that was
     ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"alp" testTrainType:dataTypeEnumToString(Train)];
     UIImage* testImage = [UIImage imageNamed:@"mountain"];
-    ModelData* fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
+    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel];
     testImage = [UIImage imageNamed:@"rivermountain"];
-    fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel];
     [self.trainBatchLabels addObject:fakeLabel];
     fakeLabel = [[ModelLabel new] initEmptyLabel:@"vulture" testTrainType:dataTypeEnumToString(Train)];
     testImage = [UIImage imageNamed:@"snowymountains"];
-    fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel];
     [self.trainBatchLabels addObject:fakeLabel];
     
     [self setBatchFeatureProvider:imageConstraint];
