@@ -35,7 +35,7 @@
 }
 
 - (instancetype) initWithData: (NSString*)label testTrainType: (NSString*)testTrainType
-                         data: (NSMutableArray*) data {
+                         data: (NSMutableArray*)data {
     self = [super init];
     if(self) {
         self.numPerLabel = data.count;
@@ -52,7 +52,7 @@
 }
 
 
-- (void) updateModelLabelWithCompletion: (PFBooleanResultBlock  _Nullable)completion withVC: (UIViewController*)vc {
+- (void) updateModelLabel: (UIViewController*)vc completion: (PFBooleanResultBlock  _Nullable)completion {
     [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded) {
             NSLog(@"ModelLabel saved!");

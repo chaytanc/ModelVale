@@ -23,6 +23,7 @@ CGFloat const MAXHEALTH = 500;
 + (nonnull NSString *)parseClassName {
     return @"Model";
 }
+
 //XXX what is difference between doing this and having a class method that makes an instance, sets these, and returns that instance
 - (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName user: (PFUser*)user {
     self = [super init];
@@ -41,12 +42,6 @@ CGFloat const MAXHEALTH = 500;
     MLModel* model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:modelURL error:nil].model;
     return model;
 }
-
-//XXX todo
-//- (void) addLabeledData: {
-//
-//}
-
 
 - (void) uploadModelToUserWithViewController: (PFUser*) user vc: (UIViewController*)vc {
     //XXX todo make function where UpdatableSqueezeNet and baseline models are automatically uploaded to Model and added to user.models

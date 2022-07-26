@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (ModelLabel*) initWithData: (NSString*)label testTrainType: (NSString*)testTrainType data: (NSMutableArray*) data;
 
 - (void) addLabelModelData:(NSArray *)objects;
-- (void) updateModelLabelWithCompletion: (PFBooleanResultBlock  _Nullable)completion withVC: (UIViewController*)vc;
+- (void) updateModelLabel: (UIViewController*)vc completion: (PFBooleanResultBlock  _Nullable)completion;
 
 @end
 

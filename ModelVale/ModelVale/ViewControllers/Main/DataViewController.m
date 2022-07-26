@@ -33,14 +33,17 @@
 
     ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"mountain" testTrainType:dataTypeEnumToString(Train)];
     UIImage* testImage = [UIImage imageNamed:@"mountain"];
-    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel]; // Note: adds itself to the label passed
+    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label]; // Note: DOES NOT add itself to the label passed
+    [fakeLabel addLabelModelData:@[fakeData]];
     testImage = [UIImage imageNamed:@"rivermountain"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label];
+    [fakeLabel addLabelModelData:@[fakeData]];
     [modelLabels addObject:fakeLabel];
     // Add one mountain to the label "hill" and add to dvc
     fakeLabel = [[ModelLabel new] initEmptyLabel:@"hill" testTrainType:dataTypeEnumToString(Train)];
     testImage = [UIImage imageNamed:@"snowymountains"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label];
+    [fakeLabel addLabelModelData:@[fakeData]];
     [modelLabels addObject:fakeLabel];
     [self.userDataCollectionView reloadData];
 }

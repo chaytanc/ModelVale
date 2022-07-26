@@ -18,7 +18,7 @@
 
 
 @interface ModelViewController ()
-@property (weak, nonatomic) NSMutableArray<AvatarMLModel*>* models;
+@property (strong, nonatomic) NSMutableArray<AvatarMLModel*>* models;
 @property (nonatomic, assign) NSInteger modelInd;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UIView *healthBarView;
@@ -38,7 +38,8 @@
     self.dataButton.layer.cornerRadius = 10;
     self.modelInd = 0;
     self.user = [PFUser currentUser];
-    self.models = [[StarterModels new] initStarterModels: self.user]; //XXX todo upload baseline models to user in registration
+    StarterModels* starters = [[StarterModels new] initStarterModels: self.user]; //XXX todo upload baseline models to user in registration
+    self.models = starters.models;
     [self configureModel];
 
 }

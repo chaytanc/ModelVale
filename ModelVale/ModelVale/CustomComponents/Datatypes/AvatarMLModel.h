@@ -17,11 +17,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString* modelName;
 @property (nonatomic, strong) NSString* avatarName;
 @property (nonatomic, assign) NSInteger health;
-@property (nonatomic, strong) NSMutableArray<ModelLabel*>* labeledData;
+@property (nonatomic, strong) NSMutableArray* labeledData;
 @property (nonatomic, weak) PFUser* owner;
 
-//XXX TODO add properties for database
-// owner, labeledData, weights, architecture
 //XXX todo update these properties in retrain and test
 - (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName user: (PFUser*)user;
 - (MLModel*) getMLModelFromModelName;
