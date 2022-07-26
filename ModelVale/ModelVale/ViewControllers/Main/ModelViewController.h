@@ -10,7 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ModelViewController : UIViewController
-
+@property (nonatomic, assign) CGPoint seed;
 @end
 
 NS_ASSUME_NONNULL_END

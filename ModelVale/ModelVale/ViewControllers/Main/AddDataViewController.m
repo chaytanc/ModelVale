@@ -101,7 +101,6 @@
 }
 
 // MARK: Camera Picker
-// What to do with selection from camera roll or photo from camera
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     
     // Get the image captured by the UIImagePickerController
