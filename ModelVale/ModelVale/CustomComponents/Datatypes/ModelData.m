@@ -17,10 +17,12 @@
 
 @implementation ModelData
 
+//XXX todo make sure this uploads pffileobject like instagram
 @dynamic label;
 //@dynamic image;
 @dynamic imageFile;
 @synthesize image = _image;
+
 
 + (nonnull NSString *)parseClassName {
     return @"ModelData";
@@ -55,7 +57,10 @@
 
 - (void)setImage:(UIImage *)image {
     _image = image;
-    self.imageFile = [PFFileObject fileObjectWithData:UIImagePNGRepresentation(image)];
+    //XXX todo find better name
+    NSString* filename = @"image.png";
+    NSData* data = UIImagePNGRepresentation(image);
+    self.imageFile = [PFFileObject fileObjectWithName:filename data:data];
 }
 
 - (void) uploadDataOnVC: (UIViewController*)vc completion: (PFBooleanResultBlock  _Nullable)completion {
