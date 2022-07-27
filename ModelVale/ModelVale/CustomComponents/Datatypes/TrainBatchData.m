@@ -16,19 +16,22 @@
 @implementation TrainBatchData
 
 - (TrainBatchData*) initTrainBatch: (MLImageConstraint*) imageConstraint {
-    // TODO use data from query instead of fake data
+    //XXX TODO use data from query instead of fake data
     
     self.trainBatchLabels = [NSMutableArray new];
     // We create two labels, the first has two images the second has one image, this represents all the training data that was
     ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"alp" testTrainType:dataTypeEnumToString(Train)];
     UIImage* testImage = [UIImage imageNamed:@"mountain"];
     ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label];
+    [fakeLabel addLabelModelData:@[fakeData]];
     testImage = [UIImage imageNamed:@"rivermountain"];
     fakeData = [ModelData initWithImage:testImage label:fakeLabel.label];
+    [fakeLabel addLabelModelData:@[fakeData]];
     [self.trainBatchLabels addObject:fakeLabel];
     fakeLabel = [[ModelLabel new] initEmptyLabel:@"vulture" testTrainType:dataTypeEnumToString(Train)];
     testImage = [UIImage imageNamed:@"snowymountains"];
     fakeData = [ModelData initWithImage:testImage label:fakeLabel.label];
+    [fakeLabel addLabelModelData:@[fakeData]];
     [self.trainBatchLabels addObject:fakeLabel];
     
     [self setBatchFeatureProvider:imageConstraint];

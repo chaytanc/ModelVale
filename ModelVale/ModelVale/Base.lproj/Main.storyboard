@@ -316,7 +316,7 @@
                     <navigationItem key="navigationItem" title="Test" id="jvf-qt-1Le">
                         <barButtonItem key="rightBarButtonItem" title="Data" id="hVH-yt-WsP">
                             <connections>
-                                <segue destination="kKw-Zs-x18" kind="show" identifier="testToData" id="HSQ-2g-ZFu"/>
+                                <action selector="didTapData:" destination="FTE-bX-UES" id="otf-UV-4NP"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -326,6 +326,7 @@
                         <outlet property="testCollView" destination="dWW-FV-lwg" id="DFZ-LW-wGB"/>
                         <outlet property="testLabel" destination="4sY-Gw-h2e" id="TS3-xo-sLv"/>
                         <outlet property="totalLabel" destination="HJh-8b-zAE" id="dOs-lZ-8Wg"/>
+                        <segue destination="kKw-Zs-x18" kind="show" identifier="testToData" id="L8M-ue-Kaw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LBv-wN-RC2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -707,7 +708,7 @@
                     <navigationItem key="navigationItem" title="Retrain" id="u9Z-Cg-GSn">
                         <barButtonItem key="rightBarButtonItem" title="Data" id="0mY-HN-a9a">
                             <connections>
-                                <segue destination="kKw-Zs-x18" kind="show" identifier="retrainToData" id="KJ5-bt-7Am"/>
+                                <action selector="didTapData:" destination="D26-MH-1f0" id="LtC-ml-Ioy"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -716,6 +717,7 @@
                         <outlet property="statsLabel" destination="rLW-dd-maQ" id="BRQ-Sn-aS4"/>
                         <outlet property="testCollView" destination="T9m-G4-mEt" id="bOg-ZL-yOq"/>
                         <outlet property="totalLabel" destination="dLU-ZD-ebB" id="TAv-JX-7WS"/>
+                        <segue destination="kKw-Zs-x18" kind="show" identifier="retrainToData" id="Nq6-wS-EMn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2pE-3x-2c1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -724,7 +726,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="KJ5-bt-7Am"/>
+        <segue reference="L8M-ue-Kaw"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.left.circle.fill" catalog="system" width="128" height="121"/>

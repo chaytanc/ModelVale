@@ -124,7 +124,9 @@
             ModelLabel* label = labels[0];
             label.labelModelData = self.label.labelModelData;
             label.numPerLabel = self.label.numPerLabel;
-            [label updateModelLabel:self completion:nil];
+            [label updateModelLabel:self completion:^(BOOL succeeded, NSError * _Nullable error) {
+                completion(succeeded, error);
+            }];
             self.label = label;
             assert([self.model.labeledData containsObject:self.label]);
         }
@@ -138,6 +140,7 @@
 //                    [self.model.labeledData addObject:self.label];
 //                    [self.model updateModel:self];
                 }
+                completion(succeeded, error);
             }];
         }
     }];
@@ -145,7 +148,12 @@
 
 - (IBAction)didTapDone:(id)sender {
     self.label.label = self.labelField.text;
-    [self saveModelLabelWithCompletion:nil];
+    [self saveModelLabelWithCompletion:^(BOOL succeeded, NSError * _Nullable error) {
+        if(succeeded) {
+            //XXX todo can't tell if this will get called because just started having "entity too large" again
+            [self dismissViewControllerAnimated:YES completion:nil];
+        }
+    }];
 }
 
 // MARK: Multiple Select QBImagePicker

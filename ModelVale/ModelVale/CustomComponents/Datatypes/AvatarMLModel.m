@@ -37,6 +37,7 @@ CGFloat const MAXHEALTH = 500;
     return self;
 }
 
+//XXX todo only works with SqueezeNet rn
 - (MLModel*) getMLModelFromModelName {
     NSURL* modelURL = [[NSBundle mainBundle] URLForResource:self.modelName withExtension:@"mlmodelc"];
     MLModel* model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:modelURL error:nil].model;

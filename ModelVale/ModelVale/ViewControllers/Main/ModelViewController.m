@@ -15,7 +15,8 @@
 #import "AvatarMLModel.h"
 #import "StarterModels.h"
 #import "DataViewController.h"
-
+#import "RetrainViewController.h"
+#import "TestViewController.h"
 
 @interface ModelViewController ()
 @property (strong, nonatomic) NSMutableArray<AvatarMLModel*>* models;
@@ -86,6 +87,14 @@
     if([[segue identifier] isEqualToString:@"modelToData"]) {
         DataViewController* targetController = (DataViewController*) [segue destinationViewController];
         targetController.model = [self getCurrModel:self.modelInd];
+    }
+    else if ([segue.identifier isEqualToString:@"modelToTest"]) {
+        TestViewController* target = (TestViewController*) [segue destinationViewController];
+        target.model = [self getCurrModel:self.modelInd];
+    }
+    else if ([segue.identifier isEqualToString:@"modelToRetrain"]) {
+        RetrainViewController* target = (RetrainViewController*) [segue destinationViewController];
+        target.model = [self getCurrModel:self.modelInd];
     }
 }
 @end

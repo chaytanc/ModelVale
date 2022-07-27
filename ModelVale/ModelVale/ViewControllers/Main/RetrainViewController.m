@@ -11,23 +11,25 @@
 #import "ModelData.h"
 #import "UpdatableSqueezeNet.h"
 #import "TrainBatchData.h"
+#import "AvatarMLModel.h"
+#import "AddDataViewController.h"
 
 @interface RetrainViewController ()
 @property (nonatomic, strong) TrainBatchData* trainBatch;
-@property (nonatomic, strong) UpdatableSqueezeNet* model;
 @property (weak, nonatomic) IBOutlet UILabel *retrainLabel;
 @property (weak, nonatomic) IBOutlet UICollectionView *testCollView;
 @property (weak, nonatomic) IBOutlet UILabel *totalLabel;
 @property (weak, nonatomic) IBOutlet UILabel *statsLabel;
-
+@property (strong, nonatomic) MLModel* mlmodel;
+@property (strong, nonatomic) NSURL* modelURL;
 @end
 
 @implementation RetrainViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSURL* modelURL = [[NSBundle mainBundle] URLForResource:@"UpdatableSqueezeNet" withExtension:@"mlmodelc"];
-    self.model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:modelURL error:nil];
+    self.mlmodel = [self.model getMLModelFromModelName];
+    self.modelURL = [self loadModelURL:self.model.modelName extension:@"mlmodelc"];
 }
 
 // XXX todo move these two funcs to model class
@@ -54,13 +56,17 @@
     return model;
 }
 
+- (IBAction)didTapData:(id)sender {
+    [self performSegueWithIdentifier:@"retrainToData" sender:nil];
+}
+
 //XXX todo use retrain data passed to this controller or found with query to retrain
 // https://betterprogramming.pub/how-to-train-a-core-ml-model-on-your-device-cccd0bee19d
 - (IBAction)didTapRetrain:(id)sender {
     
     NSLog(@"Retrain Tapped");
     
-    MLImageConstraint* constraint = self.model.model.modelDescription.inputDescriptionsByName[@"image"].imageConstraint;
+    MLImageConstraint* constraint = self.mlmodel.modelDescription.inputDescriptionsByName[@"image"].imageConstraint;
     TrainBatchData* trainBatchData = [[TrainBatchData new] initTrainBatch: constraint];
     
     //XXX todo move these to their own functions??
@@ -81,7 +87,7 @@
     
     void(^finalProgressCompletion)(MLUpdateContext* _Nonnull context) = ^(MLUpdateContext* _Nonnull context) {
         if(context.event == MLUpdateProgressEventMiniBatchEnd) {
-            // todo handle events
+            //XXX todo handle events
             NSLog(@"batch end");
         }
         NSLog(@"train end");
@@ -90,19 +96,24 @@
             [NSException raise:@"Model retrain failed" format:@"Error: %@", context.task.error];
         }
         // Write the retrained model to disk
-        NSURL* modelURL = [self loadModelURL:@"UpdatableSqueezeNet" extension:@"mlmodelc"];
-        [context.model writeToURL:modelURL error:nil];
-        self.model = [self loadModel:modelURL];
+        [context.model writeToURL:self.modelURL error:nil];
+        self.mlmodel = [self loadModel:self.modelURL].model;
     };
     
     MLArrayBatchProvider* batchProvider = trainBatchData.trainBatch;
     MLUpdateProgressHandlers* handlers = [[MLUpdateProgressHandlers alloc] initForEvents:MLUpdateProgressEventTrainingBegin | MLUpdateProgressEventMiniBatchEnd | MLUpdateProgressEventEpochEnd progressHandler:progHandler completionHandler:finalProgressCompletion];
     
-    NSURL* modelURL = [self loadModelURL:@"UpdatableSqueezeNet" extension:@"mlmodelc"];
-    MLUpdateTask* task = [MLUpdateTask updateTaskForModelAtURL:modelURL trainingData:batchProvider progressHandlers:handlers error:nil];
-    // Todo Can define other model parameters with MLParameterKey here if wanted
+    MLUpdateTask* task = [MLUpdateTask updateTaskForModelAtURL:self.modelURL trainingData:batchProvider progressHandlers:handlers error:nil];
+    //XXX Todo Can define other model parameters with MLParameterKey here
     [task resume];
     NSLog(@"Async Training");
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if([[segue identifier] isEqualToString:@"retrainToData"]) {
+        AddDataViewController* targetController = (AddDataViewController*) [segue destinationViewController];
+        targetController.model = self.model;
+    }
 }
 
 @end
