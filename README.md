@@ -98,12 +98,16 @@ Optional:
     * Save stats of models for each user
 * User retraining of model with CoreML
     * Use user captured data, photos
+* Add healthbar animation and xp animations.
 
 **Week 4, July 25**
-* Improve avatars of models
-* Uploading new models
-* Start stretch features if ready
-    
+* Database code
+    * Investigate, test and debug wich database platform is better for the application context(Firebase or Parse).
+    * Create the boilerplate in the the selected platform admin page.
+    * Crate boilerplate code in the iOS client application.
+    * Implement CRUD actions in the iOS app to the selected platform.
+   
+ //TODO: (update week 5 work) 
 **Week 5, August 01**
 * Get feedback from Taylor and David, review and revise
 * Self review
