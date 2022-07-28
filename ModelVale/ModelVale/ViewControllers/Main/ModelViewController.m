@@ -6,7 +6,6 @@
 //
 
 #import "ModelViewController.h"
-#import "Parse/Parse.h"
 #import "UIViewController+PresentError.h"
 #import "LoginViewController.h"
 #import "SceneDelegate.h"
@@ -21,6 +20,9 @@
 #import "XPCluster.h"
 #import "XP.h"
 #import "GameplayKit/GameplayKit.h"
+@import FirebaseAuth;
+@import FirebaseFirestore;
+
 
 CGFloat const kAnimationDuration = 2.5f;
 NSInteger const kXPSize = 20;
@@ -43,23 +45,33 @@ NSInteger const kSigmaYDivisor = 6;
 @property (weak, nonatomic) IBOutlet UIButton *testButton;
 @property (weak, nonatomic) IBOutlet UIButton *trainButton;
 @property (weak, nonatomic) IBOutlet UIButton *dataButton;
-@property (nonatomic, strong) PFUser* user;
+//@property (nonatomic, strong) PFUser* user;
 
 @property (nonatomic, assign) NSInteger numClusters;
 @property (nonatomic, assign) CGPoint XPEndPoint;
 @property (nonatomic,strong) NSMutableArray<XPCluster*>* clusters;
+//MARK: Firebase props
+//XXX todo make database manager??
+@property (nonatomic, strong) FIRAuth* handle;
+@property (nonatomic, readwrite) FIRFirestore *db;
+@property (nonatomic, strong) NSString* uid;
 @end
 
 @implementation ModelViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    // Firebase
+    self.uid = [[FIRAuth auth] currentUser].uid;
+    self.db = [FIRFirestore firestore];
+    
     self.testButton.layer.cornerRadius = 10;
     self.trainButton.layer.cornerRadius = 10;
     self.dataButton.layer.cornerRadius = 10;
     self.modelInd = 0;
-    self.user = [PFUser currentUser];
-    StarterModels* starters = [[StarterModels new] initStarterModels: self.user]; //XXX todo upload baseline models to user in registration
+
+    StarterModels* starters = [[StarterModels new] initStarterModels: self.uid]; //XXX todo upload baseline models to user in registration
     self.models = starters.models;
     [self configureModel];
     
@@ -85,18 +97,16 @@ NSInteger const kSigmaYDivisor = 6;
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    self.handle = [[FIRAuth auth]
+                   addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
+            //XXX todo if signed out, transition to login vc
+    }];
 }
 
-- (void) setHealthBarPropsForXP {
-    self.seed = CGPointMake(self.view.frame.size.width - kSeedXOffset, self.view.frame.size.height - kSeedYOffset);
-    // Hierarchy
-    // self.view --> self.detailsView --> self.avatarStackView --> self.healthBarView
-    // Since healthBarView is the top view of avatarStackView, they share an origin
-    CGPoint healthBarViewOrigin1 = [self.view convertRect:self.avatarStackView.frame fromView:self.detailsView].origin;
-    CGFloat filledHealthXCoord = self.healthBarView.filledBarEndPoint.x;
-    CGFloat middleHealthYCoord = self.healthBarView.filledBarEndPoint.y;
-    self.XPEndPoint = CGPointMake(healthBarViewOrigin1.x + filledHealthXCoord, healthBarViewOrigin1.y + middleHealthYCoord);
+- (void)viewWillDisappear:(BOOL)animated {
+    [[FIRAuth auth] removeAuthStateDidChangeListener:_handle];
 }
+
 
 - (AvatarMLModel*) getCurrModel: (NSInteger) ind {
     NSInteger relInd = ind % self.models.count;
@@ -105,10 +115,8 @@ NSInteger const kSigmaYDivisor = 6;
 
 //XXX todo, config model name, type, etc
 - (void) configureModel {
-    NSString* name = self.nameLabel.text;
-    AvatarMLModel* model = [[AvatarMLModel new] initWithModelName:@"UpdatableSqueezeNet" avatarName: name user: self.user];
-    [self.models addObject:model];
-    [model uploadModelToUserWithViewController:self.user vc:self];
+    AvatarMLModel* model = self.models[0];
+    [model uploadModelToUserWithViewController:self.uid db:self.db vc:self];
 }
 - (IBAction)didTapLeftNext:(id)sender {
     self.modelInd -= 1;
@@ -120,21 +128,43 @@ NSInteger const kSigmaYDivisor = 6;
     //XXX todo update which model is showing by fetching etc
 }
 
+//MARK: Logout
+//
+//- (void)detachDatabaseListener {
+//  id<FIRListenerRegistration> listener = [[self.db collectionWithPath:@"usersData"]
+//      addSnapshotListener:^(FIRQuerySnapshot *snapshot, NSError *error) {
+//  }];
+//    self.db = nil;
+//  [listener remove];
+//}
 - (IBAction)didTapLogout:(id)sender {
     NSLog(@"Logout Tapped");
-    [PFUser logOutInBackgroundWithBlock:^(NSError * _Nullable error) {
-        if(error != nil) {
-            [self presentError:@"Logout Failed" message:error.localizedDescription error:error];
-        }
-        else {
-            SceneDelegate *sceneDelegate = (SceneDelegate * ) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
-            
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Login" bundle:nil];
-            LoginViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+    //XXX todo logout w firauth
+//    [self detachDatabaseListener];
+    [self performLogout];
+    [self transitionToLoginVC];
+}
 
-            [sceneDelegate.window setRootViewController:loginViewController];
-        }
-    }];
+
+- (void)performLogout {
+    NSError *signOutError;
+    BOOL status = [[FIRAuth auth] signOut:&signOutError];
+    if (!status) {
+        [self presentError:@"Failed to logout" message:signOutError.localizedDescription error:signOutError];
+        return;
+    }
+    [self clearLocalData];
+}
+
+-(void)clearLocalData {
+    [self.models removeAllObjects];
+}
+
+-(void)transitionToLoginVC {
+    SceneDelegate *sceneDelegate = (SceneDelegate *) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Login" bundle:nil];
+    UIViewController *loginViewController = (UIViewController*) [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+    [sceneDelegate.window setRootViewController:loginViewController];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -152,6 +182,17 @@ NSInteger const kSigmaYDivisor = 6;
     }
 }
 //MARK: XP animations
+
+- (void) setHealthBarPropsForXP {
+    self.seed = CGPointMake(self.view.frame.size.width - kSeedXOffset, self.view.frame.size.height - kSeedYOffset);
+    // Hierarchy
+    // self.view --> self.detailsView --> self.avatarStackView --> self.healthBarView
+    // Since healthBarView is the top view of avatarStackView, they share an origin
+    CGPoint healthBarViewOrigin1 = [self.view convertRect:self.avatarStackView.frame fromView:self.detailsView].origin;
+    CGFloat filledHealthXCoord = self.healthBarView.filledBarEndPoint.x;
+    CGFloat middleHealthYCoord = self.healthBarView.filledBarEndPoint.y;
+    self.XPEndPoint = CGPointMake(healthBarViewOrigin1.x + filledHealthXCoord, healthBarViewOrigin1.y + middleHealthYCoord);
+}
 
 - (UIBezierPath*) getXPLoopPath: (CGPoint)XPStart XPEnd: (CGPoint) XPEnd {
     UIBezierPath* path = [UIBezierPath new];

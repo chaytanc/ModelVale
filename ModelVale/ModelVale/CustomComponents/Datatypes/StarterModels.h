@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Parse/Parse.h"
+@import FirebaseFirestore;
 @class AvatarMLModel;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -14,7 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface StarterModels : NSObject
 
 @property (nonatomic, strong) NSMutableArray<AvatarMLModel*>* models;
--(instancetype) initStarterModels: (PFUser*)user;
+-(instancetype) initStarterModels: (NSString*)uid;
+-(void) uploadStarterModels: (NSString*)uid db: (FIRFirestore*)db vc: (UIViewController*)vc;
 
 @end
 

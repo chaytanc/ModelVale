@@ -28,12 +28,18 @@
 @property (weak, nonatomic) IBOutlet DropDownTextField *labelField;
 @property (strong, nonatomic) ModelLabel* modelLabel;
 
+//XXX todo pass uid to this vc or set
+@property (nonatomic, readwrite) FIRFirestore *db;
+@property (nonatomic, strong) NSString* uid;
+
 @end
 
 @implementation AddDataViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.db = [FIRFirestore firestore];
+
     self.testTrainOptions = (NSArray*) testTrainTypeArray;
     self.data = [NSMutableArray new];
     self.phManager = [PHImageManager new];
@@ -87,85 +93,79 @@
 }
 
 //MARK: Parse
-- (void) uploadModelDataWithCompletion: (PFBooleanResultBlock  _Nullable)completion  {
+- (void) uploadModelData {
     self.modelLabel.label = self.labelField.text;
     self.modelLabel.labelModelData = self.data;
     for(ModelData* data in self.data) {
-        [data uploadDataOnVC:self completion:nil];
+        [data saveNewModelDataWithDatabase:self.db vc:self];
     }
 }
-
-- (void) uploadModelDataBatchWithCompletion:(PFBooleanResultBlock  _Nullable)completion  {
-    self.modelLabel.label = self.labelField.text;
-    self.modelLabel.labelModelData = self.data;
-    // Save batch of all ModelData created from images selected
-    [PFObject saveAllInBackground:self.data block:^(BOOL succeeded, NSError * _Nullable error) {
-        if(error != nil){
-            [self presentError:@"Failed to save ModelData" message:error.localizedDescription error:error];
-        }
-        else {
-            NSLog(@"Saved model data!");
-        }
-    }];
-}
-
-- (void) saveModelLabelWithCompletion: (PFBooleanResultBlock  _Nullable)completion {
-    
-    // Label is the same if the .label and .testTrainType match
-    PFQuery* query = [PFQuery queryWithClassName:@"ModelLabel"];
-    query = [query whereKey:@"label" equalTo:self.modelLabel.label];
-    query = [query whereKey:@"testTrainType" equalTo:self.modelLabel.testTrainType];
-    // Find duplicate label if it exists and update its data, otherwise create a new label
-    [query findObjectsInBackgroundWithBlock:^(NSArray<ModelLabel*> *labels, NSError *error) {
-        if(error != nil){
-            [self presentError:@"Failed to retrieve labels" message:error.localizedDescription error:error];
-        }
-        else if (labels.count != 0) {
-            NSLog(@"Label already exists, updating properties");
-            ModelLabel* label = labels[0];
-            [label addObjectsFromArray:self.modelLabel.labelModelData forKey:@"labelModelData"];
-            self.modelLabel = label;
-            [label updateModelLabel:self completion:^(BOOL succeeded, NSError * _Nullable error) {
-                completion(succeeded, error);
-            }];
-            //XXX todo: this assert fails, why?
-//            assert([self.model.labeledData containsObject:self.label]);
-        }
-        else {
-            NSLog(@"Uploading new label");
-            self.modelLabel[@"label"] = self.modelLabel.label;
-            [self.modelLabel saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                if(succeeded) {
-                    NSLog(@"ModelLabel saved!");
-                    
-                    //XXX todo update model after uploading images is working
-//                    [self.model.labeledData addObject:self.label];
-                    [self.model addObject:self.modelLabel forKey:@"labeledData"];
-//                    self.model[@"labeledData"] = self.model.labeledData;
-//                    [self.model updateModel:self];
-                }
-                else {
-                    [self presentError:@"Failed to update label" message:error.localizedDescription error:error];
-                }
-                completion(succeeded, error);
-            }];
-        }
-    }];
-}
+//
+//- (void) uploadModelDataBatchWithCompletion:(PFBooleanResultBlock  _Nullable)completion  {
+//    self.modelLabel.label = self.labelField.text;
+//    self.modelLabel.labelModelData = self.data;
+//    // Save batch of all ModelData created from images selected
+//    [PFObject saveAllInBackground:self.data block:^(BOOL succeeded, NSError * _Nullable error) {
+//        if(error != nil){
+//            [self presentError:@"Failed to save ModelData" message:error.localizedDescription error:error];
+//        }
+//        else {
+//            NSLog(@"Saved model data!");
+//        }
+//    }];
+//}
+//
+//- (void) saveModelLabelWithCompletion: (PFBooleanResultBlock  _Nullable)completion {
+//
+//    // Label is the same if the .label and .testTrainType match
+//    PFQuery* query = [PFQuery queryWithClassName:@"ModelLabel"];
+//    query = [query whereKey:@"label" equalTo:self.modelLabel.label];
+//    query = [query whereKey:@"testTrainType" equalTo:self.modelLabel.testTrainType];
+//    // Find duplicate label if it exists and update its data, otherwise create a new label
+//    [query findObjectsInBackgroundWithBlock:^(NSArray<ModelLabel*> *labels, NSError *error) {
+//        if(error != nil){
+//            [self presentError:@"Failed to retrieve labels" message:error.localizedDescription error:error];
+//        }
+//        else if (labels.count != 0) {
+//            NSLog(@"Label already exists, updating properties");
+//            ModelLabel* label = labels[0];
+//            [label addObjectsFromArray:self.modelLabel.labelModelData forKey:@"labelModelData"];
+//            self.modelLabel = label;
+//            [label updateModelLabel:self completion:^(BOOL succeeded, NSError * _Nullable error) {
+//                completion(succeeded, error);
+//            }];
+//            //XXX todo: this assert fails, why?
+////            assert([self.model.labeledData containsObject:self.label]);
+//        }
+//        else {
+//            NSLog(@"Uploading new label");
+//            self.modelLabel[@"label"] = self.modelLabel.label;
+//            [self.modelLabel saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+//                if(succeeded) {
+//                    NSLog(@"ModelLabel saved!");
+//
+//                    //XXX todo update model after uploading images is working
+////                    [self.model.labeledData addObject:self.label];
+//                    [self.model addObject:self.modelLabel forKey:@"labeledData"];
+////                    self.model[@"labeledData"] = self.model.labeledData;
+////                    [self.model updateModel:self];
+//                }
+//                else {
+//                    [self presentError:@"Failed to update label" message:error.localizedDescription error:error];
+//                }
+//                completion(succeeded, error);
+//            }];
+//        }
+//    }];
+//}
 
 - (IBAction)didTapDone:(id)sender {
     self.modelLabel.label = self.labelField.text;
-    [self saveModelLabelWithCompletion:^(BOOL succeeded, NSError * _Nullable error) {
-        if(succeeded) {
-            SceneDelegate *sceneDelegate = (SceneDelegate * ) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
-            
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            UINavigationController *modelViewController = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
-
-            [sceneDelegate.window setRootViewController:modelViewController];
-        }
-    }];
+    [self uploadModelData];
 }
+
+//MARK: Firebase
+
 
 // MARK: Multiple Select QBImagePicker
 - (void) getImageFromPH: (PHAsset*)asset imageCompletion: (void (^) (UIImage* image))completion {

@@ -8,20 +8,20 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "CoreML/CoreML.h"
-#import "Parse/Parse.h"
-@class NSString;
+@import FirebaseFirestore;
 
 NS_ASSUME_NONNULL_BEGIN
 
 // One piece of user data with the data it references and the label
-@interface ModelData : PFObject<PFSubclassing>
+@interface ModelData : NSObject
 
 @property (strong, nonatomic) NSString* label;
-//@property (strong, nonatomic) UIImage* image;
-@property (retain) UIImage *image;
+@property (retain) NSString *imagePath;
+@property (strong, nonatomic) UIImage* image;
 
 + (instancetype) initWithImage: (UIImage *)image label:(NSString *)label;
-- (void) uploadDataOnVC: (UIViewController*)vc completion: (PFBooleanResultBlock  _Nullable)completion;
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (void) saveNewModelDataWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc;
 - (MLDictionaryFeatureProvider*) getDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
 - (MLFeatureValue*) getImageFeatureValue: (MLImageConstraint*)modelConstraints;
 - (MLDictionaryFeatureProvider*) getUpdatableDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;

@@ -6,14 +6,17 @@
 //
 
 #import "RegisterViewController.h"
-#import "Parse/Parse.h"
+@import FirebaseAuth;
 #import "UIViewController+PresentError.h"
 #import "SceneDelegate.h"
+#import "StarterModels.h"
+@import FirebaseFirestore;
 
 @interface RegisterViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
+@property (strong, nonatomic) FIRFirestore* db;
 
 @end
 
@@ -21,38 +24,54 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    self.db = [FIRFirestore firestore];
 }
+
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+//    [[FIRAuth auth]
+//                   addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
+//
+//    }];
+}
+
 - (IBAction)didTapCreate:(id)sender {
     [self registerUser];
 }
 
 - (void)registerUser {
-    // init a user object
-    PFUser *newUser = [PFUser user];
-
-    // set user properties
-    newUser.username = self.usernameField.text;
-    newUser.email = self.emailField.text;
-    newUser.password = self.passwordField.text;
-
-    // call sign up function on the object
-    [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * error) {
-        if (error != nil) {
-            NSLog(@"Error: %@", error.localizedDescription);
-            [self presentError:@"Registration Failed" message:error.localizedDescription error:error];
+    [[FIRAuth auth] createUserWithEmail:self.emailField.text
+                               password:self.passwordField.text
+                             completion:^(FIRAuthDataResult * _Nullable authResult,
+                                          NSError * _Nullable error) {
+        if(error != nil) {
+            [self presentError:@"Failed to login" message:error.localizedDescription error:error];
         }
         else {
-            NSLog(@"User registered successfully");
-            
-            SceneDelegate *sceneDelegate = (SceneDelegate * ) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
-            
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            UINavigationController *modelViewController = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
-
-            [sceneDelegate.window setRootViewController:modelViewController];
+            FIRUserProfileChangeRequest *changeRequest = [[FIRAuth auth].currentUser profileChangeRequest];
+            changeRequest.displayName = self.usernameField.text;
+            [changeRequest commitChangesWithCompletion:^(NSError *_Nullable error) {
+                
+                if(error != nil) {
+                    [self presentError:@"Failed to add username" message:error.localizedDescription error:error];
+                }
+                else {
+                    
+                    NSLog(@"User registered successfully");
+                    NSString* uid = [[FIRAuth auth] currentUser].uid;
+                    StarterModels* starters = [[StarterModels new] initStarterModels:uid];
+                    [starters uploadStarterModels:uid db:self.db vc:self];
+                    [self transitionToModelVC];
+                }
+            }];
         }
     }];
 }
 
+-(void) transitionToModelVC {
+    SceneDelegate *sceneDelegate = (SceneDelegate * ) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UINavigationController *modelViewController = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
+    [sceneDelegate.window setRootViewController:modelViewController];
+}
 @end

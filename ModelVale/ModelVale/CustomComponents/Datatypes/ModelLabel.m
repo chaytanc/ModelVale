@@ -8,57 +8,98 @@
 #import "ModelLabel.h"
 #import "ModelData.h"
 #import "TestTrainEnum.h"
-#import "Parse/Parse.h"
+//#import "Parse/Parse.h"
 #import "UIViewController+PresentError.h"
 
 @implementation ModelLabel
 
-+ (nonnull NSString *)parseClassName {
-    return @"ModelLabel";
+
+- (instancetype)initWithDictionaryAndExistingData:(NSDictionary *)dict data: (NSMutableArray*)data {
+    self = [super init];
+    if(self){
+        self.label = dict[@"label"];
+        self.testTrainType = dict[@"testTrainType"];
+        self.labelModelData = [NSMutableArray new];
+        [self.labelModelData addObjectsFromArray: dict[@"labelModelData"]];
+        [self.labelModelData addObjectsFromArray:data];
+    }
+    return self;
 }
 
-@dynamic label;
-@dynamic testTrainType;
-@dynamic labelModelData;
-
 - (instancetype) initEmptyLabel: (NSString*)label testTrainType: (NSString*)testTrainType {
-    self = [ModelLabel object];
     if (self) {
         self.label = label;
         self.testTrainType = testTrainType;
-        [self addObjectsFromArray:@[] forKey:@"labelModelData"];
-
+        self.labelModelData = [NSMutableArray new];
     }
     return self;
 }
 
 - (instancetype) initWithData: (NSString*)label testTrainType: (NSString*)testTrainType
                          data: (NSMutableArray*)data objectId: (NSString*)objectId {
-    self = [ModelLabel object];
     if(self) {
         self.label = label;
         self.testTrainType = testTrainType;
-        [self addObjectsFromArray:data forKey:@"labelModelData"];
-        self.objectId = objectId;
+        self.labelModelData = [NSMutableArray new];
+        [self.labelModelData addObjectsFromArray:data];
     }
     return self;
 }
 
-//XXX todo remove this func
 - (void) addLabelModelData:(NSArray *)objects {
     [self.labelModelData addObjectsFromArray:objects];
 }
 
 
-- (void) updateModelLabel: (UIViewController*)vc completion: (PFBooleanResultBlock  _Nullable)completion {
-    [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if(succeeded) {
-            NSLog(@"ModelLabel saved!");
+// MARK: Firebase
+- (void) saveNewModelLabelWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc {
+    // Add a new ModelData with a generated id.
+    __block FIRDocumentReference *ref =
+        [[db collectionWithPath:@"ModelLabel"] addDocumentWithData:@{
+          @"label": self.label,
+          @"testTrainType": self.testTrainType,
+          @"labelModelData" : self.labelModelData
+        } completion:^(NSError * _Nullable error) {
+          if (error != nil) {
+            NSLog(@"Error adding ModelLabel: %@", error);
+          } else {
+            NSLog(@"ModelLabel added with ID: %@", ref.documentID);
+          }
+        }];
+}
+
+- (void) updateModelLabelWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc {
+    FIRQuery *query = [[db collectionWithPath:@"ModelLabel"] queryWhereField:@"label" isEqualTo:self.label];
+    [query queryWhereField:@"testTrainType" isEqualTo:self.testTrainType];
+    [query getDocumentsWithCompletion:^(FIRQuerySnapshot *snapshot, NSError *error) {
+        if(error != nil) {
+            [vc presentError:@"Failed to fetch labels" message:error.localizedDescription error:error];
+        }
+        else if (snapshot.documents.count > 0){
+            FIRDocumentSnapshot* doc = snapshot.documents[0];
+            NSDictionary* dict = doc.data;
+            NSLog(@"Found %lu matching labels", (unsigned long)snapshot.documents.count);
+            // Update locally
+            [self initWithDictionaryAndExistingData:dict data:self.labelModelData];
+
+            // Update the document found in Firestore
+            [[[db collectionWithPath:@"ModelLabel"] documentWithPath:doc.documentID]
+             setData:@{ @"label": self.label,
+                        @"testTrainType" : self.testTrainType,
+                        @"labelModelData" : self.labelModelData }
+                 merge:YES
+                 completion:^(NSError * _Nullable error) {
+                        if(error != nil){
+                            [vc presentError:@"Failed to update ModelLabel" message:error.localizedDescription error:error];
+                        }
+                        else {
+                            NSLog(@"Uploaded ModelLabel to Firestore");
+                        }
+            }];
         }
         else {
-            [vc presentError:@"Failed to update label" message:error.localizedDescription error:error];
+            [self saveNewModelLabelWithDatabase:db vc:vc];
         }
-        completion(succeeded, error);
     }];
 }
 

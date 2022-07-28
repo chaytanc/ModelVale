@@ -6,25 +6,26 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "UpdatableSqueezeNet.h"
-#import "Parse/Parse.h"
+//#import "Parse/Parse.h"
 @class ModelLabel;
+@import FirebaseFirestore;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AvatarMLModel : PFObject<PFSubclassing>
+@interface AvatarMLModel : NSObject
 
 @property (nonatomic, strong) NSString* modelName;
 @property (nonatomic, strong) NSString* avatarName;
 @property (nonatomic, assign) NSNumber* health;
 @property (nonatomic, strong) NSMutableArray* labeledData;
-@property (nonatomic, weak) PFUser* owner;
 
 //XXX todo update these properties in retrain and test
-- (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName user: (PFUser*)user;
+- (instancetype)initWithDictionary:(NSDictionary *)dict;
+- (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName uid: (NSString*)uid;
 - (MLModel*) getMLModelFromModelName;
-- (void) uploadModelToUserWithViewController: (PFUser*) user vc: (UIViewController*)vc;
-- (void) updateModel: (UIViewController*)vc;
+- (void) uploadModelToUserWithViewController: (NSString*) uid db: (FIRFirestore*)db vc: (UIViewController*)vc;
 
 @end
 

@@ -7,9 +7,12 @@
 
 #import "LoginViewController.h"
 #import "SceneDelegate.h"
-#import "Parse/Parse.h"
+//#import "Parse/Parse.h"
 #import "UIViewController+PresentError.h"
 #import "RegisterViewController.h"
+@import FirebaseCore;
+@import FirebaseFirestore;
+@import FirebaseAuth;
 
 @interface LoginViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
@@ -33,15 +36,16 @@
 }
 
 - (IBAction)didTapLogin:(id)sender {
-    NSString *username = self.usernameField.text;
+    NSString *email = self.usernameField.text;
     NSString *password = self.passwordField.text;
-    
-    [PFUser logInWithUsernameInBackground:username password:password block:^(PFUser * user, NSError *  error) {
-        // Username: Test, Password: Test
-        if (error != nil) {
-            NSLog(@"User log in failed: %@", error.localizedDescription);
-            [self presentError:@"Login failed" message:error.localizedDescription error:error];
-        } else {
+    [[FIRAuth auth] signInWithEmail:email
+                           password:password
+                         completion:^(FIRAuthDataResult * _Nullable authResult,
+                                      NSError * _Nullable error) {
+        if(error != nil) {
+            [self presentError:@"Failed to login" message:error.localizedDescription error:error];
+        }
+        else {
             NSLog(@"User logged in successfully");
             
             SceneDelegate *sceneDelegate = (SceneDelegate * ) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
