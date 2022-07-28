@@ -20,35 +20,33 @@
 @dynamic label;
 @dynamic testTrainType;
 @dynamic labelModelData;
-@dynamic numPerLabel;
-
 
 - (instancetype) initEmptyLabel: (NSString*)label testTrainType: (NSString*)testTrainType {
-    self = [super init];
+    self = [ModelLabel object];
     if (self) {
-        self.numPerLabel = 0;
         self.label = label;
         self.testTrainType = testTrainType;
-        self.labelModelData = [NSMutableArray new];
+        [self addObjectsFromArray:@[] forKey:@"labelModelData"];
+
     }
     return self;
 }
 
 - (instancetype) initWithData: (NSString*)label testTrainType: (NSString*)testTrainType
-                         data: (NSMutableArray*)data {
-    self = [super init];
+                         data: (NSMutableArray*)data objectId: (NSString*)objectId {
+    self = [ModelLabel object];
     if(self) {
-        self.numPerLabel = data.count;
         self.label = label;
         self.testTrainType = testTrainType;
-        self.labelModelData = data;
+        [self addObjectsFromArray:data forKey:@"labelModelData"];
+        self.objectId = objectId;
     }
     return self;
 }
 
+//XXX todo remove this func
 - (void) addLabelModelData:(NSArray *)objects {
     [self.labelModelData addObjectsFromArray:objects];
-    self.numPerLabel += objects.count;
 }
 
 

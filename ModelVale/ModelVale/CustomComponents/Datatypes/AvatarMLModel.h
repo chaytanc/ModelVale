@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSString* modelName;
 @property (nonatomic, strong) NSString* avatarName;
-@property (nonatomic, assign) NSInteger health;
+@property (nonatomic, assign) NSNumber* health;
 @property (nonatomic, strong) NSMutableArray* labeledData;
 @property (nonatomic, weak) PFUser* owner;
 

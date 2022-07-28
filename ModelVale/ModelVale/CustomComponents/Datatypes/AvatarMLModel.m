@@ -10,7 +10,7 @@
 #import "Parse/Parse.h"
 #import "UIViewController+PresentError.h"
 
-CGFloat const MAXHEALTH = 500;
+NSNumber* const MAXHEALTH = @500;
 
 @implementation AvatarMLModel
 
@@ -33,6 +33,12 @@ CGFloat const MAXHEALTH = 500;
         self.health = MAXHEALTH;
         self.labeledData = [NSMutableArray new];
         self.owner = user;
+        //XXX todo this shouldn't be necessary for a subclass
+        self[@"modelName"] = modelName;
+        self[@"avatarName"] = avatarName;
+        self[@"health"] = MAXHEALTH;
+        self[@"labeledData"] = [NSMutableArray new];
+        self[@"owner"] = user;
     }
     return self;
 }
@@ -53,7 +59,7 @@ CGFloat const MAXHEALTH = 500;
     
     // Checks if the model with the avatarName and owner already exists, if not, uploads the new model and updates user.models as well
     PFQuery *query = [PFQuery queryWithClassName:@"Model"];
-    query = [query whereKey:@"avatarName" matchesText:self.avatarName];
+    query = [query whereKey:@"avatarName" equalTo:self.avatarName];
     query = [query whereKey:@"owner" equalTo:user];
     [query findObjectsInBackgroundWithBlock:^(NSArray *models, NSError *error) {
         if(error != nil){
@@ -92,6 +98,20 @@ CGFloat const MAXHEALTH = 500;
         else {
             [vc presentError:@"Failed to create Model" message:error.localizedDescription error:error];
         }
+    }];
+}
+
+- (void) updateExistingModel {
+    PFQuery* query = [PFQuery queryWithClassName:@"Model"];
+    //XXX todo, object id changes when new instance is created with starterModels. Unless i serialize, will have diff obj id, or I can explicitly save the user obj ids in userdefaults
+    [query whereKey:@"avatarName" equalTo:self.avatarName];
+    [query whereKey:@"owner" equalTo:self.owner];
+    [query findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+        assert(objects.count <= 1);
+        AvatarMLModel* m = (AvatarMLModel*) objects[0];
+        m.health = self.health;
+        m[@"labeledData"] = self.labeledData;
+        [m saveInBackground];
     }];
 }
 

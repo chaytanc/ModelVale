@@ -14,6 +14,7 @@
 #import "AvatarMLModel.h"
 #import "ModelData.h"
 #import "ModelLabel.h"
+#import "SceneDelegate.h"
 
 @interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, QBImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
@@ -25,7 +26,7 @@
 @property (weak, nonatomic) IBOutlet UICollectionView *addDataCollView;
 @property (strong, nonatomic) PHImageManager* phManager;
 @property (weak, nonatomic) IBOutlet DropDownTextField *labelField;
-@property (strong, nonatomic) ModelLabel* label;
+@property (strong, nonatomic) ModelLabel* modelLabel;
 
 @end
 
@@ -37,7 +38,7 @@
     self.data = [NSMutableArray new];
     self.phManager = [PHImageManager new];
     self.testTrainPickerView.tag = 0;
-    self.label = [[ModelLabel new] initEmptyLabel:self.labelField.text testTrainType:dataTypeEnumToString(Train)];
+    self.modelLabel = [[ModelLabel new] initEmptyLabel:self.labelField.text testTrainType:dataTypeEnumToString(Train)];
 
     self.imagePickerVC = [QBImagePickerController new];
     self.imagePickerVC.delegate = self;
@@ -54,7 +55,7 @@
     self.testTrainPickerView.dataSource = self;
     self.testTrainPickerView.delegate = self;
 
-    self.label.testTrainType = self.testTrainOptions[0];
+    self.modelLabel.testTrainType = self.testTrainOptions[0];
     //XXX Todo set the model property based on which model we selected initally in ModelViewController
     MLModel* model = [self.model getMLModelFromModelName];
     [self.labelField initPropertiesWithOptions: model.modelDescription.classLabels];
@@ -87,16 +88,16 @@
 
 //MARK: Parse
 - (void) uploadModelDataWithCompletion: (PFBooleanResultBlock  _Nullable)completion  {
-    self.label.label = self.labelField.text;
-    self.label.labelModelData = self.data;
+    self.modelLabel.label = self.labelField.text;
+    self.modelLabel.labelModelData = self.data;
     for(ModelData* data in self.data) {
         [data uploadDataOnVC:self completion:nil];
     }
 }
 
 - (void) uploadModelDataBatchWithCompletion:(PFBooleanResultBlock  _Nullable)completion  {
-    self.label.label = self.labelField.text;
-    self.label.labelModelData = self.data;
+    self.modelLabel.label = self.labelField.text;
+    self.modelLabel.labelModelData = self.data;
     // Save batch of all ModelData created from images selected
     [PFObject saveAllInBackground:self.data block:^(BOOL succeeded, NSError * _Nullable error) {
         if(error != nil){
@@ -112,33 +113,39 @@
     
     // Label is the same if the .label and .testTrainType match
     PFQuery* query = [PFQuery queryWithClassName:@"ModelLabel"];
-    query = [query whereKey:@"label" matchesText:self.label.label];
-    query = [query whereKey:@"testTrainType" matchesText:self.label.testTrainType];
+    query = [query whereKey:@"label" equalTo:self.modelLabel.label];
+    query = [query whereKey:@"testTrainType" equalTo:self.modelLabel.testTrainType];
     // Find duplicate label if it exists and update its data, otherwise create a new label
-    [query findObjectsInBackgroundWithBlock:^(NSArray *labels, NSError *error) {
+    [query findObjectsInBackgroundWithBlock:^(NSArray<ModelLabel*> *labels, NSError *error) {
         if(error != nil){
             [self presentError:@"Failed to retrieve labels" message:error.localizedDescription error:error];
         }
         else if (labels.count != 0) {
             NSLog(@"Label already exists, updating properties");
             ModelLabel* label = labels[0];
-            label.labelModelData = self.label.labelModelData;
-            label.numPerLabel = self.label.numPerLabel;
+            [label addObjectsFromArray:self.modelLabel.labelModelData forKey:@"labelModelData"];
+            self.modelLabel = label;
             [label updateModelLabel:self completion:^(BOOL succeeded, NSError * _Nullable error) {
                 completion(succeeded, error);
             }];
-            self.label = label;
-            assert([self.model.labeledData containsObject:self.label]);
+            //XXX todo: this assert fails, why?
+//            assert([self.model.labeledData containsObject:self.label]);
         }
         else {
             NSLog(@"Uploading new label");
-            [self.label updateModelLabel: self completion:^(BOOL succeeded, NSError * _Nullable error) {
-                if(error != nil) {
-                    [self presentError:@"Failed to upload new ModelLabel" message:error.localizedDescription error:error];
+            self.modelLabel[@"label"] = self.modelLabel.label;
+            [self.modelLabel saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                if(succeeded) {
+                    NSLog(@"ModelLabel saved!");
+                    
+                    //XXX todo update model after uploading images is working
+//                    [self.model.labeledData addObject:self.label];
+                    [self.model addObject:self.modelLabel forKey:@"labeledData"];
+//                    self.model[@"labeledData"] = self.model.labeledData;
+//                    [self.model updateModel:self];
                 }
                 else {
-//                    [self.model.labeledData addObject:self.label];
-//                    [self.model updateModel:self];
+                    [self presentError:@"Failed to update label" message:error.localizedDescription error:error];
                 }
                 completion(succeeded, error);
             }];
@@ -147,11 +154,15 @@
 }
 
 - (IBAction)didTapDone:(id)sender {
-    self.label.label = self.labelField.text;
+    self.modelLabel.label = self.labelField.text;
     [self saveModelLabelWithCompletion:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded) {
-            //XXX todo can't tell if this will get called because just started having "entity too large" again
-            [self dismissViewControllerAnimated:YES completion:nil];
+            SceneDelegate *sceneDelegate = (SceneDelegate * ) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
+            
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            UINavigationController *modelViewController = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
+
+            [sceneDelegate.window setRootViewController:modelViewController];
         }
     }];
 }
@@ -175,9 +186,9 @@
 - (void) qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
     for(id asset in assets) {
         [self getImageFromPH:asset imageCompletion:^(UIImage *image) {
-            ModelData* data = [ModelData initWithImage:image label:self.label.label];
+            ModelData* data = [ModelData initWithImage:image label:self.modelLabel.label];
             [self.data addObject:data];
-            [self.label addLabelModelData:@[data]];
+            [self.modelLabel addLabelModelData:@[data]];
             [self.addDataCollView reloadData];
         }];
     }
@@ -193,9 +204,9 @@
     
     // Get the image captured by the UIImagePickerController
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
-    ModelData* data = [ModelData initWithImage:editedImage label:self.label.label];
+    ModelData* data = [ModelData initWithImage:editedImage label:self.modelLabel.label];
     [self.data addObject:data];
-    [self.label addLabelModelData:@[data]];
+    [self.modelLabel addLabelModelData:@[data]];
 
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.addDataCollView reloadData];
@@ -232,7 +243,7 @@
       didSelectRow:(NSInteger)row
        inComponent:(NSInteger)component {
     if (pickerView.tag == 0) {
-        self.label.testTrainType = self.testTrainOptions[row];
+        self.modelLabel.testTrainType = self.testTrainOptions[row];
     }
 }
 

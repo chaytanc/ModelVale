@@ -61,7 +61,7 @@
 - (NSInteger)collectionView:(nonnull UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
     ModelLabel* label = self.model.labeledData[section];
-    return label.numPerLabel;
+    return label.labelModelData.count;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
