@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
+@property (weak, nonatomic) IBOutlet UIButton *createButton;
 @property (strong, nonatomic) FIRFirestore* db;
 
 @end
@@ -25,6 +26,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.db = [FIRFirestore firestore];
+    self.createButton.layer.cornerRadius = 10;
+    self.createButton.clipsToBounds = YES;
 }
 
 - (void) viewWillAppear:(BOOL)animated {

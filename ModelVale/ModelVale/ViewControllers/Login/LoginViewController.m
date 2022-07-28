@@ -17,6 +17,8 @@
 @interface LoginViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *usernameField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
+@property (weak, nonatomic) IBOutlet UIButton *loginButton;
+@property (weak, nonatomic) IBOutlet UIButton *createButton;
 
 
 @end
@@ -25,7 +27,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    self.loginButton.layer.cornerRadius = 10;
+    self.createButton.layer.cornerRadius = 10;
+    self.loginButton.clipsToBounds = YES;
+    self.createButton.clipsToBounds = YES;
 }
 
 - (IBAction)didTapCreate:(id)sender {
