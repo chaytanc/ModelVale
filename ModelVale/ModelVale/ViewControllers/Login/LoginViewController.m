@@ -15,7 +15,7 @@
 @import FirebaseAuth;
 
 @interface LoginViewController ()
-@property (weak, nonatomic) IBOutlet UITextField *usernameField;
+@property (weak, nonatomic) IBOutlet UITextField *emailField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
 @property (weak, nonatomic) IBOutlet UIButton *createButton;
@@ -41,7 +41,7 @@
 }
 
 - (IBAction)didTapLogin:(id)sender {
-    NSString *email = self.usernameField.text;
+    NSString *email = self.emailField.text;
     NSString *password = self.passwordField.text;
     [[FIRAuth auth] signInWithEmail:email
                            password:password

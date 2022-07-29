@@ -90,9 +90,9 @@
                     <navigationItem key="navigationItem" id="eYo-U9-rIS"/>
                     <connections>
                         <outlet property="createButton" destination="XJr-x0-cr6" id="OX3-6F-qWa"/>
+                        <outlet property="emailField" destination="5eH-2X-GT0" id="fYk-7a-G9E"/>
                         <outlet property="loginButton" destination="RNH-pC-e73" id="iZo-qe-pmN"/>
-                        <outlet property="passwordField" destination="xdo-qm-5PV" id="DV4-g8-imh"/>
-                        <outlet property="usernameField" destination="5eH-2X-GT0" id="tKM-cg-moq"/>
+                        <outlet property="passwordField" destination="xdo-qm-5PV" id="7b1-iu-o5F"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
