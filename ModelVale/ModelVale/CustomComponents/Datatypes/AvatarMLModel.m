@@ -54,15 +54,13 @@ NSNumber* const MAXHEALTH = @500;
         if(error != nil) {
             [vc presentError:@"Failed to fetch models" message:error.localizedDescription error:error];
         }
-        // If a model already exists under that avatarName
+        // If a model already exists under that avatarName, update local properties, then update the database model
         else if(snapshot.data != nil) {
             [self initWithDictionary:snapshot.data];
             
         }
         [self updateModel:uid db:db vc:vc];
     }];
-
-
 }
 
 - (void) updateUserModelDocRefs: (NSString*)uid db: (FIRFirestore*)db userModelDocRefs: (NSMutableArray*)userModelDocRefs vc: (UIViewController*)vc {
@@ -70,10 +68,6 @@ NSNumber* const MAXHEALTH = @500;
     FIRDocumentReference* docRef = [[db collectionWithPath:@"users"] documentWithPath:uid];
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
         NSMutableArray* userModelDocRefs = snapshot.data[@"models"];
-        //XXX todo this should never be nil due to startermodels upload
-        if(userModelDocRefs == nil) {
-            userModelDocRefs = [NSMutableArray new];
-        }
         if(![userModelDocRefs containsObject:self.avatarName]) {
             [userModelDocRefs addObject:self.avatarName];
             [self addUserModelDocRefs:uid db:db userModelDocRefs:userModelDocRefs vc:vc];
@@ -110,6 +104,19 @@ NSNumber* const MAXHEALTH = @500;
                     [self updateUserModelDocRefs:uid db:db userModelDocRefs:self.userModelDocRefs vc:vc];
                 }
     }];
+}
+
++ (void) fetchAndCreateAvatarMLModel: (FIRFirestore*)db documentPath: (NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion {
+    FIRDocumentReference *docRef = [[db collectionWithPath:@"Model"] documentWithPath:documentPath];
+    [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+       if (snapshot.exists) {
+           NSLog(@"Model data: %@", snapshot.data);
+           AvatarMLModel* model = [[AvatarMLModel new] initWithDictionary: snapshot.data];
+           completion(model);
+       } else {
+         NSLog(@"Model does not exist");
+       }
+     }];
 }
 
 @end

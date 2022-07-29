@@ -8,7 +8,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "UpdatableSqueezeNet.h"
-//#import "Parse/Parse.h"
 @class ModelLabel;
 @import FirebaseFirestore;
 
@@ -26,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName uid: (NSString*)uid;
 - (MLModel*) getMLModelFromModelName;
 - (void) uploadModelToUserWithViewController: (NSString*) uid db: (FIRFirestore*)db vc: (UIViewController*)vc;
++ (void) fetchAndCreateAvatarMLModel: (FIRFirestore*)db documentPath: (NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion;
 
 @end
 

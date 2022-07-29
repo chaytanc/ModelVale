@@ -35,7 +35,7 @@ NSInteger const kSigmaXDivisor = 6;
 NSInteger const kSigmaYDivisor = 6;
 
 @interface ModelViewController () <CAAnimationDelegate>
-@property (strong, nonatomic) NSMutableArray<AvatarMLModel*>* models;
+//@property (strong, nonatomic) NSMutableArray<AvatarMLModel*>* models;
 @property (nonatomic, assign) NSInteger modelInd;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UIView *detailsView;
@@ -45,16 +45,10 @@ NSInteger const kSigmaYDivisor = 6;
 @property (weak, nonatomic) IBOutlet UIButton *testButton;
 @property (weak, nonatomic) IBOutlet UIButton *trainButton;
 @property (weak, nonatomic) IBOutlet UIButton *dataButton;
-//@property (nonatomic, strong) PFUser* user;
 
 @property (nonatomic, assign) NSInteger numClusters;
 @property (nonatomic, assign) CGPoint XPEndPoint;
 @property (nonatomic,strong) NSMutableArray<XPCluster*>* clusters;
-//MARK: Firebase props
-//XXX todo make database manager??
-@property (nonatomic, strong) FIRAuth* handle;
-@property (nonatomic, readwrite) FIRFirestore *db;
-@property (nonatomic, strong) NSString* uid;
 @end
 
 @implementation ModelViewController
@@ -62,16 +56,14 @@ NSInteger const kSigmaYDivisor = 6;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    // Firebase
-    self.uid = [[FIRAuth auth] currentUser].uid;
-    self.db = [FIRFirestore firestore];
+    [self fetchAndSetVCModels];
     
     self.testButton.layer.cornerRadius = 10;
     self.trainButton.layer.cornerRadius = 10;
     self.dataButton.layer.cornerRadius = 10;
     self.modelInd = 0;
 
-    StarterModels* starters = [[StarterModels new] initStarterModels: self.uid]; //XXX todo upload baseline models to user in registration
+    StarterModels* starters = [[StarterModels new] initStarterModels: self.uid];
     self.models = starters.models;
     [self configureModel];
     
@@ -95,18 +87,23 @@ NSInteger const kSigmaYDivisor = 6;
     [self animateXPClusters:self.clusters];
 }
 
-- (void) viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    self.handle = [[FIRAuth auth]
-                   addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-            //XXX todo if signed out, transition to login vc
+//XXX todo working here to get self.models prop set locally, not hitting these breakpoints
+- (void) fetchAndSetVCModels {
+    FIRDocumentReference* docRef = [[self.db collectionWithPath:@"users"] documentWithPath:self.uid];
+    [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+        if(error != nil) {
+            [self presentError:@"Failed to fetch user models" message:error.localizedDescription error:error];
+        }
+        else {
+            NSMutableArray* userModelDocRefs = snapshot.data[@"models"];
+            for(NSString* modelRef in userModelDocRefs) {
+                [AvatarMLModel fetchAndCreateAvatarMLModel:self.db documentPath:modelRef completion:^(AvatarMLModel * _Nonnull model) {
+                    [self.models addObject:model];
+                }];
+            }
+        }
     }];
 }
-
-- (void)viewWillDisappear:(BOOL)animated {
-    [[FIRAuth auth] removeAuthStateDidChangeListener:_handle];
-}
-
 
 - (AvatarMLModel*) getCurrModel: (NSInteger) ind {
     NSInteger relInd = ind % self.models.count;
@@ -128,43 +125,10 @@ NSInteger const kSigmaYDivisor = 6;
     //XXX todo update which model is showing by fetching etc
 }
 
-//MARK: Logout
-//
-//- (void)detachDatabaseListener {
-//  id<FIRListenerRegistration> listener = [[self.db collectionWithPath:@"usersData"]
-//      addSnapshotListener:^(FIRQuerySnapshot *snapshot, NSError *error) {
-//  }];
-//    self.db = nil;
-//  [listener remove];
-//}
 - (IBAction)didTapLogout:(id)sender {
     NSLog(@"Logout Tapped");
-    //XXX todo logout w firauth
-//    [self detachDatabaseListener];
     [self performLogout];
     [self transitionToLoginVC];
-}
-
-
-- (void)performLogout {
-    NSError *signOutError;
-    BOOL status = [[FIRAuth auth] signOut:&signOutError];
-    if (!status) {
-        [self presentError:@"Failed to logout" message:signOutError.localizedDescription error:signOutError];
-        return;
-    }
-    [self clearLocalData];
-}
-
--(void)clearLocalData {
-    [self.models removeAllObjects];
-}
-
--(void)transitionToLoginVC {
-    SceneDelegate *sceneDelegate = (SceneDelegate *) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Login" bundle:nil];
-    UIViewController *loginViewController = (UIViewController*) [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-    [sceneDelegate.window setRootViewController:loginViewController];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
