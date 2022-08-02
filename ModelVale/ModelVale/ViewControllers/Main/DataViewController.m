@@ -48,6 +48,15 @@
     [self.userDataCollectionView reloadData];
 }
 
+// MARK: Firebase
+
+//XXX todo paginate
+- (void) fetchUserData {
+    // get all labeledData from Hal
+    // for each label, get labelModelData until we reach some page display limit
+    // next query picks up where we left off to keep displaying
+}
+
 
 // MARK: Collection view
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
