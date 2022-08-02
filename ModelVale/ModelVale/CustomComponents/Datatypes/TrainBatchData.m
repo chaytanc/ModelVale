@@ -12,23 +12,26 @@
 #import "UpdatableSqueezeNet.h"
 
 // This gets all the training data available for one model
-//TODO XXX add beenUsed boolean field to modelData to make sure we can't keep retraining on the same data
+//XXX TODO add beenUsed boolean field to modelData to make sure we can't keep retraining on the same data
 @implementation TrainBatchData
 
 - (TrainBatchData*) initTrainBatch: (MLImageConstraint*) imageConstraint {
-    // TODO use data from query instead of fake data
+    //XXX TODO use data from query instead of fake data
     
     self.trainBatchLabels = [NSMutableArray new];
     // We create two labels, the first has two images the second has one image, this represents all the training data that was
     ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"alp" testTrainType:dataTypeEnumToString(Train)];
     UIImage* testImage = [UIImage imageNamed:@"mountain"];
-    ModelData* fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
+    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
+    [fakeLabel addLabelModelData:@[fakeData]];
     testImage = [UIImage imageNamed:@"rivermountain"];
-    fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"2"];
+    [fakeLabel addLabelModelData:@[fakeData]];
     [self.trainBatchLabels addObject:fakeLabel];
     fakeLabel = [[ModelLabel new] initEmptyLabel:@"vulture" testTrainType:dataTypeEnumToString(Train)];
     testImage = [UIImage imageNamed:@"snowymountains"];
-    fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
+    [fakeLabel addLabelModelData:@[fakeData]];
     [self.trainBatchLabels addObject:fakeLabel];
     
     [self setBatchFeatureProvider:imageConstraint];

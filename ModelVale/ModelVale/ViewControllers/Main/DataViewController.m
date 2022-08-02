@@ -13,10 +13,10 @@
 #import "TestTrainEnum.h"
 #import "UIViewController+PresentError.h"
 #import "AvatarMLModel.h"
+#import "AddDataViewController.h"
 
 @interface DataViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UICollectionView *userDataCollectionView;
-@property (strong, nonatomic) AvatarMLModel* model;
 @end
 
 @implementation DataViewController
@@ -24,21 +24,27 @@
 // Need two section headers (or rather, testTrainTypeArray.count from TestTrainEnum.h) for each label
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.modelLabels = [NSMutableArray new];
+    //XXX todo remove modelLabel
+//    self.modelLabels = [NSMutableArray new];
     self.userDataCollectionView.delegate = self;
     self.userDataCollectionView.dataSource = self;
     
+    NSMutableArray* modelLabels = self.model.labeledData;
+
     ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"mountain" testTrainType:dataTypeEnumToString(Train)];
     UIImage* testImage = [UIImage imageNamed:@"mountain"];
-    ModelData* fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel]; // Note: adds itself to the label passed
+    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"]; // Note: DOES NOT add itself to the label passed
+    [fakeLabel addLabelModelData:@[fakeData]];
     testImage = [UIImage imageNamed:@"rivermountain"];
-    fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
-    [self.modelLabels addObject:fakeLabel];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"2"];
+    [fakeLabel addLabelModelData:@[fakeData]];
+    [modelLabels addObject:fakeLabel];
     // Add one mountain to the label "hill" and add to dvc
     fakeLabel = [[ModelLabel new] initEmptyLabel:@"hill" testTrainType:dataTypeEnumToString(Train)];
     testImage = [UIImage imageNamed:@"snowymountains"];
-    fakeData = [[ModelData new] initWithImage:testImage label:fakeLabel];
-    [self.modelLabels addObject:fakeLabel];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
+    [fakeLabel addLabelModelData:@[fakeData]];
+    [modelLabels addObject:fakeLabel];
     [self.userDataCollectionView reloadData];
 }
 
@@ -46,7 +52,7 @@
 // MARK: Collection view
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     UserDataCell* cell = [self.userDataCollectionView dequeueReusableCellWithReuseIdentifier:@"userDataCell" forIndexPath:indexPath];
-    ModelLabel* sectionLabel = self.modelLabels[indexPath.section];
+    ModelLabel* sectionLabel = self.model.labeledData[indexPath.section];
     ModelData* rowData = sectionLabel.labelModelData[indexPath.row];
     [cell.userDataImageView setImage:rowData.image];
     return cell;
@@ -54,13 +60,13 @@
 
 - (NSInteger)collectionView:(nonnull UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     
-    ModelLabel* label = self.modelLabels[section];
-    return label.numPerLabel;
+    ModelLabel* label = self.model.labeledData[section];
+    return label.labelModelData.count;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
 
-    return self.modelLabels.count;
+    return self.model.labeledData.count;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
@@ -69,7 +75,7 @@
     
     if([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         UserDataSectionHeader* sectionHeader = [self.userDataCollectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"userDataSectionHeader" forIndexPath:indexPath];
-        ModelLabel* label = self.modelLabels[indexPath.section];
+        ModelLabel* label = self.model.labeledData[indexPath.section];
         NSString* dataType = [label.testTrainType stringByAppendingString:@": "];
         sectionHeader.userDataLabel.text = [dataType stringByAppendingString: label.label];
         return sectionHeader;
@@ -80,7 +86,12 @@
     }
 }
 
-//XXX todo prepare for segue with adddata and set model property
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if([[segue identifier] isEqualToString:@"dataToAddData"]) {
+        AddDataViewController* targetController = (AddDataViewController*) [segue destinationViewController];
+        targetController.model = self.model;
+    }
+}
 
 
 @end

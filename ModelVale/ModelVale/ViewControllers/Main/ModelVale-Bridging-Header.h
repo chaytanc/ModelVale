@@ -4,3 +4,4 @@
 
 #import "AvatarMLModel.h" 
 #import "UpdatableSqueezeNet.h"
+#import "ModelData.h"

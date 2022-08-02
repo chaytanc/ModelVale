@@ -12,28 +12,34 @@
 #import "TestTrainEnum.h"
 #import "ModelVale-Swift.h"
 #import "AvatarMLModel.h"
+#import "ModelData.h"
+#import "ModelLabel.h"
+#import "SceneDelegate.h"
+#import "FirebaseAuthViewController.h"
 
 @interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, QBImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
 @property (nonatomic, strong) QBImagePickerController* imagePickerVC;
 @property (nonatomic, strong) UIImagePickerController* cameraPickerVC;
-@property (nonatomic, strong) NSMutableArray* data;
+@property (nonatomic, strong) NSMutableArray<ModelData*>* data;
 @property (weak, nonatomic) IBOutlet UIPickerView *testTrainPickerView;
 @property (strong, nonatomic) NSArray* testTrainOptions;
 @property (weak, nonatomic) IBOutlet UICollectionView *addDataCollView;
 @property (strong, nonatomic) PHImageManager* phManager;
 @property (weak, nonatomic) IBOutlet DropDownTextField *labelField;
-@property (strong, nonatomic) AvatarMLModel* model;
-
+@property (strong, nonatomic) ModelLabel* modelLabel;
 @end
 
 @implementation AddDataViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
     self.testTrainOptions = (NSArray*) testTrainTypeArray;
     self.data = [NSMutableArray new];
     self.phManager = [PHImageManager new];
+    self.testTrainPickerView.tag = 0;
+    self.modelLabel = [[ModelLabel new] initEmptyLabel:self.labelField.text testTrainType:dataTypeEnumToString(Train)];
 
     self.imagePickerVC = [QBImagePickerController new];
     self.imagePickerVC.delegate = self;
@@ -50,14 +56,20 @@
     self.testTrainPickerView.dataSource = self;
     self.testTrainPickerView.delegate = self;
 
-    //XXX Todo set the model property based on which model we selected initally in ModelViewController
-    [self.labelField initPropertiesWithOptions: self.model.model.model.modelDescription.classLabels];
+    self.modelLabel.testTrainType = self.testTrainOptions[0];
+    MLModel* model = [self.model getMLModelFromModelName];
+    [self.labelField initPropertiesWithOptions: model.modelDescription.classLabels];
     [self.labelField addTarget:self action:@selector(didTapDropDown:) forControlEvents:UIControlEventTouchUpInside];
-    
+    [self.labelField addTarget:self action:@selector(didChangeLabel:) forControlEvents:UIControlEventEditingDidEnd];
+    [self.labelField addTarget:self action:@selector(didChangeLabel:) forControlEvents:UIControlEventEditingDidEndOnExit];
 }
 
 - (void) didTapDropDown:(id) obj {
     [self.labelField wasTapped];
+}
+
+- (void) didChangeLabel:(id) obj {
+    [self.labelField labelChangedWithAllData:self.data];
 }
 
 - (IBAction)didTapSelectData:(id)sender {
@@ -74,29 +86,56 @@
     [self presentViewController:self.cameraPickerVC animated:YES completion:nil];
 }
 
+//MARK: Firebase
+- (void) uploadModelData:(void(^)(void))completion  {
+    self.modelLabel.label = self.labelField.text;
+    self.modelLabel.labelModelData = self.data;
+    for(ModelData* data in self.data) {
+        [data saveNewModelDataWithDatabase:self.db storage:self.storage vc:self completion:completion];
+    }
+}
+
+- (IBAction)didTapDone:(id)sender {
+    self.modelLabel.label = self.labelField.text;
+    [self uploadModelData: ^{
+        [self.modelLabel updateModelLabelWithDatabase: self.storage db:self.db vc:self completion:^(NSError * _Nonnull error) {
+            if(error == nil) {
+                [self transitionToModelVC];
+            }
+        }];
+    }];
+}
+
+// MARK: Multiple Select QBImagePicker
 - (void) getImageFromPH: (PHAsset*)asset imageCompletion: (void (^) (UIImage* image))completion {
     PHImageRequestOptions* opts = [PHImageRequestOptions new];
     opts.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
     [self.phManager requestImageForAsset:asset targetSize: CGSizeMake(asset.pixelWidth, asset.pixelHeight)
                              contentMode: PHImageContentModeAspectFill
                                  options:opts resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                if(result == nil) {
-                    NSLog(@"Nil image from asset");
-                }
-                else {
-                    completion(result);
-                }
+        if(result == nil) {
+            NSLog(@"Nil image from asset");
+        }
+        else {
+            completion(result);
+        }
     }];
 }
 
-// MARK: Multiple Select QBImagePicker
 - (void) qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
     for(id asset in assets) {
         [self getImageFromPH:asset imageCompletion:^(UIImage *image) {
-            [self.data addObject:image];
+            NSString* path = [self getImageStoragePath: self.modelLabel];
+            ModelData* data = [ModelData initWithImage:image label:self.labelField.text imagePath:path];
+            [self.data addObject:data];
+            [self.modelLabel addLabelModelData:@[data]];
             [self.addDataCollView reloadData];
         }];
     }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void) qb_imagePickerControllerDidCancel:(QBImagePickerController *)imagePickerController {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -104,21 +143,20 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info {
     
     // Get the image captured by the UIImagePickerController
-    UIImage *originalImage = info[UIImagePickerControllerOriginalImage];
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
-
-    [self.data addObject:editedImage];
-    
+    NSString* path = [self getImageStoragePath: self.modelLabel];
+    ModelData* data = [ModelData initWithImage:editedImage label:self.modelLabel.label imagePath:path];
+    [self.data addObject:data];
+    [self.modelLabel addLabelModelData:@[data]];
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.addDataCollView reloadData];
 }
 
-//XXX todo add data added to users' data in Parse, as well as test / train setting, the label they provided for the data
-
+//MARK: Collection View
 //XXX todo stretch add Google Drive integration
 - (nonnull __kindof UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
     AddDataCell* cell = [self.addDataCollView dequeueReusableCellWithReuseIdentifier:@"addDataCell" forIndexPath:indexPath];
-    [cell.addDataImageView setImage:self.data[indexPath.row]];
+    [cell.addDataImageView setImage:self.data[indexPath.row].image];
     return cell;
 }
 
@@ -130,6 +168,7 @@
     return 1;
 }
 
+//MARK: TestTrainPickerView
 - (NSInteger)pickerView:(nonnull UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
     return self.testTrainOptions.count;
 }
@@ -138,6 +177,14 @@
              titleForRow:(NSInteger)row
             forComponent:(NSInteger)component {
     return self.testTrainOptions[row];
+}
+
+- (void)pickerView:(UIPickerView *)pickerView
+      didSelectRow:(NSInteger)row
+       inComponent:(NSInteger)component {
+    if (pickerView.tag == 0) {
+        self.modelLabel.testTrainType = self.testTrainOptions[row];
+    }
 }
 
 @end

@@ -22,6 +22,14 @@ import iOSDropDown
     @objc func wasTapped() {
         self.showList();
     }
+    
+    @objc func labelChanged(allData: [ModelData]) {
+        self.didSelect{(selectedText , index ,id) in
+            for d in allData {
+                d.label = selectedText
+            }
+        }
+    }
 
 
 }

@@ -7,6 +7,8 @@
 
 #import "AppDelegate.h"
 #import "Parse/Parse.h"
+@import UIKit;
+@import FirebaseCore;
 
 @interface AppDelegate ()
 
@@ -14,37 +16,8 @@
 
 @implementation AppDelegate
 
-
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
-
-    ParseClientConfiguration *config = [ParseClientConfiguration  configurationWithBlock:^(id<ParseMutableClientConfiguration> configuration) {
-        
-        NSString *path = [[NSBundle mainBundle] pathForResource: @"Keys" ofType: @"plist"];
-        NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile: path];
-        NSString *appKey = [dict objectForKey:@"appID"];
-        NSString *clientKey = [dict objectForKey:@"clientKey"];
-
-        configuration.applicationId = appKey;
-        configuration.clientKey = clientKey;
-        configuration.server = @"https://parseapi.back4app.com";
-    }];
-
-    [Parse initializeWithConfiguration:config];
-    
-    // Test posting data
-//    PFObject *instaUser = [PFObject objectWithClassName:@"InstaUser"];
-//    instaUser[@"score"] = @1337;
-//    instaUser[@"username"] = @"@champagnepapi";
-//    instaUser[@"name"] = @"Drake";
-//    [instaUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//        if (succeeded) {
-//            NSLog(@"Object saved!");
-//        } else {
-//            NSLog(@"Error: %@", error.description);
-//        }
-//    }];
-
+    [FIRApp configure];
 
     return YES;
 }
