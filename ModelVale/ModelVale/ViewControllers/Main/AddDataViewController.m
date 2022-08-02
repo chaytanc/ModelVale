@@ -15,6 +15,7 @@
 #import "ModelData.h"
 #import "ModelLabel.h"
 #import "SceneDelegate.h"
+#import "FirebaseAuthViewController.h"
 
 @interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, QBImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
@@ -27,18 +28,12 @@
 @property (strong, nonatomic) PHImageManager* phManager;
 @property (weak, nonatomic) IBOutlet DropDownTextField *labelField;
 @property (strong, nonatomic) ModelLabel* modelLabel;
-
-//XXX todo pass uid to this vc or set
-@property (nonatomic, readwrite) FIRFirestore *db;
-@property (nonatomic, strong) NSString* uid;
-
 @end
 
 @implementation AddDataViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.db = [FIRFirestore firestore];
 
     self.testTrainOptions = (NSArray*) testTrainTypeArray;
     self.data = [NSMutableArray new];
@@ -62,7 +57,6 @@
     self.testTrainPickerView.delegate = self;
 
     self.modelLabel.testTrainType = self.testTrainOptions[0];
-    //XXX Todo set the model property based on which model we selected initally in ModelViewController
     MLModel* model = [self.model getMLModelFromModelName];
     [self.labelField initPropertiesWithOptions: model.modelDescription.classLabels];
     [self.labelField addTarget:self action:@selector(didTapDropDown:) forControlEvents:UIControlEventTouchUpInside];
@@ -92,80 +86,25 @@
     [self presentViewController:self.cameraPickerVC animated:YES completion:nil];
 }
 
-//MARK: Parse
-- (void) uploadModelData {
+//MARK: Firebase
+- (void) uploadModelData:(void(^)(void))completion  {
     self.modelLabel.label = self.labelField.text;
     self.modelLabel.labelModelData = self.data;
     for(ModelData* data in self.data) {
-        [data saveNewModelDataWithDatabase:self.db vc:self];
+        [data saveNewModelDataWithDatabase:self.db storage:self.storage vc:self completion:completion];
     }
 }
-//
-//- (void) uploadModelDataBatchWithCompletion:(PFBooleanResultBlock  _Nullable)completion  {
-//    self.modelLabel.label = self.labelField.text;
-//    self.modelLabel.labelModelData = self.data;
-//    // Save batch of all ModelData created from images selected
-//    [PFObject saveAllInBackground:self.data block:^(BOOL succeeded, NSError * _Nullable error) {
-//        if(error != nil){
-//            [self presentError:@"Failed to save ModelData" message:error.localizedDescription error:error];
-//        }
-//        else {
-//            NSLog(@"Saved model data!");
-//        }
-//    }];
-//}
-//
-//- (void) saveModelLabelWithCompletion: (PFBooleanResultBlock  _Nullable)completion {
-//
-//    // Label is the same if the .label and .testTrainType match
-//    PFQuery* query = [PFQuery queryWithClassName:@"ModelLabel"];
-//    query = [query whereKey:@"label" equalTo:self.modelLabel.label];
-//    query = [query whereKey:@"testTrainType" equalTo:self.modelLabel.testTrainType];
-//    // Find duplicate label if it exists and update its data, otherwise create a new label
-//    [query findObjectsInBackgroundWithBlock:^(NSArray<ModelLabel*> *labels, NSError *error) {
-//        if(error != nil){
-//            [self presentError:@"Failed to retrieve labels" message:error.localizedDescription error:error];
-//        }
-//        else if (labels.count != 0) {
-//            NSLog(@"Label already exists, updating properties");
-//            ModelLabel* label = labels[0];
-//            [label addObjectsFromArray:self.modelLabel.labelModelData forKey:@"labelModelData"];
-//            self.modelLabel = label;
-//            [label updateModelLabel:self completion:^(BOOL succeeded, NSError * _Nullable error) {
-//                completion(succeeded, error);
-//            }];
-//            //XXX todo: this assert fails, why?
-////            assert([self.model.labeledData containsObject:self.label]);
-//        }
-//        else {
-//            NSLog(@"Uploading new label");
-//            self.modelLabel[@"label"] = self.modelLabel.label;
-//            [self.modelLabel saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-//                if(succeeded) {
-//                    NSLog(@"ModelLabel saved!");
-//
-//                    //XXX todo update model after uploading images is working
-////                    [self.model.labeledData addObject:self.label];
-//                    [self.model addObject:self.modelLabel forKey:@"labeledData"];
-////                    self.model[@"labeledData"] = self.model.labeledData;
-////                    [self.model updateModel:self];
-//                }
-//                else {
-//                    [self presentError:@"Failed to update label" message:error.localizedDescription error:error];
-//                }
-//                completion(succeeded, error);
-//            }];
-//        }
-//    }];
-//}
 
 - (IBAction)didTapDone:(id)sender {
     self.modelLabel.label = self.labelField.text;
-    [self uploadModelData];
+    [self uploadModelData: ^{
+        [self.modelLabel updateModelLabelWithDatabase: self.storage db:self.db vc:self completion:^(NSError * _Nonnull error) {
+            if(error == nil) {
+                [self transitionToModelVC];
+            }
+        }];
+    }];
 }
-
-//MARK: Firebase
-
 
 // MARK: Multiple Select QBImagePicker
 - (void) getImageFromPH: (PHAsset*)asset imageCompletion: (void (^) (UIImage* image))completion {
@@ -186,7 +125,8 @@
 - (void) qb_imagePickerController:(QBImagePickerController *)imagePickerController didFinishPickingAssets:(NSArray *)assets {
     for(id asset in assets) {
         [self getImageFromPH:asset imageCompletion:^(UIImage *image) {
-            ModelData* data = [ModelData initWithImage:image label:self.modelLabel.label];
+            NSString* path = [self getImageStoragePath: self.modelLabel];
+            ModelData* data = [ModelData initWithImage:image label:self.labelField.text imagePath:path];
             [self.data addObject:data];
             [self.modelLabel addLabelModelData:@[data]];
             [self.addDataCollView reloadData];
@@ -204,10 +144,10 @@
     
     // Get the image captured by the UIImagePickerController
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
-    ModelData* data = [ModelData initWithImage:editedImage label:self.modelLabel.label];
+    NSString* path = [self getImageStoragePath: self.modelLabel];
+    ModelData* data = [ModelData initWithImage:editedImage label:self.modelLabel.label imagePath:path];
     [self.data addObject:data];
     [self.modelLabel addLabelModelData:@[data]];
-
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.addDataCollView reloadData];
 }

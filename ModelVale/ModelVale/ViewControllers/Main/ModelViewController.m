@@ -35,7 +35,6 @@ NSInteger const kSigmaXDivisor = 6;
 NSInteger const kSigmaYDivisor = 6;
 
 @interface ModelViewController () <CAAnimationDelegate>
-//@property (strong, nonatomic) NSMutableArray<AvatarMLModel*>* models;
 @property (nonatomic, assign) NSInteger modelInd;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UIView *detailsView;
@@ -87,7 +86,6 @@ NSInteger const kSigmaYDivisor = 6;
     [self animateXPClusters:self.clusters];
 }
 
-//XXX todo working here to get self.models prop set locally, not hitting these breakpoints
 - (void) fetchAndSetVCModels {
     FIRDocumentReference* docRef = [[self.db collectionWithPath:@"users"] documentWithPath:self.uid];
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {

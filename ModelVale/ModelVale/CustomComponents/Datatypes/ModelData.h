@@ -1,5 +1,5 @@
 //
-//  User.h
+//  ModelData.h
 //  ModelVale
 //
 //  Created by Chaytan Inman on 7/11/22.
@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "CoreML/CoreML.h"
 @import FirebaseFirestore;
+@import FirebaseStorage;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,14 +19,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) NSString* label;
 @property (retain) NSString *imagePath;
 @property (strong, nonatomic) UIImage* image;
+@property (strong, nonatomic) FIRDocumentReference* firebaseRef;
 
-+ (instancetype) initWithImage: (UIImage *)image label:(NSString *)label;
++ (instancetype) initWithImage: (UIImage * _Nullable)image label:(NSString *)label imagePath: (NSString*)imagePath;
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
-- (void) saveNewModelDataWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc;
+
+- (void) saveNewModelDataWithDatabase: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(void))completion;
 - (MLDictionaryFeatureProvider*) getDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
 - (MLFeatureValue*) getImageFeatureValue: (MLImageConstraint*)modelConstraints;
 - (MLDictionaryFeatureProvider*) getUpdatableDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
-+ (NSMutableArray*) initModelDataArrayFromArray: (NSArray*) array label: (NSString*)label;
++ (void) fetchFromReference: (FIRStorage*)storage docRef: (FIRDocumentReference*)docRef vc: (UIViewController*)vc completion:(void(^)(ModelData*))completion;
 
 
 @end

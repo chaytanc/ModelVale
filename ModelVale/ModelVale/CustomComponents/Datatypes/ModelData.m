@@ -11,31 +11,25 @@
 #import "UpdatableSqueezeNet.h"
 #import "UIViewController+PresentError.h"
 @import FirebaseFirestore;
+@import FirebaseStorage;
 
 @interface ModelData()
 @end
 
 @implementation ModelData
 
-//XXX todo remove and fix all use cases
-+ (instancetype) initWithImage: (UIImage *)image label:(NSString *)label {
++ (instancetype) initWithImage: (UIImage* _Nullable)image label:(NSString *)label imagePath: (NSString*)imagePath {
     ModelData* md = [ModelData new];
-    md.image = image;
+    if(image != nil) {
+        md.image = image;
+    }
+    else {
+        md.image = [UIImage new];
+    }
     md.label = label;
+    md.imagePath = imagePath;
     return md;
 }
-//
-//+ (NSMutableArray*) initModelDataArrayFromArray: (NSArray*) array label: (NSString*)label {
-//    NSMutableArray* modelDatas = [NSMutableArray new];
-//    for (id modelDataResponse in array) {
-//        ModelData* md = [ModelData new];
-//        //XXX todo may have to change way we do this if UIImage is not stored in response dict
-//        md.image = [UIImage imageWithData:modelDataResponse[@"imageFile"]];
-//        md.label = label;
-//        [modelDatas addObject:md];
-//    }
-//    return modelDatas;
-//}
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     self = [super init];
@@ -46,25 +40,33 @@
     return self;
 }
 
-- (UIImage *)image {
-    //XXX todo get from firebase storage
-//    if (!_image){
-//        [self fetchIfNeeded];
-//        _image = [UIImage imageWithData:[self.imageFile getData]];
-//    }
-//    return _image;
-    return [UIImage new];
+//MARK: Firebase
++ (void) fetchFromReference: (FIRStorage*)storage docRef: (FIRDocumentReference*)docRef vc: (UIViewController*)vc completion:(void(^)(ModelData*))completion {
+    [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
+        if(error != nil) {
+            [vc presentError:@"Failed to fetch ModelData" message:error.localizedDescription error:error];
+        }
+        else {
+            ModelData* d = [ModelData initWithImage:nil label:snapshot.data[@"label"] imagePath:snapshot.data[@"imagePath"]];
+            [d fetchAndSetImage:storage vc:vc];
+            completion(d);
+        }
+    }];
 }
-//
-//- (void)setImage:(UIImage *)image {
-//    _image = image;
-//    //XXX todo find better name
-//    NSString* filename = @"image.png";
-//    NSData* data = UIImagePNGRepresentation(image);
-//    self.imageFile = [PFFileObject fileObjectWithName:filename data:data];
-//}
 
-- (void) saveNewModelDataWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc {
+- (void) fetchAndSetImage: (FIRStorage*)storage vc: (UIViewController*)vc {
+    FIRStorageReference* imageRef = [[storage reference] child:self.imagePath];
+    [imageRef dataWithMaxSize:1 * 1024 * 1024 completion:^(NSData *data, NSError *error){
+        if (error != nil) {
+            [vc presentError:@"Failed to download image" message:error.localizedDescription error:error];
+        } else {
+            UIImage *im = [UIImage imageWithData:data];
+            self.image = im;
+        }
+    }];
+}
+
+- (void) saveNewModelDataWithDatabase: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(void))completion {
     // Add a new ModelData with a generated id.
     __block FIRDocumentReference *ref =
         [[db collectionWithPath:@"ModelData"] addDocumentWithData:@{
@@ -72,11 +74,43 @@
           @"imagePath": self.imagePath
         } completion:^(NSError * _Nullable error) {
           if (error != nil) {
-            NSLog(@"Error adding ModelData: %@", error);
+              NSLog(@"Error adding ModelData: %@", error);
           } else {
-            NSLog(@"ModelData added with ID: %@", ref.documentID);
+              NSLog(@"ModelData added with ID: %@", ref.documentID);
+              self.firebaseRef = [self getFirestoreRef:db docID:ref.documentID];
+              [self uploadImageToStorage:storage vc:vc];
+              completion();
           }
         }];
+}
+
+- (FIRDocumentReference*) getFirestoreRef: (FIRFirestore*)db docID: (NSString*)docID {
+//    NSString* refPath = [NSString stringWithFormat:@"%@/%@", self.label, docID];
+    FIRDocumentReference* ref = [[db collectionWithPath:@"ModelData"] documentWithPath: docID];
+    return ref;
+}
+
+- (FIRStorageReference*) getStorageRef: (FIRStorage*)storage {
+    FIRStorageReference* storageRef = [storage reference];
+    NSString* storagePath = [self.label stringByAppendingString:self.imagePath];
+    storageRef = [storageRef child:storagePath];
+    return storageRef;
+}
+
+- (void) uploadImageToStorage: (FIRStorage*)storage vc: (UIViewController*)vc  {
+    FIRStorageReference* storageRef = [self getStorageRef:storage];
+    NSData *data = UIImagePNGRepresentation(self.image);
+    FIRStorageUploadTask *uploadTask = [storageRef putData:data
+                                                  metadata:nil
+                                                completion:^(FIRStorageMetadata *metadata,
+                                                             NSError *error) {
+      if (error != nil) {
+          [vc presentError:@"Firebase Storage image upload failed" message:error.localizedDescription error:error];
+      }
+      else {
+          NSLog(@"Completed Storage upload");
+      }
+    }];
 }
 
 

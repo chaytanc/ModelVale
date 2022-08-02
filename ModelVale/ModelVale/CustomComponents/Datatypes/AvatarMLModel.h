@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "UpdatableSqueezeNet.h"
 @class ModelLabel;
-@import FirebaseFirestore;
+//@import FirebaseFirestore;
+#import "FirebaseFirestore.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

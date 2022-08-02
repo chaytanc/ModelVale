@@ -10,6 +10,8 @@
 @import FirebaseFirestore;
 #import "UIViewController+PresentError.h"
 #import "SceneDelegate.h"
+#import "ModelLabel.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface FirebaseAuthViewController ()
 @property (nonatomic, strong) FIRAuth* userListener;
@@ -19,14 +21,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+    self.uid = [FIRAuth auth].currentUser.uid;
+    self.db = [FIRFirestore firestore];
+    self.storage = [FIRStorage storage];
     self.userListener = [[FIRAuth auth]
         addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
         self.uid = [FIRAuth auth].currentUser.uid;
-        self.db = [FIRFirestore firestore];
         if(self.uid) {
             NSLog(@"User %@ persisted", self.uid);
         }
@@ -35,6 +35,10 @@
             [self performLogout];
         }
     }];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
@@ -66,6 +70,13 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UINavigationController *modelViewController = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
     [sceneDelegate.window setRootViewController:modelViewController];
+}
+
+-(NSString*) getImageStoragePath: (ModelLabel*)label {
+    NSNumber* dateNum = [NSNumber numberWithDouble: CACurrentMediaTime()];
+    NSString* date = [dateNum stringValue];
+    NSString* path = [NSString stringWithFormat:@"/%@/%@", label.testTrainType, date];
+    return path;
 }
 
 
