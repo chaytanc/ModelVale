@@ -98,8 +98,11 @@
 - (IBAction)didTapDone:(id)sender {
     self.modelLabel.label = self.labelField.text;
     [self uploadModelData: ^{
-        [self.modelLabel updateModelLabelWithDatabase: self.storage db:self.db vc:self completion:^(NSError * _Nonnull error) {
-            if(error == nil) {
+        [self.modelLabel updateModelLabelWithDatabase: self.storage db:self.db vc:self model:self.model completion:^(NSError * _Nonnull error) {
+            if(error != nil) {
+                [self presentError:@"Failed to update data" message:error.localizedDescription error:error];
+            }
+            else {
                 [self transitionToModelVC];
             }
         }];

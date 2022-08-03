@@ -85,7 +85,6 @@
 }
 
 - (FIRDocumentReference*) getFirestoreRef: (FIRFirestore*)db docID: (NSString*)docID {
-//    NSString* refPath = [NSString stringWithFormat:@"%@/%@", self.label, docID];
     FIRDocumentReference* ref = [[db collectionWithPath:@"ModelData"] documentWithPath: docID];
     return ref;
 }

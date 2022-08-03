@@ -30,21 +30,22 @@
     self.userDataCollectionView.dataSource = self;
     
     NSMutableArray* modelLabels = self.model.labeledData;
-
-    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"mountain" testTrainType:dataTypeEnumToString(Train)];
-    UIImage* testImage = [UIImage imageNamed:@"mountain"];
-    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"]; // Note: DOES NOT add itself to the label passed
-    [fakeLabel addLabelModelData:@[fakeData]];
-    testImage = [UIImage imageNamed:@"rivermountain"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"2"];
-    [fakeLabel addLabelModelData:@[fakeData]];
-    [modelLabels addObject:fakeLabel];
-    // Add one mountain to the label "hill" and add to dvc
-    fakeLabel = [[ModelLabel new] initEmptyLabel:@"hill" testTrainType:dataTypeEnumToString(Train)];
-    testImage = [UIImage imageNamed:@"snowymountains"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
-    [fakeLabel addLabelModelData:@[fakeData]];
-    [modelLabels addObject:fakeLabel];
+    //XXX todo fetch and display
+//
+//    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"mountain" testTrainType:dataTypeEnumToString(Train)];
+//    UIImage* testImage = [UIImage imageNamed:@"mountain"];
+//    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"]; // Note: DOES NOT add itself to the label passed
+//    [fakeLabel addLabelModelData:@[fakeData]];
+//    testImage = [UIImage imageNamed:@"rivermountain"];
+//    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"2"];
+//    [fakeLabel addLabelModelData:@[fakeData]];
+//    [modelLabels addObject:fakeLabel];
+//    // Add one mountain to the label "hill" and add to dvc
+//    fakeLabel = [[ModelLabel new] initEmptyLabel:@"hill" testTrainType:dataTypeEnumToString(Train)];
+//    testImage = [UIImage imageNamed:@"snowymountains"];
+//    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
+//    [fakeLabel addLabelModelData:@[fakeData]];
+//    [modelLabels addObject:fakeLabel];
     [self.userDataCollectionView reloadData];
 }
 

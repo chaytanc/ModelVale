@@ -73,7 +73,11 @@
 }
 
 -(NSString*) getImageStoragePath: (ModelLabel*)label {
-    NSNumber* dateNum = [NSNumber numberWithDouble: CACurrentMediaTime()];
+//    NSNumber* dateNum = [NSNumber numberWithDouble: CACurrentMediaTime()];
+//    NSString* date = [dateNum stringValue];
+    double timestamp = [[NSDate date] timeIntervalSince1970];
+    int64_t timeInMilisInt64 = (int64_t)(timestamp*1000);
+    NSNumber* dateNum = [NSNumber numberWithDouble:timeInMilisInt64];
     NSString* date = [dateNum stringValue];
     NSString* path = [NSString stringWithFormat:@"/%@/%@", label.testTrainType, date];
     return path;
