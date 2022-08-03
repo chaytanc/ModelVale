@@ -18,15 +18,10 @@ Modelvale is an app designed to bring machine learning to life. Each model is re
      * Training computational resources drains health
      * Larger model size drains health
      * Is a comparable, meaningful metric across disparate models (i.e. the health bar is one way to compare how "well" an image classifier is doing vs a object detection model, vs other different types)
-
  * User uploads or provides dataset link to data to test the model on
- *  See stats about best performing models across time
-     *  This uses a database backend like Parse or Firebase to store preferences
- *  Push notifications about model performance
  * User can retrain pretrained model using immediate data
      * Photos from camera or camera roll (convolutional networks)
-     * Copy pasted text (NLP models)
-     * Other: Sound? Video?
+     * Other: Sound? Video? Text?
  * User can upload a new pretrained model
  * Animation of the health bar as it increases or decreases after testing **Technical Problem**
  * Sign out of the app
@@ -41,6 +36,9 @@ Modelvale is an app designed to bring machine learning to life. Each model is re
  * Have multiple avatars at once
  * Model leaderboards
  * In-game achievements
+ *  See stats about best performing models across time
+     *  This uses a database backend like Parse or Firebase to store preferences
+ *  Push notifications about model performance
  
  **Other Possible Technical Problems**
  * Planning for very large datasets and fetching in chunks to display data
@@ -53,7 +51,6 @@ Modelvale is an app designed to bring machine learning to life. Each model is re
  * Login view
 * Registration view
  * Model avatars view
-* Stats view
 * Data Management view
 * Testing view
 * Retraining view
@@ -63,6 +60,7 @@ Modelvale is an app designed to bring machine learning to life. Each model is re
 Optional:
 - Achievements
 - Leaderboard
+- Stats
 
 **Flow Navigation** (Screen to Screen)
 
@@ -74,7 +72,6 @@ Optional:
  * Data Management
  * Testing
  * Training
- * Stats
 
 ## Wireframes
 ![IMG_0060](https://user-images.githubusercontent.com/35582442/177838999-1dac750c-efb7-4ad6-95c6-6cedf4e2cd83.JPG)
@@ -107,16 +104,18 @@ Optional:
     * Crate boilerplate code in the iOS client application.
     * Implement CRUD actions in the iOS app to the selected platform.
    
- //TODO: (update week 5 work) 
 **Week 5, August 01**
-* Get feedback from Taylor and David, review and revise
-* Self review
-* Stretch features like improved aesthetics, avatars, gameification, animations, achievements
+* Final self review
+* Fetch and display Firebase data for all screens
+* Paginate data queries or design queries for scale of millions of images
+* Add multiple models
+* Add health bar calculations
     
 **Week 6, August 08**
 * Finish app
 * Polish
 * Create demonstrations
+* Demo finished app
     
 **Week 7, August 15**
 * Offboarding, wrap up
