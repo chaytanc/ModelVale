@@ -9,6 +9,7 @@
 #import "CoreML/CoreML.h"
 #import "UIViewController+PresentError.h"
 @import FirebaseFirestore;
+#import "ModelLabel.h"
 
 NSNumber* const MAXHEALTH = @500;
 @interface AvatarMLModel ()
@@ -46,6 +47,8 @@ NSNumber* const MAXHEALTH = @500;
     return model;
 }
 
+//MARK: Firebase
+
 // Checks if the model with the avatarName and owner already exists, if not, uploads the new model and updates user.models as well
 - (void) uploadModelToUserWithViewController: (NSString*) uid db: (FIRFirestore*)db vc: (UIViewController*)vc {
 
@@ -59,7 +62,7 @@ NSNumber* const MAXHEALTH = @500;
             [self initWithDictionary:snapshot.data];
             
         }
-        [self updateModel:uid db:db vc:vc];
+        [self uploadNewModel:uid db:db vc:vc];
     }];
 }
 
@@ -90,9 +93,14 @@ NSNumber* const MAXHEALTH = @500;
     }];
 }
 
-- (void) updateModel: (NSString*)uid db: (FIRFirestore*)db vc: (UIViewController*)vc {
+- (void) uploadNewModel: (NSString*)uid db: (FIRFirestore*)db vc: (UIViewController*)vc {
     [[[db collectionWithPath:@"Model"] documentWithPath:self.avatarName]
-     setData:@{ @"avatarName": self.avatarName, @"modelName" : self.modelName, @"health" : self.health, @"labeledData" : self.labeledData }
+     setData:@{
+        @"avatarName": self.avatarName,
+        @"modelName" : self.modelName,
+        @"health" : self.health,
+         @"labeledData" : self.labeledData
+    }
          merge:YES
          completion:^(NSError * _Nullable error) {
                 if(error != nil){
@@ -106,6 +114,13 @@ NSNumber* const MAXHEALTH = @500;
     }];
 }
 
+- (void)updatePropsLocallyWithDict:(NSDictionary *)dict vc: (UIViewController*)vc completion:(void(^)(void))completion{
+    self.modelName = dict[@"modelName"];
+    self.avatarName = dict[@"avatarName"];
+    self.health = dict[@"health"];
+    self.labeledData = dict[@"labeledData"];
+}
+
 + (void) fetchAndCreateAvatarMLModel: (FIRFirestore*)db documentPath: (NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion {
     FIRDocumentReference *docRef = [[db collectionWithPath:@"Model"] documentWithPath:documentPath];
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
@@ -113,10 +128,36 @@ NSNumber* const MAXHEALTH = @500;
            NSLog(@"Model data: %@", snapshot.data);
            AvatarMLModel* model = [[AvatarMLModel new] initWithDictionary: snapshot.data];
            completion(model);
-       } else {
-         NSLog(@"Model does not exist");
+       }
+       else {
+           NSLog(@"Model does not exist");
        }
      }];
+}
+
+- (void) updateModelLabeledDataWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
+    
+    FIRDocumentReference *modelRef = [[db collectionWithPath:@"Model"] documentWithPath:self.avatarName];
+    [modelRef updateData:@{
+      @"labeledData": [FIRFieldValue fieldValueForArrayUnion:self.labeledData]
+    }];
+}
+
+// Update the label document found in Firestore with the given docID
+- (void) updateLabeledData: (FIRFirestore*)db docID: (NSString*)docID vc: (UIViewController*)vc {
+    [[[db collectionWithPath:@"Model"] documentWithPath:docID]
+        setData:@{
+        @"labeledData" : self.labeledData
+        }
+         merge:YES
+         completion:^(NSError * _Nullable error) {
+                if(error != nil){
+                    [vc presentError:@"Failed to update Model labeledData" message:error.localizedDescription error:error];
+                }
+                else {
+                    NSLog(@"Uploaded Model labeledData to Firestore");
+                }
+    }];
 }
 
 @end

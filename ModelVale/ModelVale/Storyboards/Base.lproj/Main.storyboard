@@ -28,20 +28,29 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cS9-hf-b4l" userLabel="avatarView">
                                         <rect key="frame" x="87" y="97" width="240" height="348"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Model Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pnT-HL-fPk" userLabel="nameLabel">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Avatar Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pnT-HL-fPk" userLabel="nameLabel">
                                                 <rect key="frame" x="0.0" y="0.0" width="240" height="30"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="30" id="X1s-3f-IgF"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="Trebuchet-BoldItalic" family="Trebuchet MS" pointSize="16"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Model Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="75u-xE-W3I" userLabel="modelNameLabel">
+                                                <rect key="frame" x="79.5" y="35" width="81" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="NP9-C2-07h"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="Trebuchet-BoldItalic" family="Trebuchet MS" pointSize="14"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cy5-GU-HYH" userLabel="avatarStackView">
-                                                <rect key="frame" x="0.0" y="30" width="240" height="318"/>
+                                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cy5-GU-HYH" userLabel="modelsStackView">
+                                                <rect key="frame" x="0.0" y="65" width="240" height="283"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Pgp-gM-Y2b" userLabel="leftNextButton">
-                                                        <rect key="frame" x="0.0" y="0.0" width="37" height="318"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="37" height="283"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="37" id="Wh7-iu-m9m"/>
                                                         </constraints>
@@ -55,10 +64,10 @@
                                                         </connections>
                                                     </button>
                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" image="racoonavatar_glow" translatesAutoresizingMaskIntoConstraints="NO" id="ukO-l4-ah3" userLabel="avatarImageView">
-                                                        <rect key="frame" x="37" y="0.0" width="166" height="318"/>
+                                                        <rect key="frame" x="37" y="0.0" width="166" height="283"/>
                                                     </imageView>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g3e-KY-bXg" userLabel="rightNextButton">
-                                                        <rect key="frame" x="203" y="0.0" width="37" height="318"/>
+                                                        <rect key="frame" x="203" y="0.0" width="37" height="283"/>
                                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="plain" image="arrow.right.circle.fill" catalog="system" title=" " subtitle=" "/>
@@ -73,13 +82,15 @@
                                             </stackView>
                                         </subviews>
                                         <constraints>
+                                            <constraint firstItem="75u-xE-W3I" firstAttribute="top" secondItem="pnT-HL-fPk" secondAttribute="bottom" constant="5" id="4aI-0I-B7N"/>
                                             <constraint firstItem="Cy5-GU-HYH" firstAttribute="leading" secondItem="cS9-hf-b4l" secondAttribute="leading" id="647-ag-yRo"/>
                                             <constraint firstAttribute="trailing" secondItem="pnT-HL-fPk" secondAttribute="trailing" id="Cgl-9W-pg3"/>
-                                            <constraint firstItem="Cy5-GU-HYH" firstAttribute="top" secondItem="pnT-HL-fPk" secondAttribute="bottom" id="Mej-Vd-8Tj"/>
+                                            <constraint firstItem="75u-xE-W3I" firstAttribute="centerX" secondItem="cS9-hf-b4l" secondAttribute="centerX" id="Umr-Nm-vgB"/>
                                             <constraint firstAttribute="trailing" secondItem="Cy5-GU-HYH" secondAttribute="trailing" id="Vy2-vL-G7G"/>
                                             <constraint firstItem="pnT-HL-fPk" firstAttribute="top" secondItem="cS9-hf-b4l" secondAttribute="top" id="gfo-xL-qva"/>
                                             <constraint firstAttribute="bottom" secondItem="Cy5-GU-HYH" secondAttribute="bottom" id="kJ0-Pw-6Zp"/>
                                             <constraint firstItem="pnT-HL-fPk" firstAttribute="leading" secondItem="cS9-hf-b4l" secondAttribute="leading" id="uLd-GR-HAi"/>
+                                            <constraint firstItem="Cy5-GU-HYH" firstAttribute="top" secondItem="75u-xE-W3I" secondAttribute="bottom" id="vAi-mT-TZw"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vbN-tA-qOH" userLabel="detailsView">
@@ -94,15 +105,15 @@
                                                             <constraint firstAttribute="height" constant="80" id="4Rh-Yo-op0"/>
                                                         </constraints>
                                                     </view>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Health" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Dw-8a-C3F" userLabel="healthLabel">
-                                                        <rect key="frame" x="0.0" y="95" width="248" height="20.5"/>
+                                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Health" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Dw-8a-C3F" userLabel="healthLabel">
+                                                        <rect key="frame" x="0.0" y="87.5" width="248" height="0.0"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mGs-eG-41X" userLabel="testButton">
-                                                        <rect key="frame" x="0.0" y="130.5" width="248" height="33"/>
+                                                        <rect key="frame" x="0.0" y="95" width="248" height="44.5"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="plain" title="Test"/>
@@ -111,7 +122,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ef4-9f-J2e" userLabel="trainButton">
-                                                        <rect key="frame" x="0.0" y="178.5" width="248" height="32.5"/>
+                                                        <rect key="frame" x="0.0" y="154.5" width="248" height="45"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="plain" title="Retrain"/>
@@ -120,7 +131,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ESa-hG-I2C" userLabel="dataButton">
-                                                        <rect key="frame" x="0.0" y="226" width="248" height="33"/>
+                                                        <rect key="frame" x="0.0" y="214.5" width="248" height="44.5"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="plain" title="Manage Data"/>
@@ -178,12 +189,13 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="avatarStackView" destination="6kY-bT-WRU" id="jp3-ne-RuK"/>
+                        <outlet property="avatarStackView" destination="6kY-bT-WRU" id="aw5-WV-W8D"/>
                         <outlet property="dataButton" destination="ESa-hG-I2C" id="LSy-Fe-i1D"/>
-                        <outlet property="nameLabel" destination="pnT-HL-fPk" id="Nex-bb-A9X"/>
                         <outlet property="detailsView" destination="vbN-tA-qOH" id="LaR-f9-fn8"/>
                         <outlet property="healthBarView" destination="lif-Wb-8dq" id="iCK-3i-t66"/>
                         <outlet property="healthLabel" destination="1Dw-8a-C3F" id="uhB-w5-guc"/>
+                        <outlet property="modelNameLabel" destination="75u-xE-W3I" id="FBF-0S-aVT"/>
+                        <outlet property="nameLabel" destination="pnT-HL-fPk" id="Nex-bb-A9X"/>
                         <outlet property="testButton" destination="mGs-eG-41X" id="S8B-f2-Fih"/>
                         <outlet property="trainButton" destination="ef4-9f-J2e" id="qhN-7z-W6h"/>
                     </connections>
@@ -521,7 +533,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <subviews>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.84999999999999998" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="XQH-3A-fv1" userLabel="userDataCollectionView">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="774"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="724"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="vkY-bQ-I5f">
                                             <size key="itemSize" width="128" height="128"/>
@@ -578,12 +590,25 @@
                                             </connections>
                                         </collectionReusableView>
                                     </collectionView>
+                                    <button opaque="NO" alpha="0.84999999999999998" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TPh-3S-aNA" userLabel="loadMoreButton">
+                                        <rect key="frame" x="0.0" y="724" width="414" height="31"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Load More"/>
+                                        <connections>
+                                            <action selector="didTapLoadMore:" destination="kKw-Zs-x18" eventType="touchUpInside" id="qHD-zY-5ZF"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="XQH-3A-fv1" secondAttribute="trailing" id="2px-83-iWk"/>
-                                    <constraint firstAttribute="bottom" secondItem="XQH-3A-fv1" secondAttribute="bottom" id="77E-BB-hHt"/>
+                                    <constraint firstAttribute="bottom" secondItem="XQH-3A-fv1" secondAttribute="bottom" constant="50" id="77E-BB-hHt"/>
                                     <constraint firstItem="XQH-3A-fv1" firstAttribute="top" secondItem="ATn-ax-IJJ" secondAttribute="top" id="CMS-pP-9VZ"/>
+                                    <constraint firstItem="TPh-3S-aNA" firstAttribute="centerX" secondItem="ATn-ax-IJJ" secondAttribute="centerX" id="FBM-G6-8zW"/>
+                                    <constraint firstItem="TPh-3S-aNA" firstAttribute="leading" secondItem="ATn-ax-IJJ" secondAttribute="leading" id="Fdc-oA-odF"/>
                                     <constraint firstItem="XQH-3A-fv1" firstAttribute="leading" secondItem="ATn-ax-IJJ" secondAttribute="leading" id="LB3-5K-lg6"/>
+                                    <constraint firstAttribute="trailing" secondItem="TPh-3S-aNA" secondAttribute="trailing" id="Lsq-X8-cXi"/>
+                                    <constraint firstItem="XQH-3A-fv1" firstAttribute="bottom" secondItem="TPh-3S-aNA" secondAttribute="top" id="roS-In-E87"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -608,6 +633,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="loadMoreButton" destination="TPh-3S-aNA" id="jXu-Pm-JvS"/>
                         <outlet property="userDataCollectionView" destination="XQH-3A-fv1" id="sce-m0-u7O"/>
                     </connections>
                 </viewController>
@@ -742,7 +768,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="L8M-ue-Kaw"/>
+        <segue reference="1lD-79-zWl"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.left.circle.fill" catalog="system" width="128" height="121"/>

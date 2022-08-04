@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface FirebaseAuthViewController : UIViewController
+@interface FirebaseViewController : UIViewController
 @property (nonatomic, readwrite) FIRFirestore *db;
 @property (nonatomic, strong) NSString* uid;
 @property (nonatomic, strong) FIRStorage* storage;

@@ -41,27 +41,29 @@
 }
 
 //MARK: Firebase
-+ (void) fetchFromReference: (FIRStorage*)storage docRef: (FIRDocumentReference*)docRef vc: (UIViewController*)vc completion:(void(^)(ModelData*))completion {
++ (void) fetchFromReference: (FIRDocumentReference*)docRef storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(ModelData*))completion {
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
         if(error != nil) {
             [vc presentError:@"Failed to fetch ModelData" message:error.localizedDescription error:error];
         }
         else {
             ModelData* d = [ModelData initWithImage:nil label:snapshot.data[@"label"] imagePath:snapshot.data[@"imagePath"]];
-            [d fetchAndSetImage:storage vc:vc];
-            completion(d);
+            [d fetchAndSetImage:storage vc:vc completion:^{
+                completion(d);
+            }];
         }
     }];
 }
 
-- (void) fetchAndSetImage: (FIRStorage*)storage vc: (UIViewController*)vc {
-    FIRStorageReference* imageRef = [[storage reference] child:self.imagePath];
-    [imageRef dataWithMaxSize:1 * 1024 * 1024 completion:^(NSData *data, NSError *error){
+- (void) fetchAndSetImage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(void))completion {
+    [[self getStorageRef:storage] dataWithMaxSize:10 * 4096 * 4096 completion:^(NSData *data, NSError *error){
         if (error != nil) {
             [vc presentError:@"Failed to download image" message:error.localizedDescription error:error];
-        } else {
+        }
+        else {
             UIImage *im = [UIImage imageWithData:data];
             self.image = im;
+            completion();
         }
     }];
 }
@@ -72,22 +74,18 @@
         [[db collectionWithPath:@"ModelData"] addDocumentWithData:@{
           @"label": self.label,
           @"imagePath": self.imagePath
-        } completion:^(NSError * _Nullable error) {
-          if (error != nil) {
-              NSLog(@"Error adding ModelData: %@", error);
-          } else {
-              NSLog(@"ModelData added with ID: %@", ref.documentID);
-              self.firebaseRef = [self getFirestoreRef:db docID:ref.documentID];
-              [self uploadImageToStorage:storage vc:vc];
-              completion();
-          }
+        }
+        completion:^(NSError * _Nullable error) {
+            if (error != nil) {
+                NSLog(@"Error adding ModelData: %@", error);
+            }
+            else {
+                NSLog(@"ModelData added with ID: %@", ref.documentID);
+                self.firebaseRef = ref;
+                [self uploadImageToStorage:storage vc:vc];
+                completion();
+            }
         }];
-}
-
-- (FIRDocumentReference*) getFirestoreRef: (FIRFirestore*)db docID: (NSString*)docID {
-//    NSString* refPath = [NSString stringWithFormat:@"%@/%@", self.label, docID];
-    FIRDocumentReference* ref = [[db collectionWithPath:@"ModelData"] documentWithPath: docID];
-    return ref;
 }
 
 - (FIRStorageReference*) getStorageRef: (FIRStorage*)storage {
@@ -100,16 +98,15 @@
 - (void) uploadImageToStorage: (FIRStorage*)storage vc: (UIViewController*)vc  {
     FIRStorageReference* storageRef = [self getStorageRef:storage];
     NSData *data = UIImagePNGRepresentation(self.image);
-    FIRStorageUploadTask *uploadTask = [storageRef putData:data
-                                                  metadata:nil
-                                                completion:^(FIRStorageMetadata *metadata,
-                                                             NSError *error) {
-      if (error != nil) {
+    [storageRef putData:data
+                metadata:nil
+                completion:^(FIRStorageMetadata *metadata, NSError *error) {
+        if (error != nil) {
           [vc presentError:@"Firebase Storage image upload failed" message:error.localizedDescription error:error];
-      }
-      else {
+        }
+        else {
           NSLog(@"Completed Storage upload");
-      }
+        }
     }];
 }
 

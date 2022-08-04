@@ -24,18 +24,22 @@
 @import FirebaseFirestore;
 
 
-CGFloat const kAnimationDuration = 2.5f;
+CGFloat const kAnimationDuration = 2.1f;
 NSInteger const kXPSize = 20;
 NSInteger const kMinXPPerCluster = 10;
 BOOL const kDebugAnimations = NO;
 NSInteger const kSeedXOffset = 30;
 NSInteger const kSeedYOffset = 100;
+//XXX todo use this max health in uploads / addDataVC
 NSInteger const kMaxHealth = 100;
 NSInteger const kSigmaXDivisor = 6;
 NSInteger const kSigmaYDivisor = 6;
+// UI consts
+NSInteger const kCornerRadius = 10;
 
 @interface ModelViewController () <CAAnimationDelegate>
-@property (nonatomic, assign) NSInteger modelInd;
+@property (weak, nonatomic) IBOutlet UILabel *modelNameLabel;
+@property (nonatomic, assign) NSInteger modelIndex;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UIView *detailsView;
 @property (weak, nonatomic) IBOutlet UIStackView *avatarStackView;
@@ -55,21 +59,20 @@ NSInteger const kSigmaYDivisor = 6;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [self fetchAndSetVCModels];
+    self.models = [NSMutableArray new];
+    [self fetchAndSetVCModels:^{
+        [self configUIBasedOnModel];
+    }];
     
-    self.testButton.layer.cornerRadius = 10;
-    self.trainButton.layer.cornerRadius = 10;
-    self.dataButton.layer.cornerRadius = 10;
-    self.modelInd = 0;
-
-    StarterModels* starters = [[StarterModels new] initStarterModels: self.uid];
-    self.models = starters.models;
-    [self configureModel];
+    self.testButton.layer.cornerRadius = kCornerRadius;
+    self.trainButton.layer.cornerRadius = kCornerRadius;
+    self.dataButton.layer.cornerRadius = kCornerRadius;
+    self.modelIndex = 0;
     
     self.numClusters = 5;
-    NSInteger avgNumXPPerCluster = 20;
+    NSInteger avgNumXPPerCluster = 30;
     
-    [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:kMaxHealth health:80];
+    [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:kMaxHealth health:30];
     [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
     self.clusters = [self initializeXPClustersOnSubViewAtZero:self.numClusters avgNumPerCluster:avgNumXPPerCluster];
 
@@ -86,7 +89,8 @@ NSInteger const kSigmaYDivisor = 6;
     [self animateXPClusters:self.clusters];
 }
 
-- (void) fetchAndSetVCModels {
+// Gets models that the user has access to and adds them to the local array of AvatarMLModels, self.models
+- (void) fetchAndSetVCModels: (void(^_Nullable)(void))completion {
     FIRDocumentReference* docRef = [[self.db collectionWithPath:@"users"] documentWithPath:self.uid];
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
         if(error != nil) {
@@ -94,13 +98,25 @@ NSInteger const kSigmaYDivisor = 6;
         }
         else {
             NSMutableArray* userModelDocRefs = snapshot.data[@"models"];
-            for(NSString* modelRef in userModelDocRefs) {
-                [AvatarMLModel fetchAndCreateAvatarMLModel:self.db documentPath:modelRef completion:^(AvatarMLModel * _Nonnull model) {
-                    [self.models addObject:model];
-                }];
-            }
+            [self setLocalModels:userModelDocRefs completion:^{
+                completion();
+            }];
         }
     }];
+}
+
+- (void) setLocalModels: (NSMutableArray<NSString*>*)userModelDocRefs completion: (void(^_Nullable)(void))completion {
+    dispatch_group_t asyncGroup = dispatch_group_create();
+    for(NSString* modelName in userModelDocRefs) {
+        dispatch_group_enter(asyncGroup);
+        [AvatarMLModel fetchAndCreateAvatarMLModel:self.db documentPath:modelName completion:^(AvatarMLModel * _Nonnull model) {
+            [self.models addObject:model];
+            dispatch_group_leave(asyncGroup);
+        }];
+    }
+    dispatch_group_notify(asyncGroup, dispatch_get_main_queue(), ^{
+        completion();
+    });
 }
 
 - (AvatarMLModel*) getCurrModel: (NSInteger) ind {
@@ -109,17 +125,18 @@ NSInteger const kSigmaYDivisor = 6;
 }
 
 //XXX todo, config model name, type, etc
-- (void) configureModel {
-    AvatarMLModel* model = self.models[0];
-    [model uploadModelToUserWithViewController:self.uid db:self.db vc:self];
+- (void) configUIBasedOnModel {
+    AvatarMLModel* model = [self getCurrModel:self.modelIndex];
+    self.nameLabel.text = model.avatarName;
+    self.modelNameLabel.text = model.modelName;
 }
 - (IBAction)didTapLeftNext:(id)sender {
-    self.modelInd -= 1;
-    //XXX todo update which model is showing by fetching etc
+    self.modelIndex -= 1;
+    //XXX todo update which model is showing by fetching, then reloading view / reconfigUI etc
 
 }
 - (IBAction)didTapRightNext:(id)sender {
-    self.modelInd += 1;
+    self.modelIndex += 1;
     //XXX todo update which model is showing by fetching etc
 }
 
@@ -132,15 +149,15 @@ NSInteger const kSigmaYDivisor = 6;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if([[segue identifier] isEqualToString:@"modelToData"]) {
         DataViewController* targetController = (DataViewController*) [segue destinationViewController];
-        targetController.model = [self getCurrModel:self.modelInd];
+        targetController.model = [self getCurrModel:self.modelIndex];
     }
     else if ([segue.identifier isEqualToString:@"modelToTest"]) {
         TestViewController* target = (TestViewController*) [segue destinationViewController];
-        target.model = [self getCurrModel:self.modelInd];
+        target.model = [self getCurrModel:self.modelIndex];
     }
     else if ([segue.identifier isEqualToString:@"modelToRetrain"]) {
         RetrainViewController* target = (RetrainViewController*) [segue destinationViewController];
-        target.model = [self getCurrModel:self.modelInd];
+        target.model = [self getCurrModel:self.modelIndex];
     }
 }
 //MARK: XP animations

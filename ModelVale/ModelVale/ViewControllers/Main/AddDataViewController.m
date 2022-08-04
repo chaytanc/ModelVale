@@ -15,7 +15,7 @@
 #import "ModelData.h"
 #import "ModelLabel.h"
 #import "SceneDelegate.h"
-#import "FirebaseAuthViewController.h"
+#import "FirebaseViewController.h"
 
 @interface AddDataViewController () <UINavigationControllerDelegate, UIImagePickerControllerDelegate, UICollectionViewDelegate, UICollectionViewDataSource, QBImagePickerControllerDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate>
 
@@ -89,17 +89,27 @@
 //MARK: Firebase
 - (void) uploadModelData:(void(^)(void))completion  {
     self.modelLabel.label = self.labelField.text;
-    self.modelLabel.labelModelData = self.data;
+    dispatch_group_t prepareWaitingGroup = dispatch_group_create();
     for(ModelData* data in self.data) {
-        [data saveNewModelDataWithDatabase:self.db storage:self.storage vc:self completion:completion];
+        dispatch_group_enter(prepareWaitingGroup);
+        [data saveNewModelDataWithDatabase:self.db storage:self.storage vc:self completion:^{
+            [self.modelLabel.labelModelData addObject:data.firebaseRef];
+            dispatch_group_leave(prepareWaitingGroup);
+        }];
     }
+    dispatch_group_notify(prepareWaitingGroup, dispatch_get_main_queue(), ^{
+        completion();
+    });
 }
 
 - (IBAction)didTapDone:(id)sender {
     self.modelLabel.label = self.labelField.text;
     [self uploadModelData: ^{
-        [self.modelLabel updateModelLabelWithDatabase: self.storage db:self.db vc:self completion:^(NSError * _Nonnull error) {
-            if(error == nil) {
+        [self.modelLabel updateModelLabelWithDatabase: self.storage db:self.db vc:self model:self.model completion:^(NSError * _Nonnull error) {
+            if(error != nil) {
+                [self presentError:@"Failed to update data" message:error.localizedDescription error:error];
+            }
+            else {
                 [self transitionToModelVC];
             }
         }];
@@ -110,9 +120,11 @@
 - (void) getImageFromPH: (PHAsset*)asset imageCompletion: (void (^) (UIImage* image))completion {
     PHImageRequestOptions* opts = [PHImageRequestOptions new];
     opts.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-    [self.phManager requestImageForAsset:asset targetSize: CGSizeMake(asset.pixelWidth, asset.pixelHeight)
-                             contentMode: PHImageContentModeAspectFill
-                                 options:opts resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+    [self.phManager requestImageForAsset:asset
+                    targetSize: CGSizeMake(asset.pixelWidth, asset.pixelHeight)
+                    contentMode: PHImageContentModeAspectFill
+                    options:opts
+                    resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
         if(result == nil) {
             NSLog(@"Nil image from asset");
         }
@@ -128,7 +140,8 @@
             NSString* path = [self getImageStoragePath: self.modelLabel];
             ModelData* data = [ModelData initWithImage:image label:self.labelField.text imagePath:path];
             [self.data addObject:data];
-            [self.modelLabel addLabelModelData:@[data]];
+            //XXX todo should add ref to labelModelData?? Ref is now added when we upload the new data
+//            [self.modelLabel addLabelModelData:@[data]];
             [self.addDataCollView reloadData];
         }];
     }
@@ -147,7 +160,8 @@
     NSString* path = [self getImageStoragePath: self.modelLabel];
     ModelData* data = [ModelData initWithImage:editedImage label:self.modelLabel.label imagePath:path];
     [self.data addObject:data];
-    [self.modelLabel addLabelModelData:@[data]];
+    //XXX todo
+//    [self.modelLabel addLabelModelData:@[data]];
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.addDataCollView reloadData];
 }

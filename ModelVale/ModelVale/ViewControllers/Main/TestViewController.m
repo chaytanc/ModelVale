@@ -36,9 +36,6 @@
 - (IBAction)didTapTest:(id)sender {
     UIImage* testImage = [UIImage imageNamed:@"mountain"];
     struct CGImage* cgtest = testImage.CGImage;
-
-//    NSLog(@"%@", self.model.model.modelDescription);
-//    NSLog(@"%@", self.model.modelDescription);
     MLImageConstraint* constraint = self.mlmodel.modelDescription.inputDescriptionsByName[@"image"].imageConstraint;
 
     // Create fake data to predict on using CoreML classes like MLFeatureProvider

@@ -5,7 +5,7 @@
 //  Created by Chaytan Inman on 7/28/22.
 //
 
-#import "FirebaseAuthViewController.h"
+#import "FirebaseViewController.h"
 @import FirebaseAuth;
 @import FirebaseFirestore;
 #import "UIViewController+PresentError.h"
@@ -13,11 +13,11 @@
 #import "ModelLabel.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface FirebaseAuthViewController ()
+@interface FirebaseViewController ()
 @property (nonatomic, strong) FIRAuth* userListener;
 @end
 
-@implementation FirebaseAuthViewController
+@implementation FirebaseViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -73,11 +73,15 @@
 }
 
 -(NSString*) getImageStoragePath: (ModelLabel*)label {
-    NSNumber* dateNum = [NSNumber numberWithDouble: CACurrentMediaTime()];
+//    NSNumber* dateNum = [NSNumber numberWithDouble: CACurrentMediaTime()];
+//    NSString* date = [dateNum stringValue];
+    //XXX todo human readable date
+    double timestamp = [[NSDate date] timeIntervalSince1970];
+    int64_t timeInMilisInt64 = (int64_t)(timestamp*1000);
+    NSNumber* dateNum = [NSNumber numberWithDouble:timeInMilisInt64];
     NSString* date = [dateNum stringValue];
     NSString* path = [NSString stringWithFormat:@"/%@/%@", label.testTrainType, date];
     return path;
 }
-
 
 @end
