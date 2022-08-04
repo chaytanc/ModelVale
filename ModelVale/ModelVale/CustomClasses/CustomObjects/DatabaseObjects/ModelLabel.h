@@ -17,8 +17,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ModelLabel : NSObject
 @property (nonatomic, strong) NSString* label;
+// Data can be one of the options in the TestTrainEnum. Typically ML classifies data as either testing, training, or validation, but only test and train are currently supported.
 @property (nonatomic, assign) NSString* testTrainType;
-@property (nonatomic, strong) NSMutableArray<ModelData*>* labelModelData; // Array of all ModelData with this label
+// localData is the data stored on a as-needed basis after fetches
+@property (nonatomic, strong) NSMutableArray<ModelData*>* localData;
+// An array of ALL the ModelData references that a label points to, but not the actual objects themselves so that we don't have to create thousands of images that might be contained in a label
+@property (nonatomic, strong) NSMutableArray<FIRDocumentReference*>* labelModelData;
 @property (strong, nonatomic) FIRDocumentReference* firebaseRef;
 
 - (ModelLabel*) initEmptyLabel: (NSString*)label testTrainType: (NSString*) testTrainType;

@@ -11,6 +11,7 @@
 		45DC8A116154DE4F9D523287 /* Pods_ModelVale_ModelValeUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9568465BF07D23495F84A91 /* Pods_ModelVale_ModelValeUITests.framework */; };
 		8638BAAAD53D8B35B5595295 /* Pods_ModelValeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2CE161195256D3EF42598EA /* Pods_ModelValeTests.framework */; };
 		9C0759342884D240005493D1 /* DropDownTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0759332884D240005493D1 /* DropDownTextField.swift */; };
+		9C150576289B52F90090319A /* DisplayDataFirebaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C150575289B52F90090319A /* DisplayDataFirebaseViewController.m */; };
 		9C28EF8328877E4E00CE0F2D /* XPCluster.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C28EF8228877E4E00CE0F2D /* XPCluster.m */; };
 		9C28EF862887897F00CE0F2D /* XP.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C28EF852887897F00CE0F2D /* XP.m */; };
 		9C623CC5288743BB00264F50 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C623CC4288743BB00264F50 /* Keys.plist */; };
@@ -39,7 +40,7 @@
 		9CADD488288F661800C1C6F4 /* StarterModels.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CADD486288F661800C1C6F4 /* StarterModels.m */; };
 		9CADD48A289213DA00C1C6F4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CADD489289213DA00C1C6F4 /* GoogleService-Info.plist */; };
 		9CADD49928922A8E00C1C6F4 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CADD49828922A8E00C1C6F4 /* User.m */; };
-		9CADD4A12893663300C1C6F4 /* FirebaseAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CADD4A02893663300C1C6F4 /* FirebaseAuthViewController.m */; };
+		9CADD4A12893663300C1C6F4 /* FirebaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CADD4A02893663300C1C6F4 /* FirebaseViewController.m */; };
 		9CB423FF287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9CB423FE287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel */; };
 		9CB42403287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9CB42402287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel */; };
 		9CB79C0E2874F21800F67E1C /* UIViewController+PresentError.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C0C2874F21700F67E1C /* UIViewController+PresentError.m */; };
@@ -75,6 +76,8 @@
 		45BCAC78F11EFE2C43042A2E /* Pods_ModelVale.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ModelVale.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		82CCEE7F27B11B5A4BEB53E8 /* Pods-ModelValeTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ModelValeTests.debug.xcconfig"; path = "Target Support Files/Pods-ModelValeTests/Pods-ModelValeTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9C0759332884D240005493D1 /* DropDownTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownTextField.swift; sourceTree = "<group>"; };
+		9C150574289B52F90090319A /* DisplayDataFirebaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DisplayDataFirebaseViewController.h; sourceTree = "<group>"; };
+		9C150575289B52F90090319A /* DisplayDataFirebaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DisplayDataFirebaseViewController.m; sourceTree = "<group>"; };
 		9C28EF8128877E4E00CE0F2D /* XPCluster.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XPCluster.h; sourceTree = "<group>"; };
 		9C28EF8228877E4E00CE0F2D /* XPCluster.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XPCluster.m; sourceTree = "<group>"; };
 		9C28EF842887897F00CE0F2D /* XP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XP.h; sourceTree = "<group>"; };
@@ -124,8 +127,8 @@
 		9CADD489289213DA00C1C6F4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9CADD49728922A8E00C1C6F4 /* User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		9CADD49828922A8E00C1C6F4 /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
-		9CADD49F2893663300C1C6F4 /* FirebaseAuthViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirebaseAuthViewController.h; sourceTree = "<group>"; };
-		9CADD4A02893663300C1C6F4 /* FirebaseAuthViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirebaseAuthViewController.m; sourceTree = "<group>"; };
+		9CADD49F2893663300C1C6F4 /* FirebaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirebaseViewController.h; sourceTree = "<group>"; };
+		9CADD4A02893663300C1C6F4 /* FirebaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirebaseViewController.m; sourceTree = "<group>"; };
 		9CB423FE287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SqueezeNetInt8LUT.mlmodel; sourceTree = "<group>"; };
 		9CB42402287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = UpdatableSqueezeNet.mlmodel; path = ../../../mycoremltools/UpdatableSqueezeNet.mlmodel; sourceTree = "<group>"; };
 		9CB79C0C2874F21700F67E1C /* UIViewController+PresentError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+PresentError.m"; sourceTree = "<group>"; };
@@ -177,6 +180,58 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9C150577289B565A0090319A /* DatabaseObjects */ = {
+			isa = PBXGroup;
+			children = (
+				9C69F730287CAFDE0001F608 /* ModelData.h */,
+				9C69F731287CAFDE0001F608 /* ModelData.m */,
+				9C69F733287CCFC40001F608 /* ModelLabel.h */,
+				9C69F734287CCFC40001F608 /* ModelLabel.m */,
+				9CEEE36C2880D06900548963 /* AvatarMLModel.h */,
+				9CEEE36D2880D06900548963 /* AvatarMLModel.m */,
+				9CADD49728922A8E00C1C6F4 /* User.h */,
+				9CADD49828922A8E00C1C6F4 /* User.m */,
+			);
+			path = DatabaseObjects;
+			sourceTree = "<group>";
+		};
+		9C150578289B56F50090319A /* CustomUI */ = {
+			isa = PBXGroup;
+			children = (
+				9CB79C0D2874F21800F67E1C /* UIViewController+PresentError.h */,
+				9C0759332884D240005493D1 /* DropDownTextField.swift */,
+				9CB79C0C2874F21700F67E1C /* UIViewController+PresentError.m */,
+				9C69F72C287CAB970001F608 /* UserDataSectionHeader.h */,
+				9C69F72D287CAB970001F608 /* UserDataSectionHeader.m */,
+				9CEEE36F2880D71600548963 /* HealthBarView.h */,
+				9CEEE3702880D71600548963 /* HealthBarView.m */,
+				9C69F7212878A8210001F608 /* Cells */,
+			);
+			path = CustomUI;
+			sourceTree = "<group>";
+		};
+		9C150579289B57240090319A /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				9C74E51528725799003FFFF7 /* Main.storyboard */,
+				9C69F7272878D35A0001F608 /* Stats.storyboard */,
+				9C74E54828736D9E003FFFF7 /* Login.storyboard */,
+				9C74E51A2872579A003FFFF7 /* LaunchScreen.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		9C15057A289B57FD0090319A /* XPObjects */ = {
+			isa = PBXGroup;
+			children = (
+				9C28EF842887897F00CE0F2D /* XP.h */,
+				9C28EF852887897F00CE0F2D /* XP.m */,
+				9C28EF8128877E4E00CE0F2D /* XPCluster.h */,
+				9C28EF8228877E4E00CE0F2D /* XPCluster.m */,
+			);
+			path = XPObjects;
+			sourceTree = "<group>";
+		};
 		9C69F7212878A8210001F608 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -188,29 +243,19 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
-		9C69F72F287CAF650001F608 /* Datatypes */ = {
+		9C69F72F287CAF650001F608 /* CustomObjects */ = {
 			isa = PBXGroup;
 			children = (
-				9C69F730287CAFDE0001F608 /* ModelData.h */,
-				9C69F731287CAFDE0001F608 /* ModelData.m */,
-				9C69F733287CCFC40001F608 /* ModelLabel.h */,
-				9C69F734287CCFC40001F608 /* ModelLabel.m */,
+				9C15057A289B57FD0090319A /* XPObjects */,
+				9C150577289B565A0090319A /* DatabaseObjects */,
 				9C69F736287CD85B0001F608 /* TestTrainEnum.h */,
 				9C69F737287DF38E0001F608 /* TestTrainEnum.m */,
 				9C69F73D287E4DD50001F608 /* TrainBatchData.h */,
 				9C69F73E287E4DD50001F608 /* TrainBatchData.m */,
-				9CEEE36C2880D06900548963 /* AvatarMLModel.h */,
-				9CEEE36D2880D06900548963 /* AvatarMLModel.m */,
-				9CADD49728922A8E00C1C6F4 /* User.h */,
-				9CADD49828922A8E00C1C6F4 /* User.m */,
-				9C28EF842887897F00CE0F2D /* XP.h */,
-				9C28EF852887897F00CE0F2D /* XP.m */,
-				9C28EF8128877E4E00CE0F2D /* XPCluster.h */,
-				9C28EF8228877E4E00CE0F2D /* XPCluster.m */,
 				9CADD487288F661800C1C6F4 /* StarterModels.h */,
 				9CADD486288F661800C1C6F4 /* StarterModels.m */,
 			);
-			path = Datatypes;
+			path = CustomObjects;
 			sourceTree = "<group>";
 		};
 		9C74E50028725799003FFFF7 = {
@@ -243,13 +288,10 @@
 				9C74E50D28725799003FFFF7 /* AppDelegate.m */,
 				9C74E50F28725799003FFFF7 /* SceneDelegate.h */,
 				9C74E51028725799003FFFF7 /* SceneDelegate.m */,
-				9CB79C0B2874F13E00F67E1C /* CustomComponents */,
+				9C150579289B57240090319A /* Storyboards */,
+				9CB79C0B2874F13E00F67E1C /* CustomClasses */,
 				9C74E54128736CBC003FFFF7 /* ViewControllers */,
-				9C74E51528725799003FFFF7 /* Main.storyboard */,
-				9C69F7272878D35A0001F608 /* Stats.storyboard */,
-				9C74E54828736D9E003FFFF7 /* Login.storyboard */,
 				9C74E5182872579A003FFFF7 /* Assets.xcassets */,
-				9C74E51A2872579A003FFFF7 /* LaunchScreen.storyboard */,
 				9C74E51D2872579A003FFFF7 /* Info.plist */,
 				9CADD489289213DA00C1C6F4 /* GoogleService-Info.plist */,
 				9C623CC4288743BB00264F50 /* Keys.plist */,
@@ -288,8 +330,10 @@
 		9CADD49A289364D300C1C6F4 /* Database */ = {
 			isa = PBXGroup;
 			children = (
-				9CADD49F2893663300C1C6F4 /* FirebaseAuthViewController.h */,
-				9CADD4A02893663300C1C6F4 /* FirebaseAuthViewController.m */,
+				9CADD49F2893663300C1C6F4 /* FirebaseViewController.h */,
+				9CADD4A02893663300C1C6F4 /* FirebaseViewController.m */,
+				9C150574289B52F90090319A /* DisplayDataFirebaseViewController.h */,
+				9C150575289B52F90090319A /* DisplayDataFirebaseViewController.m */,
 			);
 			path = Database;
 			sourceTree = "<group>";
@@ -303,20 +347,13 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		9CB79C0B2874F13E00F67E1C /* CustomComponents */ = {
+		9CB79C0B2874F13E00F67E1C /* CustomClasses */ = {
 			isa = PBXGroup;
 			children = (
-				9C69F72F287CAF650001F608 /* Datatypes */,
-				9C69F7212878A8210001F608 /* Cells */,
-				9CB79C0D2874F21800F67E1C /* UIViewController+PresentError.h */,
-				9C0759332884D240005493D1 /* DropDownTextField.swift */,
-				9CB79C0C2874F21700F67E1C /* UIViewController+PresentError.m */,
-				9C69F72C287CAB970001F608 /* UserDataSectionHeader.h */,
-				9C69F72D287CAB970001F608 /* UserDataSectionHeader.m */,
-				9CEEE36F2880D71600548963 /* HealthBarView.h */,
-				9CEEE3702880D71600548963 /* HealthBarView.m */,
+				9C69F72F287CAF650001F608 /* CustomObjects */,
+				9C150578289B56F50090319A /* CustomUI */,
 			);
-			path = CustomComponents;
+			path = CustomClasses;
 			sourceTree = "<group>";
 		};
 		9CB79C0F2874F6EA00F67E1C /* Login */ = {
@@ -622,6 +659,7 @@
 				9C69F732287CAFDE0001F608 /* ModelData.m in Sources */,
 				9C74E54728736D7B003FFFF7 /* StatsViewController.m in Sources */,
 				9C69F72B287CA94B0001F608 /* UserDataCell.m in Sources */,
+				9C150576289B52F90090319A /* DisplayDataFirebaseViewController.m in Sources */,
 				9C74E54C28736DBD003FFFF7 /* LoginViewController.m in Sources */,
 				9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */,
 				9CADD49928922A8E00C1C6F4 /* User.m in Sources */,
@@ -637,7 +675,7 @@
 				9CEEE36E2880D06900548963 /* AvatarMLModel.m in Sources */,
 				9C28EF8328877E4E00CE0F2D /* XPCluster.m in Sources */,
 				9C74E51F2872579A003FFFF7 /* main.m in Sources */,
-				9CADD4A12893663300C1C6F4 /* FirebaseAuthViewController.m in Sources */,
+				9CADD4A12893663300C1C6F4 /* FirebaseViewController.m in Sources */,
 				9CADD488288F661800C1C6F4 /* StarterModels.m in Sources */,
 				9C69F738287DF38E0001F608 /* TestTrainEnum.m in Sources */,
 				9CB79C1828775C8A00F67E1C /* RetrainViewController.m in Sources */,

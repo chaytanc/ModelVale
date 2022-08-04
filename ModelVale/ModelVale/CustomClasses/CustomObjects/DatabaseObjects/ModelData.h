@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (MLDictionaryFeatureProvider*) getDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
 - (MLFeatureValue*) getImageFeatureValue: (MLImageConstraint*)modelConstraints;
 - (MLDictionaryFeatureProvider*) getUpdatableDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
-+ (void) fetchFromReference: (FIRStorage*)storage docRef: (FIRDocumentReference*)docRef vc: (UIViewController*)vc completion:(void(^)(ModelData*))completion;
++ (void) fetchFromReference: (FIRDocumentReference*)docRef storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(ModelData*))completion;
 
 
 @end

@@ -17,27 +17,31 @@
 
 - (TrainBatchData*) initTrainBatch: (MLImageConstraint*) imageConstraint {
     //XXX TODO use data from query instead of fake data
-    
+
     self.trainBatchLabels = [NSMutableArray new];
-    // We create two labels, the first has two images the second has one image, this represents all the training data that was
-    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"alp" testTrainType:dataTypeEnumToString(Train)];
-    UIImage* testImage = [UIImage imageNamed:@"mountain"];
-    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
-    [fakeLabel addLabelModelData:@[fakeData]];
-    testImage = [UIImage imageNamed:@"rivermountain"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"2"];
-    [fakeLabel addLabelModelData:@[fakeData]];
-    [self.trainBatchLabels addObject:fakeLabel];
-    fakeLabel = [[ModelLabel new] initEmptyLabel:@"vulture" testTrainType:dataTypeEnumToString(Train)];
-    testImage = [UIImage imageNamed:@"snowymountains"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
-    [fakeLabel addLabelModelData:@[fakeData]];
-    [self.trainBatchLabels addObject:fakeLabel];
-    
+    [self createFakeData];
     [self setBatchFeatureProvider:imageConstraint];
     
     return self;
 }
+
+-(void) createFakeData {
+    // We create two labels, the first has two images the second has one image, this represents all the training data that was
+    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"alp" testTrainType:dataTypeEnumToString(Train)];
+    UIImage* testImage = [UIImage imageNamed:@"mountain"];
+    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
+    [fakeLabel.localData addObject:fakeData];
+    testImage = [UIImage imageNamed:@"rivermountain"];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"2"];
+    [fakeLabel.localData addObject:fakeData];
+    [self.trainBatchLabels addObject:fakeLabel];
+    fakeLabel = [[ModelLabel new] initEmptyLabel:@"vulture" testTrainType:dataTypeEnumToString(Train)];
+    testImage = [UIImage imageNamed:@"snowymountains"];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
+    [fakeLabel.localData addObject:fakeData];
+    [self.trainBatchLabels addObject:fakeLabel];
+}
+
 
 // Sets fetch data from Parse with Train type and set trainBatch with it
 - (void) fetchData: (void (^) (NSArray*))completion {
@@ -51,7 +55,7 @@
     }
     for (id label in self.trainBatchLabels) {
         ModelLabel* l = ((ModelLabel*) label);
-        for (id data in l.labelModelData) {
+        for (id data in l.localData) {
             ModelData* d = (ModelData*) data;
             MLDictionaryFeatureProvider* featureProv = [d getUpdatableDictionaryFeatureProvider:imageConstraint];
             [featureArray addObject:featureProv];

@@ -18,7 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString* modelName;
 @property (nonatomic, strong) NSString* avatarName;
 @property (nonatomic, assign) NSNumber* health;
-@property (nonatomic, strong) NSMutableArray* labeledData;
+// An array of ALL the ModelLabel references that an AvatarMLModel points to, but not the actual objects themselves
+@property (nonatomic, strong) NSMutableArray<FIRDocumentReference*>* labeledData;
 
 //XXX todo update these properties in retrain and test
 - (instancetype)initWithDictionary:(NSDictionary *)dict;

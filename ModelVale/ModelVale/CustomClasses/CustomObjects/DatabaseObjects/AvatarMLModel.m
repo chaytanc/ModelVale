@@ -36,7 +36,6 @@ NSNumber* const MAXHEALTH = @500;
         self.avatarName = dict[@"avatarName"];
         self.health = dict[@"health"];
         self.labeledData = dict[@"labeledData"];
-//        self.labeledData = [NSMutableArray new];
     }
     return self;
 }
@@ -96,7 +95,12 @@ NSNumber* const MAXHEALTH = @500;
 
 - (void) uploadNewModel: (NSString*)uid db: (FIRFirestore*)db vc: (UIViewController*)vc {
     [[[db collectionWithPath:@"Model"] documentWithPath:self.avatarName]
-     setData:@{ @"avatarName": self.avatarName, @"modelName" : self.modelName, @"health" : self.health, @"labeledData" : [self getModelDataRefList] }
+     setData:@{
+        @"avatarName": self.avatarName,
+        @"modelName" : self.modelName,
+        @"health" : self.health,
+         @"labeledData" : self.labeledData
+    }
          merge:YES
          completion:^(NSError * _Nullable error) {
                 if(error != nil){
@@ -114,7 +118,7 @@ NSNumber* const MAXHEALTH = @500;
     self.modelName = dict[@"modelName"];
     self.avatarName = dict[@"avatarName"];
     self.health = dict[@"health"];
-    [self convertRefListToLabeledDataAndAddLabel:dict[@"labeledData"] vc:vc completion:completion];
+    self.labeledData = dict[@"labeledData"];
 }
 
 + (void) fetchAndCreateAvatarMLModel: (FIRFirestore*)db documentPath: (NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion {
@@ -131,59 +135,20 @@ NSNumber* const MAXHEALTH = @500;
      }];
 }
 
-// Create an array of FIRDocRefs from the local data
-- (NSMutableArray<FIRDocumentReference*>*) getModelDataRefList {
-    NSMutableArray* refs = [NSMutableArray new];
-    for(ModelLabel* data in self.labeledData) {
-        [refs addObject:data.firebaseRef];
-    }
-    return refs;
-}
-
-// Does not overwrite existing local data, assumes that it will ALWAYS contain ModelData objects
-// Create an array of ModelData objects from a list of references to them
-- (void) convertRefListToLabeledDataAndAddLabel: (NSMutableArray<FIRDocumentReference*> *)fromFirestoreRefList vc: (UIViewController*)vc completion:(void(^)(void))completion {
-    
-    dispatch_group_t prepareWaitingGroup = dispatch_group_create();
-    for(FIRDocumentReference* ref in fromFirestoreRefList) {
-        dispatch_group_enter(prepareWaitingGroup);
-        [ModelLabel fetchFromReference:ref vc:vc completion:^(ModelLabel* _Nonnull modelLabel) {
-            modelLabel.firebaseRef = ref;
-            [self.labeledData addObject:modelLabel];
-            dispatch_group_leave(prepareWaitingGroup);
-        }];
-    }
-    // At this point we have both the locally created ModelData objs and the objects from the fetched RefList, then we can reupload modelLabel
-    dispatch_group_notify(prepareWaitingGroup, dispatch_get_main_queue(), ^{
-        completion();
-    });
-}
-
 - (void) updateModelLabeledDataWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
-    FIRQuery *query = [[db collectionWithPath:@"Model"] queryWhereField:@"avatarName" isEqualTo:self.avatarName];
-    [query getDocumentsWithCompletion:^(FIRQuerySnapshot *snapshot, NSError *error) {
-        if(error != nil) {
-            [vc presentError:@"Failed to fetch model" message:error.localizedDescription error:error];
-        }
-        else if (snapshot.documents.count > 0){
-            FIRDocumentSnapshot* doc = snapshot.documents[0];
-            NSDictionary* dict = doc.data;
-            NSLog(@"Found %lu matching Models", (unsigned long)snapshot.documents.count);
-            [self updatePropsLocallyWithDict:dict vc:vc completion:^{
-                [self updateLabeledData:db docID:self.avatarName vc:vc];
-            }];
-        }
-        else {
-            NSLog(@"Error: Can't update a model that doesn't exist...");
-        }
-        completion(error);
+    
+    FIRDocumentReference *modelRef = [[db collectionWithPath:@"Model"] documentWithPath:self.avatarName];
+    [modelRef updateData:@{
+      @"labeledData": [FIRFieldValue fieldValueForArrayUnion:self.labeledData]
     }];
 }
 
 // Update the label document found in Firestore with the given docID
 - (void) updateLabeledData: (FIRFirestore*)db docID: (NSString*)docID vc: (UIViewController*)vc {
     [[[db collectionWithPath:@"Model"] documentWithPath:docID]
-     setData:@{@"labeledData" : [self getModelDataRefList] }
+        setData:@{
+        @"labeledData" : self.labeledData
+        }
          merge:YES
          completion:^(NSError * _Nullable error) {
                 if(error != nil){
