@@ -124,7 +124,6 @@ NSInteger const kCornerRadius = 10;
     return self.models[relInd];
 }
 
-//XXX todo, config model name, type, etc
 - (void) configUIBasedOnModel {
     AvatarMLModel* model = [self getCurrModel:self.modelIndex];
     self.nameLabel.text = model.avatarName;

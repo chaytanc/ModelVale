@@ -31,13 +31,16 @@
     return md;
 }
 
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    self = [super init];
-    if(self){
-        self.label = dict[@"label"];
-        self.imagePath = dict[@"imagePath"];
-    }
-    return self;
++ (instancetype)initWithDictionary:(NSDictionary *)dict storage: (FIRStorage*)storage completion:(void(^_Nullable)(ModelData*))completion{
+    ModelData* md = [ModelData new];
+    md.label = dict[@"label"];
+    md.imagePath = dict[@"imagePath"];
+    [md fetchAndSetImage:storage completion:^{
+        if(completion) {
+            completion(md);
+        }
+    }];
+    return md;
 }
 
 //MARK: Firebase
@@ -48,22 +51,25 @@
         }
         else {
             ModelData* d = [ModelData initWithImage:nil label:snapshot.data[@"label"] imagePath:snapshot.data[@"imagePath"]];
-            [d fetchAndSetImage:storage vc:vc completion:^{
+            [d fetchAndSetImage:storage completion:^{
                 completion(d);
             }];
         }
     }];
 }
 
-- (void) fetchAndSetImage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(void))completion {
+- (void) fetchAndSetImage: (FIRStorage*)storage completion:(void(^_Nullable)(void))completion {
     [[self getStorageRef:storage] dataWithMaxSize:10 * 4096 * 4096 completion:^(NSData *data, NSError *error){
         if (error != nil) {
-            [vc presentError:@"Failed to download image" message:error.localizedDescription error:error];
+            //XXX todo error handling without passing vc
+//            [vc presentError:@"Failed to download image" message:error.localizedDescription error:error];
         }
         else {
             UIImage *im = [UIImage imageWithData:data];
             self.image = im;
-            completion();
+            if(completion){
+                completion();
+            }
         }
     }];
 }
@@ -86,6 +92,24 @@
                 completion();
             }
         }];
+}
+
+- (void) saveModelDataInSubColl: (FIRDocumentReference*)labelRef db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(void))completion {
+    __block FIRDocumentReference *ref = [[labelRef collectionWithPath:@"ModelData"] addDocumentWithData:@{
+      @"label": self.label,
+      @"imagePath": self.imagePath
+    }
+    completion:^(NSError * _Nullable error) {
+        if (error != nil) {
+            NSLog(@"Error adding ModelData: %@", error);
+        }
+        else {
+            NSLog(@"ModelData added with ID: %@", ref.documentID);
+            self.firebaseRef = ref;
+            [self uploadImageToStorage:storage vc:vc];
+            completion();
+        }
+    }];
 }
 
 - (FIRStorageReference*) getStorageRef: (FIRStorage*)storage {

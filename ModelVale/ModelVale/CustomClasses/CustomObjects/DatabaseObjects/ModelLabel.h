@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (ModelLabel*) initEmptyLabel: (NSString*)label testTrainType: (NSString*) testTrainType;
 
 - (void) addLabelModelData:(NSArray *)objects;
-- (void) updateModelLabelWithDatabase: (FIRStorage*)storage db: (FIRFirestore*)db vc: (UIViewController*)vc model: (AvatarMLModel*)model completion:(void(^)(NSError *error))completion;
+- (void) updateModelLabelWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc model: (AvatarMLModel*)model completion:(void(^)(FIRDocumentReference* labelRef, NSError *error))completion;
 - (void) saveNewModelLabelWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc;
 + (void) fetchFromReference: (FIRDocumentReference*)labelDocRef vc: (UIViewController*)vc completion:(void(^)(ModelLabel*))completion;
 @end

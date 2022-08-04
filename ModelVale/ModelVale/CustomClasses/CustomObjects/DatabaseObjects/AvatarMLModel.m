@@ -60,7 +60,6 @@ NSNumber* const MAXHEALTH = @500;
         // If a model already exists under that avatarName, update local properties, then update the database model
         else if(snapshot.data != nil) {
             [self initWithDictionary:snapshot.data];
-            
         }
         [self uploadNewModel:uid db:db vc:vc];
     }];
@@ -125,7 +124,7 @@ NSNumber* const MAXHEALTH = @500;
     FIRDocumentReference *docRef = [[db collectionWithPath:@"Model"] documentWithPath:documentPath];
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
        if (snapshot.exists) {
-           NSLog(@"Model data: %@", snapshot.data);
+           NSLog(@"Model exists with data: %@", snapshot.data);
            AvatarMLModel* model = [[AvatarMLModel new] initWithDictionary: snapshot.data];
            completion(model);
        }
@@ -140,6 +139,8 @@ NSNumber* const MAXHEALTH = @500;
     FIRDocumentReference *modelRef = [[db collectionWithPath:@"Model"] documentWithPath:self.avatarName];
     [modelRef updateData:@{
       @"labeledData": [FIRFieldValue fieldValueForArrayUnion:self.labeledData]
+    } completion:^(NSError * _Nullable error) {
+        completion(error);
     }];
 }
 

@@ -73,7 +73,8 @@
     return refs;
 }
 
-- (void) updateModelLabelWithDatabase: (FIRStorage*)storage db: (FIRFirestore*)db vc: (UIViewController*)vc model: (AvatarMLModel*)model completion:(void(^)(NSError *error))completion {
+// Query for existing labels and fetch, update locally, then push if one existed, or create a new label instead
+- (void) updateModelLabelWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc model: (AvatarMLModel*)model completion:(void(^)(FIRDocumentReference* labelRef, NSError *error))completion {
     FIRQuery *query = [[db collectionWithPath:@"ModelLabel"] queryWhereField:@"label" isEqualTo:self.label];
     [query queryWhereField:@"testTrainType" isEqualTo:self.testTrainType];
     [query getDocumentsWithCompletion:^(FIRQuerySnapshot *snapshot, NSError *error) {
@@ -84,32 +85,34 @@
             FIRDocumentSnapshot* doc = snapshot.documents[0];
             NSDictionary* dict = doc.data;
             NSLog(@"Found %lu matching labels", (unsigned long)snapshot.documents.count);
-            // Update locally, adding fetched refs to existing refs for labelModelData
             [self updateWithDictionary:dict];
-            [self uploadModelLabel:db docID:doc.documentID vc:vc];
+            [self uploadModelLabel:db labelRef:doc.reference vc:vc completion:^(NSError *error) {
+                completion(doc.reference, error);
+            }];
         }
         else {
-            [self saveNewModelLabelWithDatabase:db vc:vc completion:^{
+            [self saveNewModelLabelWithDatabase:db vc:vc completion:^(FIRDocumentReference *ref) {
                 // Update the model stored references when a new label is added
                 [model.labeledData addObject:self.firebaseRef];
                 [model updateModelLabeledDataWithDatabase:db vc:vc completion:^(NSError * _Nonnull error) {
                     if(error != nil) {
                         NSLog(@"Error in updateModelLabeledDataWithDatabase");
                     }
+                    else {
+                        completion(ref, error);
+                    }
                 }];
             }];
         }
-        completion(error);
     }];
 }
 
-- (void) saveNewModelLabelWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(void))completion {
+- (void) saveNewModelLabelWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(FIRDocumentReference* ref))completion {
     // Add a new ModelData with a generated id.
     __block FIRDocumentReference* ref =
         [[db collectionWithPath:@"ModelLabel"] addDocumentWithData:@{
           @"label": self.label,
           @"testTrainType": self.testTrainType,
-          @"labelModelData" : self.labelModelData
         } completion:^(NSError * _Nullable error) {
           if (error != nil) {
               [vc presentError:@"Failed uploading new ModelLabel" message:error.localizedDescription error:error];
@@ -117,26 +120,27 @@
           else {
               self.firebaseRef = ref;
               NSLog(@"ModelLabel added with ID: %@", ref.documentID);
-              completion();
+              completion(ref);
           }
         }];
 }
 
 // Update the label document found in Firestore with the given docID
-- (void) uploadModelLabel: (FIRFirestore*)db docID: (NSString*)docID vc: (UIViewController*)vc {
-    [[[db collectionWithPath:@"ModelLabel"] documentWithPath:docID]
-     setData:@{ @"label": self.label,
-                @"testTrainType" : self.testTrainType,
-                @"labelModelData" : self.labelModelData
-             }
+- (void) uploadModelLabel: (FIRFirestore*)db labelRef: (FIRDocumentReference*)labelRef vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
+    
+    [labelRef setData:@{
+        @"label": self.label,
+        @"testTrainType" : self.testTrainType,
+    }
          merge:YES
          completion:^(NSError * _Nullable error) {
-                if(error != nil){
-                    [vc presentError:@"Failed to update ModelLabel" message:error.localizedDescription error:error];
-                }
-                else {
-                    NSLog(@"Uploaded ModelLabel to Firestore");
-                }
+            if(error != nil){
+                [vc presentError:@"Failed to update ModelLabel" message:error.localizedDescription error:error];
+            }
+            else {
+                NSLog(@"Uploaded ModelLabel to Firestore");
+            }
+            completion(error);
     }];
 }
 

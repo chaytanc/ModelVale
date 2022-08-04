@@ -30,18 +30,16 @@
     [super viewDidLoad];
     self.mlmodel = [self.model getMLModelFromModelName];
     self.modelURL = [self loadModelURL:self.model.modelName extension:@"mlmodelc"];
+    self.retrainLabel.text = @"Unused Retraining Data";
+}
+
+- (void) fetchUnusedTrainingData {
+    //XXX todo
 }
 
 // XXX todo move these two funcs to model class
 -(NSURL*) loadModelURL: (NSString*) resource extension: (NSString*)extension {
     NSURL* modelURL = [[NSBundle mainBundle] URLForResource:resource withExtension:extension];
-
-
-    //XXX Todo check that the updated model gets saved correctly without using FileManager
-//    NSFileManager* fm = [NSFileManager defaultManager];
-//    NSURL* dirURL = [fm URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:YES error:nil];
-//    NSString* extended = [resource stringByAppendingFormat:@".%@", extension];
-//    modelURL = [dirURL URLByAppendingPathComponent:extended];
     return modelURL;
 }
 

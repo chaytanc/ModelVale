@@ -87,13 +87,13 @@
 }
 
 //MARK: Firebase
-- (void) uploadModelData:(void(^)(void))completion  {
-    self.modelLabel.label = self.labelField.text;
+
+- (void) uploadModelDataSubColl: (FIRDocumentReference*) labelRef completion:(void(^)(void))completion {
     dispatch_group_t prepareWaitingGroup = dispatch_group_create();
     for(ModelData* data in self.data) {
         dispatch_group_enter(prepareWaitingGroup);
-        [data saveNewModelDataWithDatabase:self.db storage:self.storage vc:self completion:^{
-            [self.modelLabel.labelModelData addObject:data.firebaseRef];
+        [data saveModelDataInSubColl:labelRef db:self.db storage:self.storage vc:self completion:^{
+            NSLog(@"Uploaded data");
             dispatch_group_leave(prepareWaitingGroup);
         }];
     }
@@ -104,8 +104,8 @@
 
 - (IBAction)didTapDone:(id)sender {
     self.modelLabel.label = self.labelField.text;
-    [self uploadModelData: ^{
-        [self.modelLabel updateModelLabelWithDatabase: self.storage db:self.db vc:self model:self.model completion:^(NSError * _Nonnull error) {
+    [self.modelLabel updateModelLabelWithDatabase:self.db vc:self model:self.model completion:^(FIRDocumentReference * _Nonnull labelRef, NSError * _Nonnull error) {
+        [self uploadModelDataSubColl:labelRef completion:^{
             if(error != nil) {
                 [self presentError:@"Failed to update data" message:error.localizedDescription error:error];
             }
@@ -140,8 +140,6 @@
             NSString* path = [self getImageStoragePath: self.modelLabel];
             ModelData* data = [ModelData initWithImage:image label:self.labelField.text imagePath:path];
             [self.data addObject:data];
-            //XXX todo should add ref to labelModelData?? Ref is now added when we upload the new data
-//            [self.modelLabel addLabelModelData:@[data]];
             [self.addDataCollView reloadData];
         }];
     }
@@ -160,8 +158,6 @@
     NSString* path = [self getImageStoragePath: self.modelLabel];
     ModelData* data = [ModelData initWithImage:editedImage label:self.modelLabel.label imagePath:path];
     [self.data addObject:data];
-    //XXX todo
-//    [self.modelLabel addLabelModelData:@[data]];
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.addDataCollView reloadData];
 }
