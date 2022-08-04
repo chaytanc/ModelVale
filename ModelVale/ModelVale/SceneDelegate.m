@@ -6,37 +6,40 @@
 //
 
 #import "SceneDelegate.h"
-#import "Parse/Parse.h"
+@import FirebaseAuth;
+@import FirebaseFirestore;
 
 @interface SceneDelegate ()
-
+@property (nonatomic, strong) FIRAuth* userListener;
+@property (nonatomic, readwrite) FIRFirestore *db;
+@property (nonatomic, strong) NSString* uid;
 @end
 
 @implementation SceneDelegate
 
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
-    // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-    
-    // Check if there is cached sign in data and use if there is
-    if (PFUser.currentUser) {
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        
-        self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
-    }
-    else {
-        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Login" bundle:nil];
-        
-        self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-    }
+    self.userListener = [[FIRAuth auth]
+        addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
+        self.uid = [FIRAuth auth].currentUser.uid;
+        self.db = [FIRFirestore firestore];
+        if(self.uid) {
+            NSLog(@"User %@ persisted", self.uid);
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
+        }
+        else {
+            NSLog(@"User NOT %@ persisted", self.uid);
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Login" bundle:nil];
+            
+            self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+        }
+    }];
 }
 
 
 - (void)sceneDidDisconnect:(UIScene *)scene {
-    // Called as the scene is being released by the system.
-    // This occurs shortly after the scene enters the background, or when its session is discarded.
-    // Release any resources associated with this scene that can be re-created the next time the scene connects.
-    // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
+    [[FIRAuth auth] removeAuthStateDidChangeListener:self.userListener];
 }
 
 

@@ -1,3 +1,4 @@
 ${PODS_ROOT}/Target Support Files/Pods-ModelVale-ModelValeUITests/Pods-ModelVale-ModelValeUITests-resources.sh
 ${PODS_CONFIGURATION_BUILD_DIR}/Parse/Parse.bundle
 ${PODS_CONFIGURATION_BUILD_DIR}/QBImagePickerController/QBImagePicker.bundle
+${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle

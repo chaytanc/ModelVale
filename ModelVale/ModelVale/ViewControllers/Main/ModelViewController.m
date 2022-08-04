@@ -6,16 +6,23 @@
 //
 
 #import "ModelViewController.h"
-#import "Parse/Parse.h"
 #import "UIViewController+PresentError.h"
 #import "LoginViewController.h"
 #import "SceneDelegate.h"
 #import "UpdatableSqueezeNet.h"
 #import "CoreML/CoreML.h"
+#import "AvatarMLModel.h"
+#import "StarterModels.h"
+#import "DataViewController.h"
+#import "RetrainViewController.h"
+#import "TestViewController.h"
 #import "HealthBarView.h"
 #import "XPCluster.h"
 #import "XP.h"
 #import "GameplayKit/GameplayKit.h"
+@import FirebaseAuth;
+@import FirebaseFirestore;
+
 
 CGFloat const kAnimationDuration = 2.5f;
 NSInteger const kXPSize = 20;
@@ -28,7 +35,8 @@ NSInteger const kSigmaXDivisor = 6;
 NSInteger const kSigmaYDivisor = 6;
 
 @interface ModelViewController () <CAAnimationDelegate>
-@property (weak, nonatomic) NSMutableArray* models;
+@property (nonatomic, assign) NSInteger modelInd;
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UIView *detailsView;
 @property (weak, nonatomic) IBOutlet UIStackView *avatarStackView;
 @property (weak, nonatomic) IBOutlet HealthBarView *healthBarView;
@@ -46,9 +54,17 @@ NSInteger const kSigmaYDivisor = 6;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self fetchAndSetVCModels];
+    
     self.testButton.layer.cornerRadius = 10;
     self.trainButton.layer.cornerRadius = 10;
     self.dataButton.layer.cornerRadius = 10;
+    self.modelInd = 0;
+
+    StarterModels* starters = [[StarterModels new] initStarterModels: self.uid];
+    self.models = starters.models;
+    [self configureModel];
     
     self.numClusters = 5;
     NSInteger avgNumXPPerCluster = 20;
@@ -70,9 +86,64 @@ NSInteger const kSigmaYDivisor = 6;
     [self animateXPClusters:self.clusters];
 }
 
-- (void) viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+- (void) fetchAndSetVCModels {
+    FIRDocumentReference* docRef = [[self.db collectionWithPath:@"users"] documentWithPath:self.uid];
+    [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+        if(error != nil) {
+            [self presentError:@"Failed to fetch user models" message:error.localizedDescription error:error];
+        }
+        else {
+            NSMutableArray* userModelDocRefs = snapshot.data[@"models"];
+            for(NSString* modelRef in userModelDocRefs) {
+                [AvatarMLModel fetchAndCreateAvatarMLModel:self.db documentPath:modelRef completion:^(AvatarMLModel * _Nonnull model) {
+                    [self.models addObject:model];
+                }];
+            }
+        }
+    }];
 }
+
+- (AvatarMLModel*) getCurrModel: (NSInteger) ind {
+    NSInteger relInd = ind % self.models.count;
+    return self.models[relInd];
+}
+
+//XXX todo, config model name, type, etc
+- (void) configureModel {
+    AvatarMLModel* model = self.models[0];
+    [model uploadModelToUserWithViewController:self.uid db:self.db vc:self];
+}
+- (IBAction)didTapLeftNext:(id)sender {
+    self.modelInd -= 1;
+    //XXX todo update which model is showing by fetching etc
+
+}
+- (IBAction)didTapRightNext:(id)sender {
+    self.modelInd += 1;
+    //XXX todo update which model is showing by fetching etc
+}
+
+- (IBAction)didTapLogout:(id)sender {
+    NSLog(@"Logout Tapped");
+    [self performLogout];
+    [self transitionToLoginVC];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if([[segue identifier] isEqualToString:@"modelToData"]) {
+        DataViewController* targetController = (DataViewController*) [segue destinationViewController];
+        targetController.model = [self getCurrModel:self.modelInd];
+    }
+    else if ([segue.identifier isEqualToString:@"modelToTest"]) {
+        TestViewController* target = (TestViewController*) [segue destinationViewController];
+        target.model = [self getCurrModel:self.modelInd];
+    }
+    else if ([segue.identifier isEqualToString:@"modelToRetrain"]) {
+        RetrainViewController* target = (RetrainViewController*) [segue destinationViewController];
+        target.model = [self getCurrModel:self.modelInd];
+    }
+}
+//MARK: XP animations
 
 - (void) setHealthBarPropsForXP {
     self.seed = CGPointMake(self.view.frame.size.width - kSeedXOffset, self.view.frame.size.height - kSeedYOffset);
@@ -84,31 +155,6 @@ NSInteger const kSigmaYDivisor = 6;
     CGFloat middleHealthYCoord = self.healthBarView.filledBarEndPoint.y;
     self.XPEndPoint = CGPointMake(healthBarViewOrigin1.x + filledHealthXCoord, healthBarViewOrigin1.y + middleHealthYCoord);
 }
-
-//XXX todo, config model name, type, etc
-- (void) configureModel {
-    
-}
-
-- (IBAction)didTapLogout:(id)sender {
-    NSLog(@"Logout Tapped");
-    [PFUser logOutInBackgroundWithBlock:^(NSError * _Nullable error) {
-        // PFUser.current() will now be nil
-        if(error != nil) {
-            [self presentError:@"Logout Failed" message:error.localizedDescription error:error];
-        }
-        else {
-            SceneDelegate *sceneDelegate = (SceneDelegate * ) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
-            
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Login" bundle:nil];
-            LoginViewController *loginViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-
-            [sceneDelegate.window setRootViewController:loginViewController];
-        }
-    }];
-}
-
-//MARK: XP animations
 
 - (UIBezierPath*) getXPLoopPath: (CGPoint)XPStart XPEnd: (CGPoint) XPEnd {
     UIBezierPath* path = [UIBezierPath new];
@@ -256,3 +302,4 @@ NSInteger const kSigmaYDivisor = 6;
 }
 
 @end
+

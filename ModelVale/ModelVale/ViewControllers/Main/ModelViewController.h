@@ -6,11 +6,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FirebaseAuthViewController.h"
+@class AvatarMLModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ModelViewController : UIViewController
+@interface ModelViewController : FirebaseAuthViewController
 @property (nonatomic, assign) CGPoint seed;
+@property (nonatomic, strong) NSMutableArray<AvatarMLModel*>* models;
+- (void) fetchAndSetVCModels;
 @end
 
 NS_ASSUME_NONNULL_END
