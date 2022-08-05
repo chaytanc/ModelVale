@@ -7,11 +7,11 @@
 
 #import <UIKit/UIKit.h>
 @class AvatarMLModel;
+#import "DisplayDataFirebaseViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RetrainViewController : UIViewController
-@property (nonatomic, strong) AvatarMLModel* model;
+@interface RetrainViewController : DisplayDataFirebaseViewController
 @end
 
 NS_ASSUME_NONNULL_END

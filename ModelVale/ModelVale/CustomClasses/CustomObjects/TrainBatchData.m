@@ -11,41 +11,26 @@
 #import "ModelLabel.h"
 #import "UpdatableSqueezeNet.h"
 
-// This gets all the training data available for one model
 //XXX TODO add beenUsed boolean field to modelData to make sure we can't keep retraining on the same data
+// Given the ModelLabels to use, this provides an interface to use those data to retrain models with CoreML's MLArrayBatchProvider
 @implementation TrainBatchData
 
-- (TrainBatchData*) initTrainBatch: (MLImageConstraint*) imageConstraint {
-    //XXX TODO use data from query instead of fake data
-
-    self.trainBatchLabels = [NSMutableArray new];
-    [self createFakeData];
-    [self setBatchFeatureProvider:imageConstraint];
-    
+- (instancetype) initTrainBatch: (MLImageConstraint*) imageConstraint trainBatchLabels: (NSMutableArray<ModelLabel*>*)trainBatchLabels {
+    self = [super init];
+    if(self) {
+        self.trainBatchLabels = trainBatchLabels;
+        [self setBatchFeatureProvider:imageConstraint];
+    }
     return self;
 }
 
--(void) createFakeData {
-    // We create two labels, the first has two images the second has one image, this represents all the training data that was
-    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"alp" testTrainType:dataTypeEnumToString(Train)];
-    UIImage* testImage = [UIImage imageNamed:@"mountain"];
-    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
-    [fakeLabel.localData addObject:fakeData];
-    testImage = [UIImage imageNamed:@"rivermountain"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"2"];
-    [fakeLabel.localData addObject:fakeData];
-    [self.trainBatchLabels addObject:fakeLabel];
-    fakeLabel = [[ModelLabel new] initEmptyLabel:@"vulture" testTrainType:dataTypeEnumToString(Train)];
-    testImage = [UIImage imageNamed:@"snowymountains"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
-    [fakeLabel.localData addObject:fakeData];
-    [self.trainBatchLabels addObject:fakeLabel];
-}
-
-
-// Sets fetch data from Parse with Train type and set trainBatch with it
-- (void) fetchData: (void (^) (NSArray*))completion {
-    // Todo XXX
+- (instancetype) initEmptyTrainBatch: (MLImageConstraint*) imageConstraint {
+    self = [super init];
+    if(self) {
+        self.trainBatchLabels = [NSMutableArray new];
+        [self setBatchFeatureProvider:imageConstraint];
+    }
+    return self;
 }
 
 - (void) setBatchFeatureProvider: (MLImageConstraint*) imageConstraint {

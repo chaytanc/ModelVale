@@ -43,23 +43,6 @@
     }];
 }
 
-- (void) createFakeData {
-    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"mountain" testTrainType:dataTypeEnumToString(Train)];
-    UIImage* testImage = [UIImage imageNamed:@"mountain"];
-    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"]; // Note: DOES NOT add itself to the label passed
-    [fakeLabel.localData addObject:fakeData];
-    testImage = [UIImage imageNamed:@"rivermountain"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"2"];
-    [fakeLabel.localData addObject:fakeData];
-    [self.modelLabels addObject:fakeLabel];
-    // Add one mountain to the label "hill" and add to dvc
-    fakeLabel = [[ModelLabel new] initEmptyLabel:@"hill" testTrainType:dataTypeEnumToString(Train)];
-    testImage = [UIImage imageNamed:@"snowymountains"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
-    [fakeLabel.localData addObject:fakeData];
-    [self.modelLabels addObject:fakeLabel];
-}
-
 - (void) roundCorners {
     self.userDataCollectionView.layer.cornerRadius = 10;
     self.userDataCollectionView.layer.masksToBounds = YES;
@@ -69,7 +52,6 @@
     self.loadMoreButton.layer.masksToBounds = YES;
 }
 
-//XXX todo Load more button to fetch and show more labels in tableview
 - (IBAction)didTapLoadMore:(id)sender {
     for(ModelLabel* label in self.modelLabels) {
         [self fetchAndCreateData:label queryLimit:2 completion:^{

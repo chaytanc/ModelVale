@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void) fetchSomeDataOfModel: (void(^_Nullable)(void))completion;
 - (void) fetchAndCreateData: (ModelLabel*)label queryLimit: (NSInteger)queryLimit completion:(void(^_Nullable)(void))completion;
 - (void) fetchAllDataOfModelWithType: (testTrain)testTrainType dataPerLabel: (NSInteger)dataPerLabel completion: (void(^_Nullable)(void))completion;
+-(void) createFakeData: (NSMutableArray<ModelLabel*>*)modelArray;
 @end
 
 NS_ASSUME_NONNULL_END
