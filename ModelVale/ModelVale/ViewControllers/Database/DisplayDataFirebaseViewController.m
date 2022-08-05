@@ -23,6 +23,23 @@ NSInteger const kDataQueryLimit = 2;
     [super viewDidLoad];
 }
 
+- (void) createFakeData: (NSMutableArray<ModelLabel*>*)modelArray {
+    // We create two labels, the first has two images the second has one image, this represents all the training data that was
+    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"alp" testTrainType:dataTypeEnumToString(Train)];
+    UIImage* testImage = [UIImage imageNamed:@"mountain"];
+    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
+    [fakeLabel.localData addObject:fakeData];
+    testImage = [UIImage imageNamed:@"rivermountain"];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"2"];
+    [fakeLabel.localData addObject:fakeData];
+    [modelArray addObject:fakeLabel];
+    fakeLabel = [[ModelLabel new] initEmptyLabel:@"vulture" testTrainType:dataTypeEnumToString(Train)];
+    testImage = [UIImage imageNamed:@"snowymountains"];
+    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
+    [fakeLabel.localData addObject:fakeData];
+    [modelArray addObject:fakeLabel];
+}
+
 // MARK: Fetch data
 
 // Stores as arrays of ModelData accessible in self.modelLabels[X].localData[Y]
@@ -60,7 +77,6 @@ NSInteger const kDataQueryLimit = 2;
     }];
 }
 
-// Fetches all labels, assumes small-ish number of labels relative to number of data
 - (void) fetchSomeLabelsWithCompletion:(void(^)(void))completion {
     int originalLabelFetchStart = self.labelFetchStart;
     dispatch_group_t prepareWaitingGroup = dispatch_group_create();
@@ -153,23 +169,6 @@ NSInteger const kDataQueryLimit = 2;
         NSLog(@"Fetched %@ labels.", dataTypeEnumToString(testTrainType));
         completion();
     });
-}
-
-- (void) createFakeData: (NSMutableArray<ModelLabel*>*)modelArray {
-    // We create two labels, the first has two images the second has one image, this represents all the training data that was
-    ModelLabel* fakeLabel = [[ModelLabel new] initEmptyLabel:@"alp" testTrainType:dataTypeEnumToString(Train)];
-    UIImage* testImage = [UIImage imageNamed:@"mountain"];
-    ModelData* fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
-    [fakeLabel.localData addObject:fakeData];
-    testImage = [UIImage imageNamed:@"rivermountain"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"2"];
-    [fakeLabel.localData addObject:fakeData];
-    [modelArray addObject:fakeLabel];
-    fakeLabel = [[ModelLabel new] initEmptyLabel:@"vulture" testTrainType:dataTypeEnumToString(Train)];
-    testImage = [UIImage imageNamed:@"snowymountains"];
-    fakeData = [ModelData initWithImage:testImage label:fakeLabel.label imagePath:@"1"];
-    [fakeLabel.localData addObject:fakeData];
-    [modelArray addObject:fakeLabel];
 }
 
 @end

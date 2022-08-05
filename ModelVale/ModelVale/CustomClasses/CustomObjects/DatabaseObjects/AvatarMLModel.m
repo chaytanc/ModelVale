@@ -46,6 +46,22 @@ NSNumber* const MAXHEALTH = @500;
     MLModel* model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:modelURL error:nil].model;
     return model;
 }
+    
+- (NSURL*) loadModelURL: (NSString*) resource extension: (NSString*)extension {
+    NSURL* modelURL = [[NSBundle mainBundle] URLForResource:resource withExtension:extension];
+    return modelURL;
+}
+
+- (UpdatableSqueezeNet*) loadModel: (NSString*) resource extension: (NSString*)extension {
+    NSURL* modelURL = [self loadModelURL:resource extension:extension];
+    UpdatableSqueezeNet* model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:modelURL error:nil];
+    return model;
+}
+
+- (UpdatableSqueezeNet*) loadModel: (NSURL*)url {
+    UpdatableSqueezeNet* model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:url error:nil];
+    return model;
+}
 
 //MARK: Firebase
 

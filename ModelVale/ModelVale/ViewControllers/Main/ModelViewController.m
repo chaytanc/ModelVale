@@ -52,6 +52,7 @@ NSInteger const kCornerRadius = 10;
 @property (nonatomic, assign) NSInteger numClusters;
 @property (nonatomic, assign) CGPoint XPEndPoint;
 @property (nonatomic,strong) NSMutableArray<XPCluster*>* clusters;
+
 @end
 
 @implementation ModelViewController
@@ -68,6 +69,8 @@ NSInteger const kCornerRadius = 10;
     self.trainButton.layer.cornerRadius = kCornerRadius;
     self.dataButton.layer.cornerRadius = kCornerRadius;
     self.modelIndex = 0;
+    self.earnedXP = 0;
+    self.shouldAnimateXP = YES;
     
     self.numClusters = 5;
     NSInteger avgNumXPPerCluster = 30;
@@ -86,7 +89,9 @@ NSInteger const kCornerRadius = 10;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self animateXPClusters:self.clusters];
+    if(self.shouldAnimateXP) {
+        [self animateXPClusters:self.clusters];
+    }
 }
 
 // Gets models that the user has access to and adds them to the local array of AvatarMLModels, self.models

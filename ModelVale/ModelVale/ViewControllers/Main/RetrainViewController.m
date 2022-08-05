@@ -37,7 +37,7 @@
     self.retrainCollView.delegate = self;
     self.retrainCollView.dataSource = self;
     self.mlmodel = [self.model getMLModelFromModelName];
-    self.modelURL = [self loadModelURL:self.model.modelName extension:@"mlmodelc"];
+    self.modelURL = [self.model loadModelURL:self.model.modelName extension:@"mlmodelc"];
     self.retrainLabel.text = @"Unused Retraining Data";
     [self fetchAllDataOfModelWithType:Train dataPerLabel:10000 completion:^{
         [self.retrainCollView reloadData];
@@ -46,7 +46,7 @@
 }
 
 - (void) fetchUnusedTrainingData {
-    //XXX todo, parameter for only retraining on new data
+    //XXX todo, parameter for only retraining on new data using field in
 }
 
 - (void) roundCorners {
@@ -58,23 +58,6 @@
     self.contentView.layer.masksToBounds = YES;
     self.retrainButton.layer.cornerRadius = 10;
     self.retrainButton.layer.masksToBounds = YES;
-}
-
-// XXX todo move these two funcs to model class
--(NSURL*) loadModelURL: (NSString*) resource extension: (NSString*)extension {
-    NSURL* modelURL = [[NSBundle mainBundle] URLForResource:resource withExtension:extension];
-    return modelURL;
-}
-
-- (UpdatableSqueezeNet*) loadModel: (NSString*) resource extension: (NSString*)extension {
-    NSURL* modelURL = [self loadModelURL:resource extension:extension];
-    UpdatableSqueezeNet* model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:modelURL error:nil];
-    return model;
-}
-
-- (UpdatableSqueezeNet*) loadModel: (NSURL*)url {
-    UpdatableSqueezeNet* model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:url error:nil];
-    return model;
 }
 
 - (IBAction)didTapData:(id)sender {
@@ -89,8 +72,6 @@
 }
 
 //MARK: CoreML
-//XXX todo use retrain data passed to this controller or found with query to retrain
-// https://betterprogramming.pub/how-to-train-a-core-ml-model-on-your-device-cccd0bee19d
 - (IBAction)didTapRetrain:(id)sender {
     
     NSLog(@"Retrain Tapped");
@@ -104,16 +85,13 @@
     MLArrayBatchProvider* batchProvider = trainBatchData.trainBatch;
     MLUpdateProgressHandlers* handlers = [[MLUpdateProgressHandlers alloc] initForEvents:MLUpdateProgressEventTrainingBegin | MLUpdateProgressEventMiniBatchEnd | MLUpdateProgressEventEpochEnd progressHandler:progHandler completionHandler:retrainFinishCompletion];
     
-    //XXX todo can use dispatch main to update stuff after this async call finishes
     MLUpdateTask* task = [MLUpdateTask updateTaskForModelAtURL:self.modelURL trainingData:batchProvider progressHandlers:handlers error:nil];
-    //XXX Todo Can define other model parameters with MLParameterKey here
     [task resume];
 }
 
 - (void(^)(MLUpdateContext* _Nonnull context)) getFinishRetrainCompletion {
     void(^finalCompletion)(MLUpdateContext* _Nonnull context) = ^(MLUpdateContext* _Nonnull context) {
         if(context.event == MLUpdateProgressEventMiniBatchEnd) {
-            //XXX todo handle events
             NSLog(@"batch end");
         }
         NSLog(@"train end");
@@ -123,7 +101,7 @@
         }
         // Write the retrained model to disk
         [context.model writeToURL:self.modelURL error:nil];
-        self.mlmodel = [self loadModel:self.modelURL].model;
+        self.mlmodel = [self.model loadModel:self.modelURL].model;
     };
     return finalCompletion;
 }

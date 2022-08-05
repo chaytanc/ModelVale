@@ -16,6 +16,7 @@
 #import "ModelLabel.h"
 #import "TestDataSectionHeader.h"
 #import "TestDataCell.h"
+#import "ModelViewController.h"
 
 NSInteger const kDataPerLabel = 20;
 
@@ -43,6 +44,9 @@ NSInteger const kDataPerLabel = 20;
     self.testCollView.dataSource = self;
     self.mlmodel = [self.model getMLModelFromModelName];
     self.testLabel.text = @"Testing Data";
+    self.navigationItem.hidesBackButton = YES;
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
+    self.navigationItem.leftBarButtonItem = newBackButton;
     [self fetchAllDataOfModelWithType:Test dataPerLabel:kDataPerLabel completion:^{
         [self.testCollView reloadData];
         self.totalPreds = 0;
@@ -92,6 +96,16 @@ NSInteger const kDataPerLabel = 20;
         }
     }
 
+}
+
+//XXX todo Make proper amount and XP of animations and 
+- (void) back:(UIBarButtonItem *)sender {
+    if ([self.navigationController.parentViewController isKindOfClass:[ModelViewController class]]) {
+        ModelViewController* targetController = (ModelViewController*) self.navigationController.presentingViewController;
+        targetController.shouldAnimateXP = YES;
+        targetController.earnedXP = self.totalCorrect;
+    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

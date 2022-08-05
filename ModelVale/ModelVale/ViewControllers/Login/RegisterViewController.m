@@ -28,14 +28,6 @@
     self.createButton.clipsToBounds = YES;
 }
 
-- (void) viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-//    [[FIRAuth auth]
-//                   addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-//
-//    }];
-}
-
 - (IBAction)didTapCreate:(id)sender {
     [self registerUser];
 }

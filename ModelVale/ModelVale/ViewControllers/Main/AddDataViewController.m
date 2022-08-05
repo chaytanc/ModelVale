@@ -179,7 +179,6 @@
 }
 
 //MARK: Collection View
-//XXX todo stretch add Google Drive integration
 - (nonnull __kindof UICollectionViewCell *)collectionView:(nonnull UICollectionView *)collectionView cellForItemAtIndexPath:(nonnull NSIndexPath *)indexPath {
     AddDataCell* cell = [self.addDataCollView dequeueReusableCellWithReuseIdentifier:@"addDataCell" forIndexPath:indexPath];
     [cell.addDataImageView setImage:self.data[indexPath.row].image];

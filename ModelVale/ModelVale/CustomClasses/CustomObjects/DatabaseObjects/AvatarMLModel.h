@@ -28,6 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void) uploadModelToUserWithViewController: (NSString*) uid db: (FIRFirestore*)db vc: (UIViewController*)vc;
 + (void) fetchAndCreateAvatarMLModel: (FIRFirestore*)db documentPath: (NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion;
 - (void) updateModelLabeledDataWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
+- (NSURL*) loadModelURL: (NSString*) resource extension: (NSString*)extension;
+- (UpdatableSqueezeNet*) loadModel: (NSString*) resource extension: (NSString*)extension;
+- (UpdatableSqueezeNet*) loadModel: (NSURL*)url;
 
 @end
 
