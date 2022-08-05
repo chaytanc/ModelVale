@@ -14,7 +14,6 @@ NSInteger const kLabelQueryLimit = 20;
 NSInteger const kDataQueryLimit = 2;
 
 @interface DisplayDataFirebaseViewController ()
-@property (nonatomic, strong) FIRDocumentSnapshot* lastSnapshot;
 @end
 
 @implementation DisplayDataFirebaseViewController
@@ -51,12 +50,15 @@ NSInteger const kDataQueryLimit = 2;
     int originalLabelFetchStart = self.labelFetchStart;
     dispatch_group_t prepareWaitingGroup = dispatch_group_create();
     int labelFetchEnd = self.labelFetchStart + kLabelQueryLimit;
+    // Loop through all labels this model holds refs to, up to the kLabelQueryLimit, and create those ModelLabel objects
     for(int i=self.labelFetchStart; i<labelFetchEnd && i<self.model.labeledData.count; i++) {
         FIRDocumentReference* ref = self.model.labeledData[i];
         dispatch_group_enter(prepareWaitingGroup);
+        // Create the ModelLabel object from the fetched data
         [ModelLabel fetchFromReference:ref vc:self completion:^(ModelLabel* _Nonnull modelLabel) {
             modelLabel.firebaseRef = ref;
             [self.modelLabels addObject:modelLabel];
+            // Fetch the data on each ModelLabel and then increment the number of labels fetched when done with self.labelFetchStart
             [self fetchAndCreateData:modelLabel completion:^{
                 self.labelFetchStart += 1;
                 dispatch_group_leave(prepareWaitingGroup);
@@ -75,23 +77,32 @@ NSInteger const kDataQueryLimit = 2;
 - (void) fetchAndCreateData: (ModelLabel*)label completion:(void(^_Nullable)(void))completion {
     
     // Have to make initial query if self.lastSnapshot is not yet set, otherwise, query should use self.lastSnapshot to pick up where the last query left off
-    FIRQuery* dataQuery = (self.lastSnapshot == nil) ? [[[label.firebaseRef collectionWithPath:@"ModelData"] queryOrderedByField:@"imagePath"] queryLimitedTo:kDataQueryLimit] :
+    FIRQuery* dataQuery = (label.lastDataSnapshot == nil) ? [[[label.firebaseRef collectionWithPath:@"ModelData"] queryOrderedByField:@"imagePath"] queryLimitedTo:kDataQueryLimit] :
     [[[[label.firebaseRef collectionWithPath:@"ModelData"] queryOrderedByField:@"imagePath"] queryLimitedTo:kDataQueryLimit]
-        queryStartingAtDocument:self.lastSnapshot];
+        queryStartingAfterDocument:label.lastDataSnapshot];
+    dispatch_group_t initDocsWaitingGroup = dispatch_group_create();
 
     [dataQuery getDocumentsWithCompletion:^(FIRQuerySnapshot * _Nullable snapshot, NSError * _Nullable error) {
+        if(snapshot.documents.count == 0) {
+            NSLog(@"No more data to fetch");
+        }
         for(FIRQueryDocumentSnapshot* doc in snapshot.documents) {
+            dispatch_group_enter(initDocsWaitingGroup);
             NSDictionary* dict = doc.data;
             NSLog(@"Fetching %@ data for label %@", doc.documentID, label.label);
             [ModelData initWithDictionary:dict storage:self.storage completion:^(ModelData * _Nonnull modelData) {
                 modelData.firebaseRef = doc.reference;
                 [label.localData addObject:modelData];
-                self.lastSnapshot = snapshot.documents.lastObject;
-                if(completion){
-                    completion();
-                }
+                label.lastDataSnapshot = snapshot.documents.lastObject;
+                dispatch_group_leave(initDocsWaitingGroup);
             }];
         }
+        dispatch_group_notify(initDocsWaitingGroup, dispatch_get_main_queue(), ^{
+            NSLog(@"Fetched data.");
+            if(completion){
+                completion();
+            }
+        });
     }];
 }
 

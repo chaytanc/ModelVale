@@ -24,6 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 // An array of ALL the ModelData references that a label points to, but not the actual objects themselves so that we don't have to create thousands of images that might be contained in a label
 @property (nonatomic, strong) NSMutableArray<FIRDocumentReference*>* labelModelData;
 @property (strong, nonatomic) FIRDocumentReference* firebaseRef;
+// Each label keeps track of the last data that was fetched so that a paginated query can pick up where it left off
+@property (nonatomic, strong) FIRDocumentSnapshot* lastDataSnapshot;
+
 
 - (ModelLabel*) initEmptyLabel: (NSString*)label testTrainType: (NSString*) testTrainType;
 

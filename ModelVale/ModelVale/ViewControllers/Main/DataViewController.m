@@ -57,7 +57,11 @@
 
 //XXX todo Load more button to fetch and show more labels in tableview
 - (IBAction)didTapLoadMore:(id)sender {
-    
+    for(ModelLabel* label in self.modelLabels) {
+        [self fetchAndCreateData:label completion:^{
+            [self.userDataCollectionView reloadData];
+        }];
+    }
 }
 
 // MARK: Collection view
