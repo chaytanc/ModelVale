@@ -29,6 +29,7 @@
 // Make two section headers (or rather, testTrainTypeArray.count from TestTrainEnum.h) for each label
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self roundCorners];
     self.modelLabels = [NSMutableArray new];
     self.userDataCollectionView.delegate = self;
     self.userDataCollectionView.dataSource = self;
