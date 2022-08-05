@@ -11,15 +11,22 @@
 #import "Vision/Vision.h"
 #import "DataViewController.h"
 #import "AvatarMLModel.h"
+#import "TestTrainEnum.h"
+#import "ModelData.h"
+#import "ModelLabel.h"
+#import "TestDataSectionHeader.h"
+#import "TestDataCell.h"
 
-@interface TestViewController ()
+NSInteger const kDataPerLabel = 20;
+
+@interface TestViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UILabel *testLabel;
 @property (weak, nonatomic) IBOutlet UICollectionView *testCollView;
 @property (weak, nonatomic) IBOutlet UILabel *totalLabel;
 @property (weak, nonatomic) IBOutlet UIButton *testButton;
 @property (weak, nonatomic) IBOutlet UILabel *statsLabel;
-
 @property (strong, nonatomic) MLModel* mlmodel;
+@property (weak, nonatomic) IBOutlet UIView *contentView;
 
 @end
 
@@ -27,8 +34,27 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    [self roundCorners];
+    self.testCollView.delegate = self;
+    self.testCollView.dataSource = self;
     self.mlmodel = [self.model getMLModelFromModelName];
+    self.testLabel.text = @"Testing Data";
+    [self fetchAllDataOfModelWithType:Test dataPerLabel:kDataPerLabel completion:^{
+        [self.testCollView reloadData];
+    }];
 }
+
+- (void) roundCorners {
+    self.testCollView.layer.cornerRadius = 10;
+    self.testCollView.layer.masksToBounds = YES;
+    self.testButton.layer.cornerRadius = 10;
+    self.testButton.layer.masksToBounds = YES;
+    self.contentView.layer.cornerRadius = 10;
+    self.contentView.layer.masksToBounds = YES;
+}
+
+
 - (IBAction)didTapData:(id)sender {
     [self performSegueWithIdentifier:@"testToData" sender:nil];
 }
@@ -57,5 +83,40 @@
     }
 }
 
+// MARK: Collection view
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    TestDataCell* cell = [self.testCollView dequeueReusableCellWithReuseIdentifier:@"testDataCell" forIndexPath:indexPath];
+    ModelLabel* sectionLabel = self.modelLabels[indexPath.section];
+    ModelData* rowData = sectionLabel.localData[indexPath.row];
+    [cell.testDataCellImageView setImage:rowData.image];
+    return cell;
+}
+
+- (NSInteger)collectionView:(nonnull UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    // One section per label, with labelModelData number of data in that section
+    ModelLabel* label = self.modelLabels[section];
+    return label.localData.count;
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return self.modelLabels.count;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind
+                                 atIndexPath:(NSIndexPath *)indexPath {
+    
+    if([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        TestDataSectionHeader* sectionHeader = [self.testCollView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"testDataSectionHeader" forIndexPath:indexPath];
+        ModelLabel* label = self.modelLabels[indexPath.section];
+        NSString* dataType = [label.testTrainType stringByAppendingString:@": "];
+        sectionHeader.testDataLabel.text = [dataType stringByAppendingString: label.label];
+        return sectionHeader;
+    }
+    else {
+        [self presentError:@"Cannot load collection" message:@"Header object type incorrect" error:nil];
+        return nil;
+    }
+}
 
 @end

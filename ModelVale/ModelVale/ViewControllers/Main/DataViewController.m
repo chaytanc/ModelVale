@@ -15,8 +15,12 @@
 #import "AvatarMLModel.h"
 #import "AddDataViewController.h"
 
+//XXX todo constant is redeclared, make global or limit use to one file
+//NSInteger const kDataQueryLimit = 2;
+
 @interface DataViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UIButton *loadMoreButton;
+@property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet UICollectionView *userDataCollectionView;
 @end
 
@@ -33,7 +37,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self fetchLocalData:^{
+    [self fetchSomeDataOfModel:^{
         [self.userDataCollectionView reloadData];
     }];
 }
@@ -55,10 +59,19 @@
     [self.modelLabels addObject:fakeLabel];
 }
 
+- (void) roundCorners {
+    self.userDataCollectionView.layer.cornerRadius = 10;
+    self.userDataCollectionView.layer.masksToBounds = YES;
+    self.contentView.layer.cornerRadius = 10;
+    self.contentView.layer.masksToBounds = YES;
+    self.loadMoreButton.layer.cornerRadius = 10;
+    self.loadMoreButton.layer.masksToBounds = YES;
+}
+
 //XXX todo Load more button to fetch and show more labels in tableview
 - (IBAction)didTapLoadMore:(id)sender {
     for(ModelLabel* label in self.modelLabels) {
-        [self fetchAndCreateData:label completion:^{
+        [self fetchAndCreateData:label queryLimit:2 completion:^{
             [self.userDataCollectionView reloadData];
         }];
     }

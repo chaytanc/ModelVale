@@ -6,6 +6,7 @@
 //
 
 #import "FirebaseViewController.h"
+#import "TestTrainEnum.h"
 @class AvatarMLModel;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -15,8 +16,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) NSMutableArray<ModelLabel*>* modelLabels;
 @property (nonatomic, assign) int labelFetchStart;
 
-- (void) fetchLocalData: (void(^_Nullable)(void))completion;
-- (void) fetchAndCreateData: (ModelLabel*)label completion:(void(^_Nullable)(void))completion;
+- (void) fetchSomeDataOfModel: (void(^_Nullable)(void))completion;
+- (void) fetchAndCreateData: (ModelLabel*)label queryLimit: (NSInteger)queryLimit completion:(void(^_Nullable)(void))completion;
+- (void) fetchAllDataOfModelWithType: (testTrain)testTrainType dataPerLabel: (NSInteger)dataPerLabel completion: (void(^_Nullable)(void))completion;
 @end
 
 NS_ASSUME_NONNULL_END

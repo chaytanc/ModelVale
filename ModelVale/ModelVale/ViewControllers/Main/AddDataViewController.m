@@ -27,6 +27,10 @@
 @property (weak, nonatomic) IBOutlet UICollectionView *addDataCollView;
 @property (strong, nonatomic) PHImageManager* phManager;
 @property (weak, nonatomic) IBOutlet DropDownTextField *labelField;
+@property (weak, nonatomic) IBOutlet UIView *contentView;
+@property (weak, nonatomic) IBOutlet UIButton *selectDataButton;
+@property (weak, nonatomic) IBOutlet UIButton *createDataButton;
+@property (weak, nonatomic) IBOutlet UIView *addDataView;
 @property (strong, nonatomic) ModelLabel* modelLabel;
 @end
 
@@ -35,6 +39,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    [self roundCorners];
     self.testTrainOptions = (NSArray*) testTrainTypeArray;
     self.data = [NSMutableArray new];
     self.phManager = [PHImageManager new];
@@ -62,6 +67,17 @@
     [self.labelField addTarget:self action:@selector(didTapDropDown:) forControlEvents:UIControlEventTouchUpInside];
     [self.labelField addTarget:self action:@selector(didChangeLabel:) forControlEvents:UIControlEventEditingDidEnd];
     [self.labelField addTarget:self action:@selector(didChangeLabel:) forControlEvents:UIControlEventEditingDidEndOnExit];
+}
+
+- (void) roundCorners {
+    self.addDataCollView.layer.cornerRadius = 10;
+    self.addDataCollView.layer.masksToBounds = YES;
+    self.contentView.layer.cornerRadius = 10;
+    self.contentView.layer.masksToBounds = YES;
+    self.selectDataButton.layer.cornerRadius = 10;
+    self.selectDataButton.layer.masksToBounds = YES; self.createDataButton.layer.cornerRadius = 10;
+    self.createDataButton.layer.masksToBounds = YES;    self.addDataView.layer.cornerRadius = 10;
+    self.addDataView.layer.masksToBounds = YES;
 }
 
 - (void) didTapDropDown:(id) obj {

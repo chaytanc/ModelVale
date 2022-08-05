@@ -18,6 +18,7 @@
 @property (nonatomic, strong) TrainBatchData* trainBatch;
 @property (weak, nonatomic) IBOutlet UILabel *retrainLabel;
 @property (weak, nonatomic) IBOutlet UICollectionView *testCollView;
+@property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet UILabel *totalLabel;
 @property (weak, nonatomic) IBOutlet UILabel *statsLabel;
 @property (strong, nonatomic) MLModel* mlmodel;
@@ -28,6 +29,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self roundCorners];
     self.mlmodel = [self.model getMLModelFromModelName];
     self.modelURL = [self loadModelURL:self.model.modelName extension:@"mlmodelc"];
     self.retrainLabel.text = @"Unused Retraining Data";
@@ -35,6 +37,15 @@
 
 - (void) fetchUnusedTrainingData {
     //XXX todo
+}
+
+- (void) roundCorners {
+    self.testCollView.layer.cornerRadius = 10;
+    self.testCollView.layer.masksToBounds = YES;
+    self.retrainLabel.layer.cornerRadius = 10;
+    self.retrainLabel.layer.masksToBounds = YES;
+    self.contentView.layer.cornerRadius = 10;
+    self.contentView.layer.masksToBounds = YES;
 }
 
 // XXX todo move these two funcs to model class
