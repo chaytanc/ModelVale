@@ -11,7 +11,6 @@
 
 CGFloat const kWidthMarginMultiple = 0.12f;
 CGFloat const kHeightMarginMultiple = 0.4f;
-//UIColor* const violet = [UIColor colorWithRed:125.0f/255.0f green:65.0f/255.0f blue:205.0f/255.0f alpha:1.0f];
 
 @interface HealthBarView() <CAAnimationDelegate>
 @end

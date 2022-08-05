@@ -28,7 +28,7 @@
         addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
         self.uid = [FIRAuth auth].currentUser.uid;
         if(self.uid) {
-            NSLog(@"User %@ persisted", self.uid);
+            // User persisted, do nothing
         }
         else {
             NSLog(@"User NOT %@ persisted", self.uid);

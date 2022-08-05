@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "CoreML/CoreML.h"
+@class ModelLabel;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -14,8 +15,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) MLArrayBatchProvider* trainBatch;
 @property (nonatomic, strong) NSMutableArray* trainBatchLabels; // Array of ModelLabel
 
-- (TrainBatchData*) initTrainBatch: (MLImageConstraint*)constraint;
+- (instancetype) initTrainBatch: (MLImageConstraint*) imageConstraint trainBatchLabels: (NSMutableArray<ModelLabel*>*)trainBatchLabels;
+- (instancetype) initEmptyTrainBatch: (MLImageConstraint*) imageConstraint;
 - (void) setBatchFeatureProvider: (MLImageConstraint*) imageConstraint;
+
 
 @end
 

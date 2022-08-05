@@ -11,43 +11,101 @@
 #import "Vision/Vision.h"
 #import "DataViewController.h"
 #import "AvatarMLModel.h"
+#import "TestTrainEnum.h"
+#import "ModelData.h"
+#import "ModelLabel.h"
+#import "TestDataSectionHeader.h"
+#import "TestDataCell.h"
+#import "ModelViewController.h"
 
-@interface TestViewController ()
+NSInteger const kDataPerLabel = 20;
+
+@interface TestViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UILabel *testLabel;
 @property (weak, nonatomic) IBOutlet UICollectionView *testCollView;
 @property (weak, nonatomic) IBOutlet UILabel *totalLabel;
 @property (weak, nonatomic) IBOutlet UIButton *testButton;
 @property (weak, nonatomic) IBOutlet UILabel *statsLabel;
-
 @property (strong, nonatomic) MLModel* mlmodel;
-
+@property (weak, nonatomic) IBOutlet UIView *contentView;
+@property (nonatomic, assign) int totalCorrect;
+@property (nonatomic, assign) int totalPreds;
 @end
 
 @implementation TestViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    [self roundCorners];
+    self.totalCorrect = 0;
+    self.totalPreds = 0;
+    self.testCollView.delegate = self;
+    self.testCollView.dataSource = self;
     self.mlmodel = [self.model getMLModelFromModelName];
+    self.testLabel.text = @"Testing Data";
+    self.navigationItem.hidesBackButton = YES;
+    UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
+    self.navigationItem.leftBarButtonItem = newBackButton;
+    [self fetchAllDataOfModelWithType:Test dataPerLabel:kDataPerLabel completion:^{
+        [self.testCollView reloadData];
+        self.totalPreds = 0;
+    }];
 }
+
+- (void) roundCorners {
+    self.testCollView.layer.cornerRadius = 10;
+    self.testCollView.layer.masksToBounds = YES;
+    self.testButton.layer.cornerRadius = 10;
+    self.testButton.layer.masksToBounds = YES;
+    self.contentView.layer.cornerRadius = 10;
+    self.contentView.layer.masksToBounds = YES;
+}
+
+
 - (IBAction)didTapData:(id)sender {
     [self performSegueWithIdentifier:@"testToData" sender:nil];
 }
 
+// Make a prediction for every data loaded in the collection view and add correct ones up as we go
 - (IBAction)didTapTest:(id)sender {
-    UIImage* testImage = [UIImage imageNamed:@"mountain"];
-    struct CGImage* cgtest = testImage.CGImage;
+    int numPredsSoFar = 0;
+
     MLImageConstraint* constraint = self.mlmodel.modelDescription.inputDescriptionsByName[@"image"].imageConstraint;
+    for(ModelLabel* label in self.modelLabels) {
+        for(ModelData* data in label.localData) {
+            struct CGImage* cgImage = data.image.CGImage;
+            MLFeatureValue* imFeature = [MLFeatureValue featureValueWithCGImage:cgImage constraint:constraint options:nil error:nil];
+            NSMutableDictionary* featureDict = [[NSMutableDictionary alloc] init];
+            featureDict[@"image"] = imFeature;
+            MLDictionaryFeatureProvider* featureProv = (MLDictionaryFeatureProvider*)[[MLDictionaryFeatureProvider new] initWithDictionary:featureDict error:nil];
+            // predict and set statslabel w prediction, update total correct label
+            id<MLFeatureProvider> pred = [self.mlmodel predictionFromFeatures:featureProv error:nil];
+            MLFeatureValue* output = [pred featureValueForName:@"classLabel"];
+            //XXX todo scrolling textView that adds prediction for each as we go
+//            self.statsLabel.text = [NSString stringWithFormat:@"Prediction %i: %@", numPredsSoFar, output.stringValue];
+            // add prediction to array of predictions for tableview datasource
+            // reload tableview
+            self.statsLabel.text = [NSString stringWithFormat:@"Latest Prediction: %@", output.stringValue];
 
-    // Create fake data to predict on using CoreML classes like MLFeatureProvider
-    MLFeatureValue* imageFeature = [MLFeatureValue featureValueWithCGImage:cgtest constraint:constraint options:nil error:nil];
-    NSMutableDictionary* featureDict = [[NSMutableDictionary alloc] init];
-    featureDict[@"image"] = imageFeature;
-    MLDictionaryFeatureProvider* featureProv = (MLDictionaryFeatureProvider*)[[MLDictionaryFeatureProvider new] initWithDictionary:featureDict error:nil];
-    
-    id<MLFeatureProvider> pred = [self.mlmodel predictionFromFeatures:featureProv error:nil];
-    MLFeatureValue* output = [pred featureValueForName:@"classLabel"];
-    self.statsLabel.text = output.stringValue;
+            if([output.stringValue isEqualToString:data.label]) {
+                self.totalCorrect += 1;
+                self.totalLabel.text = [NSString stringWithFormat:@"Correct Predictions Out of Total: %i / %i ", self.totalCorrect, self.totalPreds];
+            }
+            numPredsSoFar += 1;
+        }
+    }
 
+}
+
+//XXX todo Make proper amount and XP of animations and 
+- (void) back:(UIBarButtonItem *)sender {
+    if ([self.navigationController.parentViewController isKindOfClass:[ModelViewController class]]) {
+        ModelViewController* targetController = (ModelViewController*) self.navigationController.presentingViewController;
+        targetController.shouldAnimateXP = YES;
+        targetController.earnedXP = self.totalCorrect;
+    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -57,5 +115,41 @@
     }
 }
 
+// MARK: Collection view
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    TestDataCell* cell = [self.testCollView dequeueReusableCellWithReuseIdentifier:@"testDataCell" forIndexPath:indexPath];
+    ModelLabel* sectionLabel = self.modelLabels[indexPath.section];
+    ModelData* rowData = sectionLabel.localData[indexPath.row];
+    [cell.testDataCellImageView setImage:rowData.image];
+    self.totalPreds += 1;
+    return cell;
+}
+
+- (NSInteger)collectionView:(nonnull UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    // One section per label, with labelModelData number of data in that section
+    ModelLabel* label = self.modelLabels[section];
+    return label.localData.count;
+}
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return self.modelLabels.count;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView
+           viewForSupplementaryElementOfKind:(NSString *)kind
+                                 atIndexPath:(NSIndexPath *)indexPath {
+    
+    if([kind isEqualToString:UICollectionElementKindSectionHeader]) {
+        TestDataSectionHeader* sectionHeader = [self.testCollView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"testDataSectionHeader" forIndexPath:indexPath];
+        ModelLabel* label = self.modelLabels[indexPath.section];
+        NSString* dataType = [label.testTrainType stringByAppendingString:@": "];
+        sectionHeader.testDataLabel.text = [dataType stringByAppendingString: label.label];
+        return sectionHeader;
+    }
+    else {
+        [self presentError:@"Cannot load collection" message:@"Header object type incorrect" error:nil];
+        return nil;
+    }
+}
 
 @end

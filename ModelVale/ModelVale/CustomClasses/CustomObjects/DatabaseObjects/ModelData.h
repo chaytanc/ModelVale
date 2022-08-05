@@ -22,9 +22,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) FIRDocumentReference* firebaseRef;
 
 + (instancetype) initWithImage: (UIImage * _Nullable)image label:(NSString *)label imagePath: (NSString*)imagePath;
-- (instancetype)initWithDictionary:(NSDictionary *)dict;
-
++ (instancetype)initWithDictionary:(NSDictionary *)dict storage: (FIRStorage*)storage completion:(void(^_Nullable)(ModelData*))completion;
 - (void) saveNewModelDataWithDatabase: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(void))completion;
+- (void) saveModelDataInSubColl: (FIRDocumentReference*)labelRef db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(void))completion;
 - (MLDictionaryFeatureProvider*) getDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
 - (MLFeatureValue*) getImageFeatureValue: (MLImageConstraint*)modelConstraints;
 - (MLDictionaryFeatureProvider*) getUpdatableDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;

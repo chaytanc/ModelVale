@@ -7,11 +7,11 @@
 
 #import <UIKit/UIKit.h>
 @class AvatarMLModel;
+#import "DisplayDataFirebaseViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface TestViewController : UIViewController
-@property (nonatomic, strong) AvatarMLModel* model;
+@interface TestViewController : DisplayDataFirebaseViewController
 @end
 
 NS_ASSUME_NONNULL_END
