@@ -53,8 +53,14 @@
                     NSLog(@"User registered successfully");
                     NSString* uid = [[FIRAuth auth] currentUser].uid;
                     StarterModels* starters = [[StarterModels new] initStarterModels:uid];
-                    [starters uploadStarterModels:uid db:self.db vc:self];
-                    [self transitionToModelVC];
+                    [starters uploadStarterModels:uid db:self.db vc:self completion:^(NSError * _Nonnull error) {
+                        if(error != nil) {
+                            [self presentError:@"Error making models for new user" message:error.localizedDescription error:error];
+                        }
+                        else {
+                            [self transitionToModelVC:starters.models];
+                        }
+                    }];
                 }
             }];
         }

@@ -126,7 +126,13 @@ NSInteger const kCornerRadius = 10;
 
 - (AvatarMLModel*) getCurrModel: (NSInteger) ind {
     NSInteger relInd = ind % self.models.count;
-    return self.models[relInd];
+    if(self.models.count == 0) {
+        [self performLogout];
+        return [AvatarMLModel new];
+    }
+    else {
+        return self.models[relInd];
+    }
 }
 
 - (void) configUIBasedOnModel {

@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSMutableArray<AvatarMLModel*>* models;
 -(instancetype) initStarterModels: (NSString*)uid;
--(void) uploadStarterModels: (NSString*)uid db: (FIRFirestore*)db vc: (UIViewController*)vc;
+-(void) uploadStarterModels: (NSString*)uid db: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
 
 @end
 

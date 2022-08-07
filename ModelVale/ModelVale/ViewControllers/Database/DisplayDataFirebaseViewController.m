@@ -108,7 +108,7 @@ NSInteger const kDataQueryLimit = 2;
 - (void) fetchAndCreateData: (ModelLabel*)label queryLimit: (NSInteger)queryLimit completion:(void(^_Nullable)(void))completion {
     
     // Have to make initial query if self.lastSnapshot is not yet set, otherwise, query should use self.lastSnapshot to pick up where the last query left off
-    FIRQuery* dataQuery = (label.lastDataSnapshot == nil) ? [[[label.firebaseRef collectionWithPath:@"ModelData"] queryOrderedByField:@"imagePath"] queryLimitedTo:kDataQueryLimit] :
+    FIRQuery* dataQuery = (label.lastDataSnapshot == nil) ? [[[label.firebaseRef collectionWithPath:@"ModelData"] queryOrderedByField:@"imagePath"] queryLimitedTo:queryLimit] :
     [[[[label.firebaseRef collectionWithPath:@"ModelData"] queryOrderedByField:@"imagePath"] queryLimitedTo:queryLimit]
         queryStartingAfterDocument:label.lastDataSnapshot];
     dispatch_group_t initDocsWaitingGroup = dispatch_group_create();

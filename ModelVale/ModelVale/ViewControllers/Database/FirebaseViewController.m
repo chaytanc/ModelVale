@@ -12,6 +12,7 @@
 #import "SceneDelegate.h"
 #import "ModelLabel.h"
 #import <QuartzCore/QuartzCore.h>
+#import "ModelViewController.h"
 
 @interface FirebaseViewController ()
 @property (nonatomic, strong) FIRAuth* userListener;
@@ -65,11 +66,15 @@
     [sceneDelegate.window setRootViewController:loginViewController];
 }
 
--(void)transitionToModelVC {
+-(void)transitionToModelVC: (NSMutableArray<AvatarMLModel*>* _Nullable)models {
     SceneDelegate *sceneDelegate = (SceneDelegate * ) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UINavigationController *modelViewController = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
-    [sceneDelegate.window setRootViewController:modelViewController];
+    UINavigationController *modelNavController = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
+    if(models) {
+        ModelViewController* modelViewController = (ModelViewController*) modelNavController.viewControllers.firstObject;
+        modelViewController.models = models;
+    }
+    [sceneDelegate.window setRootViewController:modelNavController];
 }
 
 -(NSString*) getImageStoragePath: (ModelLabel*)label {

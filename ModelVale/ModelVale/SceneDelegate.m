@@ -19,22 +19,27 @@
 
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
+    [self checkLoggedIn];
     self.userListener = [[FIRAuth auth]
         addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-        self.uid = [FIRAuth auth].currentUser.uid;
-        self.db = [FIRFirestore firestore];
-        if(self.uid) {
-            NSLog(@"User %@ persisted", self.uid);
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
-        }
-        else {
-            NSLog(@"User NOT %@ persisted", self.uid);
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Login" bundle:nil];
-            
-            self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
-        }
+        [self checkLoggedIn];
     }];
+}
+
+- (void) checkLoggedIn {
+    self.uid = [FIRAuth auth].currentUser.uid;
+    self.db = [FIRFirestore firestore];
+    if(self.uid) {
+        NSLog(@"User %@ persisted", self.uid);
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+        self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
+    }
+    else {
+        NSLog(@"User NOT %@ persisted", self.uid);
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Login" bundle:nil];
+        
+        self.window.rootViewController = [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
+    }
 }
 
 

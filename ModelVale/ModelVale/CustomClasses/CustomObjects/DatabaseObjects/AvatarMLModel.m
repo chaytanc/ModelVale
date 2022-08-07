@@ -66,7 +66,7 @@ NSNumber* const MAXHEALTH = @500;
 //MARK: Firebase
 
 // Checks if the model with the avatarName and owner already exists, if not, uploads the new model and updates user.models as well
-- (void) uploadModelToUserWithViewController: (NSString*) uid db: (FIRFirestore*)db vc: (UIViewController*)vc {
+- (void) uploadModelToUserWithViewController: (NSString*) uid db: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
 
     FIRDocumentReference *docRef = [[db collectionWithPath:@"Model"] documentWithPath:self.avatarName];
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
@@ -77,7 +77,7 @@ NSNumber* const MAXHEALTH = @500;
         else if(snapshot.data != nil) {
             [self initWithDictionary:snapshot.data];
         }
-        [self uploadNewModel:uid db:db vc:vc];
+        [self uploadNewModel:uid db:db vc:vc completion:completion];
     }];
 }
 
@@ -108,7 +108,7 @@ NSNumber* const MAXHEALTH = @500;
     }];
 }
 
-- (void) uploadNewModel: (NSString*)uid db: (FIRFirestore*)db vc: (UIViewController*)vc {
+- (void) uploadNewModel: (NSString*)uid db: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
     [[[db collectionWithPath:@"Model"] documentWithPath:self.avatarName]
      setData:@{
         @"avatarName": self.avatarName,
@@ -126,6 +126,7 @@ NSNumber* const MAXHEALTH = @500;
                     [self.userModelDocRefs addObject:self.avatarName];
                     [self updateUserModelDocRefs:uid db:db userModelDocRefs:self.userModelDocRefs vc:vc];
                 }
+        completion(error);
     }];
 }
 
