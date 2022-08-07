@@ -20,10 +20,6 @@
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
     [self checkLoggedIn:nil];
-//    self.userListener = [[FIRAuth auth]
-//        addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-//        [self checkLoggedIn: user.uid];
-//    }];
 }
 
 - (void) checkLoggedIn: ( NSString* _Nullable )uid {

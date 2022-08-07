@@ -46,13 +46,9 @@ NSInteger const kDataQueryLimit = 2;
 // First fetches the Model in order to get its associated labels (since multiple users can add to the model, so we can't rely on local data to be up to date)
 // Then fetches a limited number of labels based on the references the model contained
 // Fetches all data from each of those labels and displays it
-- (void) fetchSomeDataOfModel: (void(^_Nullable)(void))completion {
+- (void) fetchSomeDataOfModel: (void(^_Nullable)(float progress))progressCompletion allDataFetchedCompletion:(void(^_Nullable)(void))completion {
     [self fetchModelWithCompletion:^{
-        [self fetchSomeLabelsWithCompletion:^{
-            if(completion){
-                completion();
-            }
-        }];
+        [self fetchSomeLabelsWithCompletion:progressCompletion allDataFetchedCompletion:completion];
     }];
 }
 
@@ -77,12 +73,15 @@ NSInteger const kDataQueryLimit = 2;
     }];
 }
 
-- (void) fetchSomeLabelsWithCompletion:(void(^)(void))completion {
+// Updates label objects created to the self.modelLabels property
+- (void) fetchSomeLabelsWithCompletion:(void(^_Nullable)(float progress))progressCompletion allDataFetchedCompletion:(void(^_Nullable)(void))completion {
     int originalLabelFetchStart = self.labelFetchStart;
     dispatch_group_t prepareWaitingGroup = dispatch_group_create();
-    int labelFetchEnd = self.labelFetchStart + kLabelQueryLimit;
+    float labelFetchEnd = self.labelFetchStart + kLabelQueryLimit;
+    float labelsToFetch = MIN(labelFetchEnd, self.model.labeledData.count);
+    __block int labelsFetched = 0;
     // Loop through all labels this model holds refs to, up to the kLabelQueryLimit, and create those ModelLabel objects
-    for(int i=self.labelFetchStart; i<labelFetchEnd && i<self.model.labeledData.count; i++) {
+    for(int i=self.labelFetchStart; i<labelsToFetch; i++) {
         FIRDocumentReference* ref = self.model.labeledData[i];
         dispatch_group_enter(prepareWaitingGroup);
         // Create the ModelLabel object from the fetched data
@@ -91,19 +90,26 @@ NSInteger const kDataQueryLimit = 2;
             [self.modelLabels addObject:modelLabel];
             // Fetch the data on each ModelLabel and then increment the number of labels fetched when done with self.labelFetchStart
             [self fetchAndCreateData:modelLabel queryLimit:kDataQueryLimit completion:^{
+                if(progressCompletion) {
+                    labelsFetched += 1;
+                    float progress = labelsFetched / labelsToFetch;
+                    progressCompletion(progress);
+                }
                 self.labelFetchStart += 1;
                 dispatch_group_leave(prepareWaitingGroup);
             }];
         }];
     }
-    // At this point we have locally created ModelLabel objs from the models references and can continue
+    // At this point we have locally created ModelLabel objs AND all data from the models references and can continue
     dispatch_group_notify(prepareWaitingGroup, dispatch_get_main_queue(), ^{
         NSLog(@"Fetched group of labels %d to %d", originalLabelFetchStart, labelFetchEnd);
-        completion();
+        if(completion){
+            completion();
+        }
     });
 }
 
-// Fetches all ModelData documents in the subcollection on ModelLabel and creates those objects locally
+// Fetches all ModelData documents in the subcollection on ModelLabel and creates those objects locally by updating fetched data on the label.localData property
 // Query is paginated so that only kDataQueryLimit data are fetched per label
 - (void) fetchAndCreateData: (ModelLabel*)label queryLimit: (NSInteger)queryLimit completion:(void(^_Nullable)(void))completion {
     
@@ -114,6 +120,9 @@ NSInteger const kDataQueryLimit = 2;
     dispatch_group_t initDocsWaitingGroup = dispatch_group_create();
 
     [dataQuery getDocumentsWithCompletion:^(FIRQuerySnapshot * _Nullable snapshot, NSError * _Nullable error) {
+        if(error != nil) {
+            NSLog(@"Error querying more data");
+        }
         if(snapshot.documents.count == 0) {
             NSLog(@"No more data to fetch");
             // Trigger the notify if no data was found
@@ -126,11 +135,12 @@ NSInteger const kDataQueryLimit = 2;
             NSLog(@"Fetching %@ data for label %@", doc.documentID, label.label);
             [ModelData initWithDictionary:dict storage:self.storage completion:^(ModelData * _Nonnull modelData) {
                 modelData.firebaseRef = doc.reference;
-                [label.localData addObject:modelData];
                 label.lastDataSnapshot = snapshot.documents.lastObject;
+                [label.localData addObject:modelData];
                 dispatch_group_leave(initDocsWaitingGroup);
             }];
         }
+        // At this point we got all the data for a label
         dispatch_group_notify(initDocsWaitingGroup, dispatch_get_main_queue(), ^{
             NSLog(@"Fetched data.");
             if(completion){

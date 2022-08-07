@@ -62,7 +62,8 @@
     [[self getStorageRef:storage] dataWithMaxSize:10 * 4096 * 4096 completion:^(NSData *data, NSError *error){
         if (error != nil) {
             //XXX todo error handling without passing vc
-//            [vc presentError:@"Failed to download image" message:error.localizedDescription error:error];
+            NSLog(@
+                  "Failed to set UIImage on ModelData.image property");
         }
         else {
             UIImage *im = [UIImage imageWithData:data];

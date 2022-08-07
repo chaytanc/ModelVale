@@ -22,6 +22,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *loadMoreButton;
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet UICollectionView *userDataCollectionView;
+@property (strong, nonatomic) UIProgressView* loadingBar;
 @end
 
 @implementation DataViewController
@@ -30,6 +31,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self roundCorners];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [self.userDataCollectionView addSubview:refreshControl];
+    [refreshControl addTarget:self action:@selector(refreshData:) forControlEvents:UIControlEventValueChanged];
+
     self.modelLabels = [NSMutableArray new];
     self.userDataCollectionView.delegate = self;
     self.userDataCollectionView.dataSource = self;
@@ -38,8 +43,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self fetchSomeDataOfModel:^{
+    [self initProgressBar];
+    [self.loadingBar setHidden:NO];
+    [self fetchSomeDataOfModel:^(float progress) {
+        self.loadingBar.progress = progress;
+    } allDataFetchedCompletion:^{
         [self.userDataCollectionView reloadData];
+        [self.loadingBar setHidden:YES];
     }];
 }
 
@@ -50,6 +60,35 @@
     self.contentView.layer.masksToBounds = YES;
     self.loadMoreButton.layer.cornerRadius = 10;
     self.loadMoreButton.layer.masksToBounds = YES;
+}
+
+- (void) initProgressBar {
+    self.loadingBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+    self.loadingBar.progress = 0;
+    self.loadingBar.tintColor = [UIColor colorWithRed:125.0f/255.0f green:65.0f/255.0f blue:205.0f/255.0f alpha:1.0f];;
+    self.loadingBar.backgroundColor = [UIColor systemGray5Color];
+    [self.loadingBar.layer setCornerRadius:10];
+    self.loadingBar.layer.masksToBounds = TRUE;
+    self.loadingBar.clipsToBounds = TRUE;
+    CGAffineTransform transform = CGAffineTransformMakeScale(2.0f, 1.5f);
+    self.loadingBar.transform = transform;
+    [self.loadingBar setCenter:CGPointMake(self.view.layer.frame.size.width/2, self.view.layer.frame.size.height/2)];
+    [self.view addSubview: self.loadingBar];
+}
+
+- (void) refreshData:(UIRefreshControl *)refreshControl {
+//    [refreshControl beginRefreshing];
+    // Reset the query for labels if refreshing
+    self.labelFetchStart = 0;
+//    self.model.labeledData = [NSMutableArray new];
+    self.modelLabels = [NSMutableArray new];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self fetchSomeDataOfModel:nil allDataFetchedCompletion:^{
+            [self.userDataCollectionView reloadData];
+            [refreshControl endRefreshing];
+        }];
+    });
+    return;
 }
 
 - (IBAction)didTapLoadMore:(id)sender {
