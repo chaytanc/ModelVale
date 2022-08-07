@@ -40,6 +40,20 @@ NSInteger const kDataQueryLimit = 2;
     [modelArray addObject:fakeLabel];
 }
 
+- (void) initProgressBar {
+    self.loadingBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+    self.loadingBar.progress = 0;
+    self.loadingBar.tintColor = [UIColor colorWithRed:125.0f/255.0f green:65.0f/255.0f blue:205.0f/255.0f alpha:1.0f];;
+    self.loadingBar.backgroundColor = [UIColor systemGray5Color];
+    [self.loadingBar.layer setCornerRadius:10];
+    self.loadingBar.layer.masksToBounds = TRUE;
+    self.loadingBar.clipsToBounds = TRUE;
+    CGAffineTransform transform = CGAffineTransformMakeScale(2.0f, 1.5f);
+    self.loadingBar.transform = transform;
+    [self.loadingBar setCenter:CGPointMake(self.view.layer.frame.size.width/2, self.view.layer.frame.size.height/2)];
+    [self.view addSubview: self.loadingBar];
+}
+
 // MARK: Fetch data
 
 // Stores as arrays of ModelData accessible in self.modelLabels[X].localData[Y]
@@ -54,10 +68,10 @@ NSInteger const kDataQueryLimit = 2;
 
 // Adds labels fetched to self.modelLabels
 // Stores as arrays of ModelData accessible in self.modelLabels[X].localData[Y]
-- (void) fetchAllDataOfModelWithType: (testTrain)testTrainType dataPerLabel: (NSInteger)dataPerLabel completion: (void(^_Nullable)(void))completion {
+- (void) fetchAllDataOfModelWithType: (testTrain)testTrainType dataPerLabel: (NSInteger)dataPerLabel progressCompletion: (void(^_Nullable)(float progress))progressCompletion completion: (void(^_Nullable)(void))completion {
     self.modelLabels = [NSMutableArray new];
     [self fetchModelWithCompletion:^{
-        [self fetchAllLabelsWithType:testTrainType dataPerLabel:dataPerLabel completion:^{
+        [self fetchAllLabelsWithType:testTrainType dataPerLabel:dataPerLabel progressCompletion:progressCompletion completion:^{
             if(completion){
                 completion();
             }
@@ -75,11 +89,12 @@ NSInteger const kDataQueryLimit = 2;
 
 // Updates label objects created to the self.modelLabels property
 - (void) fetchSomeLabelsWithCompletion:(void(^_Nullable)(float progress))progressCompletion allDataFetchedCompletion:(void(^_Nullable)(void))completion {
+    
     int originalLabelFetchStart = self.labelFetchStart;
-    dispatch_group_t prepareWaitingGroup = dispatch_group_create();
     float labelFetchEnd = self.labelFetchStart + kLabelQueryLimit;
     float labelsToFetch = MIN(labelFetchEnd, self.model.labeledData.count);
     __block int labelsFetched = 0;
+    dispatch_group_t prepareWaitingGroup = dispatch_group_create();
     // Loop through all labels this model holds refs to, up to the kLabelQueryLimit, and create those ModelLabel objects
     for(int i=self.labelFetchStart; i<labelsToFetch; i++) {
         FIRDocumentReference* ref = self.model.labeledData[i];
@@ -102,7 +117,7 @@ NSInteger const kDataQueryLimit = 2;
     }
     // At this point we have locally created ModelLabel objs AND all data from the models references and can continue
     dispatch_group_notify(prepareWaitingGroup, dispatch_get_main_queue(), ^{
-        NSLog(@"Fetched group of labels %d to %d", originalLabelFetchStart, labelFetchEnd);
+        NSLog(@"Fetched group of labels %d to %f", originalLabelFetchStart, labelFetchEnd);
         if(completion){
             completion();
         }
@@ -123,49 +138,56 @@ NSInteger const kDataQueryLimit = 2;
         if(error != nil) {
             NSLog(@"Error querying more data");
         }
-        if(snapshot.documents.count == 0) {
-            NSLog(@"No more data to fetch");
-            // Trigger the notify if no data was found
-            dispatch_group_enter(initDocsWaitingGroup);
-            dispatch_group_leave(initDocsWaitingGroup);
-        }
-        for(FIRQueryDocumentSnapshot* doc in snapshot.documents) {
-            dispatch_group_enter(initDocsWaitingGroup);
-            NSDictionary* dict = doc.data;
-            NSLog(@"Fetching %@ data for label %@", doc.documentID, label.label);
-            [ModelData initWithDictionary:dict storage:self.storage completion:^(ModelData * _Nonnull modelData) {
-                modelData.firebaseRef = doc.reference;
-                label.lastDataSnapshot = snapshot.documents.lastObject;
-                [label.localData addObject:modelData];
-                dispatch_group_leave(initDocsWaitingGroup);
-            }];
-        }
-        // At this point we got all the data for a label
-        dispatch_group_notify(initDocsWaitingGroup, dispatch_get_main_queue(), ^{
-            NSLog(@"Fetched data.");
-            if(completion){
-                completion();
+        else {
+            if(snapshot.documents == nil) {
+                NSLog(@"No more data to fetch");
             }
-        });
+            for(FIRQueryDocumentSnapshot* doc in snapshot.documents) {
+                label.lastDataSnapshot = snapshot.documents.lastObject;
+                dispatch_group_enter(initDocsWaitingGroup);
+                NSDictionary* dict = doc.data;
+                NSLog(@"Fetching %@ data for label %@", doc.documentID, label.label);
+                [ModelData initWithDictionary:dict storage:self.storage completion:^(ModelData * _Nonnull modelData) {
+                    modelData.firebaseRef = doc.reference;
+                    [label.localData addObject:modelData];
+                    dispatch_group_leave(initDocsWaitingGroup);
+                }];
+            }
+            // At this point we got all the data for a label
+            dispatch_group_notify(initDocsWaitingGroup, dispatch_get_main_queue(), ^{
+                NSLog(@"Fetched data.");
+                if(completion){
+                    completion();
+                }
+            });
+        }
     }];
 }
 
 
 // Fetches all labels, assumes small-ish number of labels relative to number of data
 //XXX todo add model referencing field or make a subcollection of Model in order to just get data needed and speed up queries
-- (void) fetchAllLabelsWithType: (testTrain)testTrainType dataPerLabel: (NSInteger)dataPerLabel completion: (void(^)(void))completion {
+- (void) fetchAllLabelsWithType: (testTrain)testTrainType dataPerLabel: (NSInteger)dataPerLabel progressCompletion: (void(^_Nullable)(float progress))progressCompletion completion: (void(^)(void))completion {
+    
     dispatch_group_t prepareWaitingGroup = dispatch_group_create();
+    __block float labelsFetched = 0;
+    float labelsToFetch = self.model.labeledData.count;
     // Loop through all available labels that the model holds references to
-    for(int i=0; i<self.model.labeledData.count; i++) {
+    for(int i=0; i<labelsToFetch; i++) {
         FIRDocumentReference* ref = self.model.labeledData[i];
         dispatch_group_enter(prepareWaitingGroup);
-        // Create the ModelLabel object from the fetched data
+        // Fetch and create the ModelLabel object from that reference
         [ModelLabel fetchFromReference:ref vc:self completion:^(ModelLabel* _Nonnull modelLabel) {
             modelLabel.firebaseRef = ref;
             if([modelLabel.testTrainType isEqualToString: dataTypeEnumToString(testTrainType)]){
                 [self.modelLabels addObject:modelLabel];
                 // Fetch the data on each ModelLabel and then increment the number of labels fetched when done with self.labelFetchStart
                 [self fetchAndCreateData:modelLabel queryLimit:dataPerLabel completion:^{
+                    if(progressCompletion) {
+                        labelsFetched += 1;
+                        float progress = labelsFetched / labelsToFetch;
+                        progressCompletion(progress);
+                    }
                     dispatch_group_leave(prepareWaitingGroup);
                 }];
             }
