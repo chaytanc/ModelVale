@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)performLogout;
 -(void)transitionToLoginVC;
--(void)transitionToModelVC: ( NSMutableArray<AvatarMLModel*>* _Nullable )models;
+-(void)transitionToModelVC: ( NSMutableArray<AvatarMLModel*>* _Nullable )models uid: (NSString* _Nullable)uid;
 - (NSString*) getImageStoragePath: (ModelLabel*)label;
 
 @end

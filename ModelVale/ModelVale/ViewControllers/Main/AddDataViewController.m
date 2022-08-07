@@ -126,7 +126,7 @@
                 [self presentError:@"Failed to update data" message:error.localizedDescription error:error];
             }
             else {
-                [self transitionToModelVC: nil];
+                [self transitionToModelVC: nil uid:nil];
             }
         }];
     }];

@@ -81,30 +81,34 @@ NSNumber* const MAXHEALTH = @500;
     }];
 }
 
-- (void) updateUserModelDocRefs: (NSString*)uid db: (FIRFirestore*)db userModelDocRefs: (NSMutableArray*)userModelDocRefs vc: (UIViewController*)vc {
+- (void) updateUserModelDocRefs: (NSString*)uid db: (FIRFirestore*)db userModelDocRefs: (NSMutableArray*)userModelDocRefs vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
     
+    // Get the existing document, get its models, update local data to have remote + self.avatarName, finally update remote
     FIRDocumentReference* docRef = [[db collectionWithPath:@"users"] documentWithPath:uid];
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
-        NSMutableArray* userModelDocRefs = snapshot.data[@"models"];
+        NSMutableArray* remoteModels = snapshot.data[@"models"];
+        NSMutableArray* userModelDocRefs = (remoteModels) ? remoteModels : [NSMutableArray new];
         if(![userModelDocRefs containsObject:self.avatarName]) {
             [userModelDocRefs addObject:self.avatarName];
-            [self addUserModelDocRefs:uid db:db userModelDocRefs:userModelDocRefs vc:vc];
+            self.userModelDocRefs = userModelDocRefs;
+            [self addUserModelDocRefs:uid db:db userModelDocRefs:userModelDocRefs vc:vc completion:completion];
         }
     }];
 }
 
-- (void) addUserModelDocRefs: (NSString*)uid db: (FIRFirestore*)db userModelDocRefs: (NSMutableArray*)userModelDocRefs vc: (UIViewController*)vc {
+- (void) addUserModelDocRefs: (NSString*)uid db: (FIRFirestore*)db userModelDocRefs: (NSMutableArray*)userModelDocRefs vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
     // Reuploaded modified user.uid.models data
     [[[db collectionWithPath:@"users"] documentWithPath:uid]
-     setData:@{ @"models": userModelDocRefs }
-         merge:YES
-         completion:^(NSError * _Nullable error) {
+        setData:@{ @"models": userModelDocRefs }
+            merge:YES
+            completion:^(NSError * _Nullable error) {
                 if(error != nil){
                     [vc presentError:@"Failed to update users" message:error.localizedDescription error:error];
                 }
                 else {
                     NSLog(@"Added model in users.models");
                 }
+        completion(error);
     }];
 }
 
@@ -124,9 +128,9 @@ NSNumber* const MAXHEALTH = @500;
                 else {
                     NSLog(@"Uploaded Model to Firestore");
                     [self.userModelDocRefs addObject:self.avatarName];
-                    [self updateUserModelDocRefs:uid db:db userModelDocRefs:self.userModelDocRefs vc:vc];
+//                    [self addUserModelDocRefs:uid db:db userModelDocRefs:self.userModelDocRefs vc:vc];
+                    [self updateUserModelDocRefs:uid db:db userModelDocRefs:self.userModelDocRefs vc:vc completion:completion];
                 }
-        completion(error);
     }];
 }
 
