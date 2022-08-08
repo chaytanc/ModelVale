@@ -21,11 +21,10 @@ NS_ASSUME_NONNULL_BEGIN
 // An array of ALL the ModelLabel references that an AvatarMLModel points to, but not the actual objects themselves
 @property (nonatomic, strong) NSMutableArray<FIRDocumentReference*>* labeledData;
 
-//XXX todo update these properties in retrain and test
 - (instancetype)initWithDictionary:(NSDictionary *)dict;
 - (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName uid: (NSString*)uid;
 - (MLModel*) getMLModelFromModelName;
-- (void) uploadModelToUserWithViewController: (NSString*) uid db: (FIRFirestore*)db vc: (UIViewController*)vc;
+- (void) uploadModelToUserWithViewController: (NSString*) uid db: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
 + (void) fetchAndCreateAvatarMLModel: (FIRFirestore*)db documentPath: (NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion;
 - (void) updateModelLabeledDataWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
 - (NSURL*) loadModelURL: (NSString*) resource extension: (NSString*)extension;

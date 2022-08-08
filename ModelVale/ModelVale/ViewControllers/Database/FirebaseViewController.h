@@ -10,6 +10,7 @@
 @import FirebaseStorage;
 #import "UIViewController+PresentError.h"
 @class ModelLabel;
+@class AvatarMLModel;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -20,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)performLogout;
 -(void)transitionToLoginVC;
--(void)transitionToModelVC;
+-(void)transitionToModelVC: ( NSMutableArray<AvatarMLModel*>* _Nullable )models uid: (NSString* _Nullable)uid;
 - (NSString*) getImageStoragePath: (ModelLabel*)label;
 
 @end

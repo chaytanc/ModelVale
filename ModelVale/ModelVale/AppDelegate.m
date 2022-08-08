@@ -9,16 +9,19 @@
 #import "Parse/Parse.h"
 @import UIKit;
 @import FirebaseCore;
+@import FirebaseAuth;
+@import FirebaseFirestore;
 
 @interface AppDelegate ()
-
+@property (nonatomic, strong) FIRAuth* userListener;
+@property (nonatomic, readwrite) FIRFirestore *db;
+@property (nonatomic, strong) NSString* uid;
 @end
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [FIRApp configure];
-
     return YES;
 }
 

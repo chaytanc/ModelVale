@@ -12,6 +12,7 @@
 #import "SceneDelegate.h"
 #import "ModelLabel.h"
 #import <QuartzCore/QuartzCore.h>
+#import "ModelViewController.h"
 
 @interface FirebaseViewController ()
 @property (nonatomic, strong) FIRAuth* userListener;
@@ -21,28 +22,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.uid = [FIRAuth auth].currentUser.uid;
+    if(self.uid == nil) {
+        self.uid = [FIRAuth auth].currentUser.uid;
+    }
     self.db = [FIRFirestore firestore];
     self.storage = [FIRStorage storage];
-    self.userListener = [[FIRAuth auth]
-        addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-        self.uid = [FIRAuth auth].currentUser.uid;
-        if(self.uid) {
-            // User persisted, do nothing
-        }
-        else {
-            NSLog(@"User NOT %@ persisted", self.uid);
-            [self performLogout];
-        }
-    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-}
-
--(void)viewWillDisappear:(BOOL)animated {
-    [self detachUserListener];
 }
 
 - (void)performLogout {
@@ -65,11 +53,18 @@
     [sceneDelegate.window setRootViewController:loginViewController];
 }
 
--(void)transitionToModelVC {
+-(void)transitionToModelVC: (NSMutableArray<AvatarMLModel*>* _Nullable)models uid: (NSString* _Nullable)uid {
     SceneDelegate *sceneDelegate = (SceneDelegate * ) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    UINavigationController *modelViewController = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
-    [sceneDelegate.window setRootViewController:modelViewController];
+    UINavigationController *modelNavController = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
+    if(models) {
+        ModelViewController* modelViewController = (ModelViewController*) modelNavController.viewControllers.firstObject;
+        modelViewController.models = models;
+        if(uid){
+            modelViewController.uid = uid;
+        }
+    }
+    [sceneDelegate.window setRootViewController:modelNavController];
 }
 
 -(NSString*) getImageStoragePath: (ModelLabel*)label {

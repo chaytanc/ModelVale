@@ -15,9 +15,6 @@
 #import "AvatarMLModel.h"
 #import "AddDataViewController.h"
 
-//XXX todo constant is redeclared, make global or limit use to one file
-//NSInteger const kDataQueryLimit = 2;
-
 @interface DataViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
 @property (weak, nonatomic) IBOutlet UIButton *loadMoreButton;
 @property (weak, nonatomic) IBOutlet UIView *contentView;
@@ -30,6 +27,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self roundCorners];
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    
+    //XXX todo blocked here on refreshing without reloading immediately / waiting until fetch is done
+//    [self.userDataCollectionView addSubview:refreshControl];
+//    [refreshControl addTarget:self action:@selector(refreshData:) forControlEvents:UIControlEventValueChanged];
+
     self.modelLabels = [NSMutableArray new];
     self.userDataCollectionView.delegate = self;
     self.userDataCollectionView.dataSource = self;
@@ -38,8 +41,13 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self fetchSomeDataOfModel:^{
+    [self initProgressBar];
+    [self.loadingBar setHidden:NO];
+    [self fetchSomeDataOfModel:^(float progress) {
+        self.loadingBar.progress = progress;
+    } allDataFetchedCompletion:^{
         [self.userDataCollectionView reloadData];
+        [self.loadingBar setHidden:YES];
     }];
 }
 
@@ -52,9 +60,24 @@
     self.loadMoreButton.layer.masksToBounds = YES;
 }
 
+- (void) refreshData:(UIRefreshControl *)refreshControl {
+    [refreshControl beginRefreshing];
+    // Reset the query for labels if refreshing
+    self.labelFetchStart = 0;
+    self.model.labeledData = [NSMutableArray new];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.modelLabels = [NSMutableArray new];
+        [self fetchSomeDataOfModel:nil allDataFetchedCompletion:^{
+            [self.userDataCollectionView reloadData];
+            [refreshControl endRefreshing];
+        }];
+    });
+    return;
+}
+
 - (IBAction)didTapLoadMore:(id)sender {
     for(ModelLabel* label in self.modelLabels) {
-        [self fetchAndCreateData:label queryLimit:2 completion:^{
+        [self fetchAndCreateData:label queryLimit:kDataQueryLimit completion:^{
             [self.userDataCollectionView reloadData];
         }];
     }

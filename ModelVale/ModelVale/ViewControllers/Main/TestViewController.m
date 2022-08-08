@@ -47,9 +47,19 @@ NSInteger const kDataPerLabel = 20;
     self.navigationItem.hidesBackButton = YES;
     UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
     self.navigationItem.leftBarButtonItem = newBackButton;
-    [self fetchAllDataOfModelWithType:Test dataPerLabel:kDataPerLabel completion:^{
+
+}
+
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self initProgressBar];
+    [self.loadingBar setHidden:NO];
+    [self fetchAllDataOfModelWithType:Test dataPerLabel:kDataPerLabel progressCompletion:^(float progress) {
+        self.loadingBar.progress = progress;
+    } completion:^{
         [self.testCollView reloadData];
-        self.totalPreds = 0;
+        [self.loadingBar setHidden:YES];
     }];
 }
 

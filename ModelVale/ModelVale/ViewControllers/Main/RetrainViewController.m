@@ -38,10 +38,18 @@
     self.retrainCollView.dataSource = self;
     self.mlmodel = [self.model getMLModelFromModelName];
     self.modelURL = [self.model loadModelURL:self.model.modelName extension:@"mlmodelc"];
-    self.retrainLabel.text = @"Unused Retraining Data";
-    [self fetchAllDataOfModelWithType:Train dataPerLabel:10000 completion:^{
-        [self.retrainCollView reloadData];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self initProgressBar];
+    [self.loadingBar setHidden:NO];
+    [self fetchAllDataOfModelWithType:Test dataPerLabel:10000 progressCompletion:^(float progress) {
+        self.loadingBar.progress = progress;
+    } completion:^{
         self.totalData = 0;
+        [self.retrainCollView reloadData];
+        [self.loadingBar setHidden:YES];
     }];
 }
 

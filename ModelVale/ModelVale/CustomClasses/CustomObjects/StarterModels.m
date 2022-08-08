@@ -19,9 +19,9 @@
     return self;
 }
 
--(void) uploadStarterModels: (NSString*)uid db: (FIRFirestore*)db vc: (UIViewController*)vc {
+-(void) uploadStarterModels: (NSString*)uid db: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
     for(AvatarMLModel* model in self.models) {
-        [model uploadModelToUserWithViewController:uid db:db vc:vc];
+        [model uploadModelToUserWithViewController:uid db:db vc:vc completion:completion];
     }
 }
 
