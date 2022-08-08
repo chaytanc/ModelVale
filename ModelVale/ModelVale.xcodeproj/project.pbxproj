@@ -16,7 +16,7 @@
 		9C150588289D95450090319A /* TestDataCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C150587289D95450090319A /* TestDataCell.m */; };
 		9C15058B289DB85E0090319A /* RetrainDataCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C15058A289DB85E0090319A /* RetrainDataCell.m */; };
 		9C15058E289DB8BB0090319A /* RetrainDataSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C15058D289DB8BB0090319A /* RetrainDataSectionHeader.m */; };
-		9C150590289DCDA00090319A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C15058F289DCDA00090319A /* Launch Screen.storyboard */; };
+		9C150590289DCDA00090319A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C15058F289DCDA00090319A /* LaunchScreen.storyboard */; };
 		9C28EF8328877E4E00CE0F2D /* XPCluster.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C28EF8228877E4E00CE0F2D /* XPCluster.m */; };
 		9C28EF862887897F00CE0F2D /* XP.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C28EF852887897F00CE0F2D /* XP.m */; };
 		9C623CC5288743BB00264F50 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C623CC4288743BB00264F50 /* Keys.plist */; };
@@ -90,7 +90,7 @@
 		9C15058A289DB85E0090319A /* RetrainDataCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RetrainDataCell.m; sourceTree = "<group>"; };
 		9C15058C289DB8BB0090319A /* RetrainDataSectionHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RetrainDataSectionHeader.h; sourceTree = "<group>"; };
 		9C15058D289DB8BB0090319A /* RetrainDataSectionHeader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RetrainDataSectionHeader.m; sourceTree = "<group>"; };
-		9C15058F289DCDA00090319A /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		9C15058F289DCDA00090319A /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9C28EF8128877E4E00CE0F2D /* XPCluster.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XPCluster.h; sourceTree = "<group>"; };
 		9C28EF8228877E4E00CE0F2D /* XPCluster.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XPCluster.m; sourceTree = "<group>"; };
 		9C28EF842887897F00CE0F2D /* XP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XP.h; sourceTree = "<group>"; };
@@ -232,7 +232,7 @@
 				9C74E51528725799003FFFF7 /* Main.storyboard */,
 				9C69F7272878D35A0001F608 /* Stats.storyboard */,
 				9C74E54828736D9E003FFFF7 /* Login.storyboard */,
-				9C15058F289DCDA00090319A /* Launch Screen.storyboard */,
+				9C15058F289DCDA00090319A /* LaunchScreen.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -541,7 +541,7 @@
 			files = (
 				9C623CC5288743BB00264F50 /* Keys.plist in Resources */,
 				9C69F7282878D35A0001F608 /* Stats.storyboard in Resources */,
-				9C150590289DCDA00090319A /* Launch Screen.storyboard in Resources */,
+				9C150590289DCDA00090319A /* LaunchScreen.storyboard in Resources */,
 				9C74E54928736D9E003FFFF7 /* Login.storyboard in Resources */,
 				9C74E5192872579A003FFFF7 /* Assets.xcassets in Resources */,
 				9C74E51728725799003FFFF7 /* Main.storyboard in Resources */,

@@ -27,25 +27,10 @@
     }
     self.db = [FIRFirestore firestore];
     self.storage = [FIRStorage storage];
-//    self.userListener = [[FIRAuth auth]
-//        addAuthStateDidChangeListener:^(FIRAuth *_Nonnull auth, FIRUser *_Nullable user) {
-//        self.uid = user.uid;
-//        if(self.uid) {
-//            // User persisted, do nothing
-//        }
-//        else {
-//            NSLog(@"User NOT %@ persisted", self.uid);
-//            [self performLogout];
-//        }
-//    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-}
-
--(void)viewWillDisappear:(BOOL)animated {
-//    [self detachUserListener];
 }
 
 - (void)performLogout {
