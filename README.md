@@ -2,7 +2,7 @@
 Modelvale
 
 ## Overview
-### [Demo](http://g.recordit.co/NXsyOZ0Cjr.gif)
+### [Demo](https://recordit.co/wproHGzuGB)
 
 ### Description
 Modelvale is an app designed to bring machine learning to life. Each model is represented by an avatar with a dynamic health bar representing the overall model's performance. For instance, with a model classifying objects (e.g. if there is a picture of a dog, it will predict the label "dog"), the health bar fills when the model correctly classifies an object, decreases when more computation is used to train it, and more. Over time you can see your best performing models and their attributes, and keep training and testing their predictions to keep up their health.
