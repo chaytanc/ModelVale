@@ -1,6 +1,6 @@
-# README
-Modelvale
-![Artboard 11024](https://user-images.githubusercontent.com/35582442/183336634-84c6cef0-409a-4a26-a235-95dc646d9383.png)
+# Modelvale README
+<img src="https://user-images.githubusercontent.com/35582442/183336634-84c6cef0-409a-4a26-a235-95dc646d9383.png)" alt="drawing" width="400"/>
+<!-- ![Artboard 11024](https://user-images.githubusercontent.com/35582442/183336634-84c6cef0-409a-4a26-a235-95dc646d9383.png) -->
 
 ## Overview
 ### [Demo](https://recordit.co/wproHGzuGB)
