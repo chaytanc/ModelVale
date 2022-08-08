@@ -1,7 +1,7 @@
 # Modelvale README
 <!-- ![](./pic/pic1_50.png =100x20) -->
-![Artboard 11024](https://user-images.githubusercontent.com/35582442/183336634-84c6cef0-409a-4a26-a235-95dc646d9383.png =400x)
-
+[[https://user-images.githubusercontent.com/35582442/183336634-84c6cef0-409a-4a26-a235-95dc646d9383.png | width=400px]]
+<!-- [[link|width=400px]] -->
 ## Overview
 ### [Demo](https://recordit.co/wproHGzuGB)
 
