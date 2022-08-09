@@ -189,6 +189,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="avatarImageView" destination="ukO-l4-ah3" id="nPT-GS-Lni"/>
                         <outlet property="avatarStackView" destination="6kY-bT-WRU" id="aw5-WV-W8D"/>
                         <outlet property="dataButton" destination="ESa-hG-I2C" id="LSy-Fe-i1D"/>
                         <outlet property="detailsView" destination="vbN-tA-qOH" id="LaR-f9-fn8"/>
@@ -825,7 +826,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="L8M-ue-Kaw"/>
+        <segue reference="1lD-79-zWl"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.left.circle.fill" catalog="system" width="128" height="121"/>

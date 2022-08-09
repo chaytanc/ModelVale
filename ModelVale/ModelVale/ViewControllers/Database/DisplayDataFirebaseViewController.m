@@ -82,8 +82,11 @@ NSInteger const kDataQueryLimit = 2;
 - (void) fetchModelWithCompletion:(void(^)(void))completion {
     FIRDocumentReference *modelRef = [[self.db collectionWithPath:@"Model"] documentWithPath:self.model.avatarName];
     [modelRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
-        self.model = [self.model initWithDictionary:snapshot.data];
-        completion();
+//        self.model = [self.model initWithDictionary:snapshot.data];
+        [AvatarMLModel initWithDictionary:snapshot.data storage:self.storage completion:^(AvatarMLModel * model) {
+            completion();
+        }];
+//        completion();
     }];
 }
 

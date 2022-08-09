@@ -17,6 +17,8 @@
 		9C15058B289DB85E0090319A /* RetrainDataCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C15058A289DB85E0090319A /* RetrainDataCell.m */; };
 		9C15058E289DB8BB0090319A /* RetrainDataSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C15058D289DB8BB0090319A /* RetrainDataSectionHeader.m */; };
 		9C150590289DCDA00090319A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C15058F289DCDA00090319A /* LaunchScreen.storyboard */; };
+		9C15059328A186170090319A /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C15059228A186170090319A /* LaunchViewController.m */; };
+		9C15059528A18C4B0090319A /* Xception.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9C15059428A18C4A0090319A /* Xception.mlmodel */; };
 		9C28EF8328877E4E00CE0F2D /* XPCluster.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C28EF8228877E4E00CE0F2D /* XPCluster.m */; };
 		9C28EF862887897F00CE0F2D /* XP.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C28EF852887897F00CE0F2D /* XP.m */; };
 		9C623CC5288743BB00264F50 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C623CC4288743BB00264F50 /* Keys.plist */; };
@@ -91,6 +93,10 @@
 		9C15058C289DB8BB0090319A /* RetrainDataSectionHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RetrainDataSectionHeader.h; sourceTree = "<group>"; };
 		9C15058D289DB8BB0090319A /* RetrainDataSectionHeader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RetrainDataSectionHeader.m; sourceTree = "<group>"; };
 		9C15058F289DCDA00090319A /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		9C15059128A186170090319A /* LaunchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
+		9C15059228A186170090319A /* LaunchViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
+		9C15059428A18C4A0090319A /* Xception.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Xception.mlmodel; sourceTree = "<group>"; };
+		9C15059628A1C2DF0090319A /* ModelProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelProtocol.h; sourceTree = "<group>"; };
 		9C28EF8128877E4E00CE0F2D /* XPCluster.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XPCluster.h; sourceTree = "<group>"; };
 		9C28EF8228877E4E00CE0F2D /* XPCluster.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XPCluster.m; sourceTree = "<group>"; };
 		9C28EF842887897F00CE0F2D /* XP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XP.h; sourceTree = "<group>"; };
@@ -273,6 +279,7 @@
 				9C69F73D287E4DD50001F608 /* TrainBatchData.h */,
 				9C69F73E287E4DD50001F608 /* TrainBatchData.m */,
 				9CADD487288F661800C1C6F4 /* StarterModels.h */,
+				9C15059628A1C2DF0090319A /* ModelProtocol.h */,
 				9CADD486288F661800C1C6F4 /* StarterModels.m */,
 			);
 			path = CustomObjects;
@@ -363,6 +370,7 @@
 			children = (
 				9CB42402287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel */,
 				9CB423FE287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel */,
+				9C15059428A18C4A0090319A /* Xception.mlmodel */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -383,6 +391,8 @@
 				9C74E54E28736DED003FFFF7 /* RegisterViewController.m */,
 				9C74E54A28736DBD003FFFF7 /* LoginViewController.h */,
 				9C74E54B28736DBD003FFFF7 /* LoginViewController.m */,
+				9C15059128A186170090319A /* LaunchViewController.h */,
+				9C15059228A186170090319A /* LaunchViewController.m */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -676,10 +686,12 @@
 				9C69F735287CCFC50001F608 /* ModelLabel.m in Sources */,
 				9C74E54428736D12003FFFF7 /* ModelViewController.m in Sources */,
 				9C69F72E287CAB970001F608 /* UserDataSectionHeader.m in Sources */,
+				9C15059328A186170090319A /* LaunchViewController.m in Sources */,
 				9C150585289D88DB0090319A /* TestDataSectionHeader.m in Sources */,
 				9C69F732287CAFDE0001F608 /* ModelData.m in Sources */,
 				9C74E54728736D7B003FFFF7 /* StatsViewController.m in Sources */,
 				9C69F72B287CA94B0001F608 /* UserDataCell.m in Sources */,
+				9C15059528A18C4B0090319A /* Xception.mlmodel in Sources */,
 				9C150576289B52F90090319A /* DisplayDataFirebaseViewController.m in Sources */,
 				9C74E54C28736DBD003FFFF7 /* LoginViewController.m in Sources */,
 				9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */,

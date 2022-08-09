@@ -12,7 +12,7 @@
 #import "UpdatableSqueezeNet.h"
 #import "CoreML/CoreML.h"
 #import "AvatarMLModel.h"
-#import "StarterModels.h"
+//#import "StarterModels.h"
 #import "DataViewController.h"
 #import "RetrainViewController.h"
 #import "TestViewController.h"
@@ -48,7 +48,9 @@ NSInteger const kCornerRadius = 10;
 @property (weak, nonatomic) IBOutlet UIButton *testButton;
 @property (weak, nonatomic) IBOutlet UIButton *trainButton;
 @property (weak, nonatomic) IBOutlet UIButton *dataButton;
+@property (weak, nonatomic) IBOutlet UIImageView *avatarImageView;
 
+@property (strong, nonatomic) AvatarMLModel* model;
 @property (nonatomic, assign) NSInteger numClusters;
 @property (nonatomic, assign) CGPoint XPEndPoint;
 @property (nonatomic,strong) NSMutableArray<XPCluster*>* clusters;
@@ -114,7 +116,7 @@ NSInteger const kCornerRadius = 10;
     dispatch_group_t asyncGroup = dispatch_group_create();
     for(NSString* modelName in userModelDocRefs) {
         dispatch_group_enter(asyncGroup);
-        [AvatarMLModel fetchAndCreateAvatarMLModel:self.db documentPath:modelName completion:^(AvatarMLModel * _Nonnull model) {
+        [AvatarMLModel fetchAndReturnExistingModel:self.db storage: self.storage documentPath:modelName completion:^(AvatarMLModel * _Nonnull model) {
             [self.models addObject:model];
             dispatch_group_leave(asyncGroup);
         }];
@@ -128,6 +130,8 @@ NSInteger const kCornerRadius = 10;
     NSInteger relInd = ind % self.models.count;
     if(self.models.count == 0) {
         [self performLogout];
+//        [self transitionToLoginVC];
+        NSLog(@"No models found, logging out");
         return [AvatarMLModel new];
     }
     else {
@@ -136,17 +140,20 @@ NSInteger const kCornerRadius = 10;
 }
 
 - (void) configUIBasedOnModel {
-    AvatarMLModel* model = [self getCurrModel:self.modelIndex];
-    self.nameLabel.text = model.avatarName;
-    self.modelNameLabel.text = model.modelName;
+    self.model = [self getCurrModel:self.modelIndex];
+    self.avatarImageView.image = self.model.avatarImage;
+    self.nameLabel.text = self.model.avatarName;
+    self.modelNameLabel.text = self.model.modelName;
 }
 - (IBAction)didTapLeftNext:(id)sender {
     self.modelIndex -= 1;
+    [self configUIBasedOnModel];
     //XXX todo update which model is showing by fetching, then reloading view / reconfigUI etc
 
 }
 - (IBAction)didTapRightNext:(id)sender {
     self.modelIndex += 1;
+    [self configUIBasedOnModel];
     //XXX todo update which model is showing by fetching etc
 }
 
@@ -159,15 +166,15 @@ NSInteger const kCornerRadius = 10;
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if([[segue identifier] isEqualToString:@"modelToData"]) {
         DataViewController* targetController = (DataViewController*) [segue destinationViewController];
-        targetController.model = [self getCurrModel:self.modelIndex];
+        targetController.model = self.model;
     }
     else if ([segue.identifier isEqualToString:@"modelToTest"]) {
         TestViewController* target = (TestViewController*) [segue destinationViewController];
-        target.model = [self getCurrModel:self.modelIndex];
+        target.model = self.model;
     }
     else if ([segue.identifier isEqualToString:@"modelToRetrain"]) {
         RetrainViewController* target = (RetrainViewController*) [segue destinationViewController];
-        target.model = [self getCurrModel:self.modelIndex];
+        target.model = self.model;
     }
 }
 //MARK: XP animations

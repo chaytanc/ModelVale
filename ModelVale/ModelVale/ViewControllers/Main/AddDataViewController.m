@@ -60,8 +60,9 @@
     self.addDataCollView.dataSource = self;
     self.testTrainPickerView.dataSource = self;
     self.testTrainPickerView.delegate = self;
+    [self.testTrainPickerView setUserInteractionEnabled:YES];
+    self.testTrainPickerView.tintColor = [UIColor systemGrayColor];
 
-    self.modelLabel.testTrainType = self.testTrainOptions[0];
     MLModel* model = [self.model getMLModelFromModelName];
     [self.labelField initPropertiesWithOptions: model.modelDescription.classLabels];
     [self.labelField addTarget:self action:@selector(didTapDropDown:) forControlEvents:UIControlEventTouchUpInside];
@@ -102,22 +103,6 @@
     [self presentViewController:self.cameraPickerVC animated:YES completion:nil];
 }
 
-//MARK: Firebase
-
-- (void) uploadModelDataSubColl: (FIRDocumentReference*) labelRef completion:(void(^)(void))completion {
-    dispatch_group_t prepareWaitingGroup = dispatch_group_create();
-    for(ModelData* data in self.data) {
-        dispatch_group_enter(prepareWaitingGroup);
-        [data saveModelDataInSubColl:labelRef db:self.db storage:self.storage vc:self completion:^{
-            NSLog(@"Uploaded data");
-            dispatch_group_leave(prepareWaitingGroup);
-        }];
-    }
-    dispatch_group_notify(prepareWaitingGroup, dispatch_get_main_queue(), ^{
-        completion();
-    });
-}
-
 - (IBAction)didTapDone:(id)sender {
     self.modelLabel.label = self.labelField.text;
     [self.modelLabel updateModelLabelWithDatabase:self.db vc:self model:self.model completion:^(FIRDocumentReference * _Nonnull labelRef, NSError * _Nonnull error) {
@@ -130,6 +115,22 @@
             }
         }];
     }];
+}
+
+//MARK: Firebase
+
+- (void) uploadModelDataSubColl: (FIRDocumentReference*) labelRef completion:(void(^)(void))completion {
+    dispatch_group_t prepareWaitingGroup = dispatch_group_create();
+    for(ModelData* data in self.data) {
+        dispatch_group_enter(prepareWaitingGroup);
+        [data saveModelDataInSubCollection:labelRef db:self.db storage:self.storage vc:self completion:^{
+            NSLog(@"Uploaded data");
+            dispatch_group_leave(prepareWaitingGroup);
+        }];
+    }
+    dispatch_group_notify(prepareWaitingGroup, dispatch_get_main_queue(), ^{
+        completion();
+    });
 }
 
 // MARK: Multiple Select QBImagePicker
@@ -159,6 +160,9 @@
             [self.addDataCollView reloadData];
         }];
     }
+    // Lock changes to test/train type after data has been selected to upload since we can only choose one type at a time
+    [self.testTrainPickerView setUserInteractionEnabled:NO];
+    self.testTrainPickerView.tintColor = [UIColor systemBlueColor];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
@@ -174,6 +178,9 @@
     NSString* path = [self getImageStoragePath: self.modelLabel];
     ModelData* data = [ModelData initWithImage:editedImage label:self.modelLabel.label imagePath:path];
     [self.data addObject:data];
+    // Lock changes to test/train type after data has been selected to upload since we can only choose one type at a time
+    [self.testTrainPickerView setUserInteractionEnabled:NO];
+    self.testTrainPickerView.tintColor = [UIColor systemBlueColor];
     [self dismissViewControllerAnimated:YES completion:nil];
     [self.addDataCollView reloadData];
 }
