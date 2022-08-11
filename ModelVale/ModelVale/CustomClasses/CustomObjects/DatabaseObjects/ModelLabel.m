@@ -82,12 +82,18 @@
             [vc presentError:@"Failed to fetch labels" message:error.localizedDescription error:error];
         }
         else {
+
+            // If the modelLabel already exists in the database, we want to update it, not save a new one
             if (snapshot.documents.count > 0){
                 FIRDocumentSnapshot* doc = snapshot.documents[0];
                 NSDictionary* dict = doc.data;
                 NSLog(@"Found %lu matching labels", (unsigned long)snapshot.documents.count);
                 [self updateWithDictionary:dict];
                 [self uploadModelLabel:db labelRef:doc.reference vc:vc completion:^(NSError *error) {
+                    // Update the local model stored references if necessary
+                    if(![model.labeledData containsObject:doc.reference]) {
+                        [model.labeledData addObject:doc.reference];
+                    }
                     // In both cases, update the Model labeledData field to reflect labeled data that it references since models may share labels. Therefore the label may exist already, but the model doesn't yet reference it.
                     [model updateChangeableData:db vc:vc completion:^(NSError * _Nonnull error) {
                         if(error != nil) {
@@ -101,6 +107,7 @@
             }
             else {
                 [self saveNewModelLabelWithDatabase:db vc:vc completion:^(FIRDocumentReference *ref) {
+                    [model.labeledData addObject:ref];
                     // Always update model labeledData
                     [model updateChangeableData:db vc:vc completion:^(NSError * _Nonnull error) {
                         if(error != nil) {
@@ -110,8 +117,6 @@
                             completion(ref, error);
                         }
                     }];
-                    // Update the model stored references when a new label is added
-                    [model.labeledData addObject:self.firebaseRef];
                 }];
             }
         }

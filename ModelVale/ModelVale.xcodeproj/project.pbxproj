@@ -260,6 +260,20 @@
 			path = XPObjects;
 			sourceTree = "<group>";
 		};
+		9C1505B928A58B620090319A /* CustomGeneral */ = {
+			isa = PBXGroup;
+			children = (
+				9C69F736287CD85B0001F608 /* TestTrainEnum.h */,
+				9C69F737287DF38E0001F608 /* TestTrainEnum.m */,
+				9C69F73D287E4DD50001F608 /* TrainBatchData.h */,
+				9C69F73E287E4DD50001F608 /* TrainBatchData.m */,
+				9CADD487288F661800C1C6F4 /* StarterModels.h */,
+				9CADD486288F661800C1C6F4 /* StarterModels.m */,
+				9C15059628A1C2DF0090319A /* ModelProtocol.h */,
+			);
+			path = CustomGeneral;
+			sourceTree = "<group>";
+		};
 		9C69F7212878A8210001F608 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -278,15 +292,9 @@
 		9C69F72F287CAF650001F608 /* CustomObjects */ = {
 			isa = PBXGroup;
 			children = (
+				9C1505B928A58B620090319A /* CustomGeneral */,
 				9C15057A289B57FD0090319A /* XPObjects */,
 				9C150577289B565A0090319A /* DatabaseObjects */,
-				9C69F736287CD85B0001F608 /* TestTrainEnum.h */,
-				9C69F737287DF38E0001F608 /* TestTrainEnum.m */,
-				9C69F73D287E4DD50001F608 /* TrainBatchData.h */,
-				9C69F73E287E4DD50001F608 /* TrainBatchData.m */,
-				9CADD487288F661800C1C6F4 /* StarterModels.h */,
-				9CADD486288F661800C1C6F4 /* StarterModels.m */,
-				9C15059628A1C2DF0090319A /* ModelProtocol.h */,
 			);
 			path = CustomObjects;
 			sourceTree = "<group>";

@@ -27,7 +27,7 @@
     
     FIRDocumentReference* docRef = [[db collectionWithPath:@"users"] documentWithPath:self.uid];
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
-        //XXX todo don't ever want this to be nil, want to add the user FIRST then be sure that it exists and always merge
+        // this should never be nil, want to add the user FIRST then be sure that it exists and always merge
         if(snapshot.data == nil) {
             [self addNewUser:db vc:vc completion:completion];
         }
@@ -66,26 +66,5 @@
         completion(error);
     }];
 }
-
-/*
-
- func getUserInfo(fieldType: String, completion: @escaping(_ userData: [String : String], _ error: Error?) -> Void) {
-     let uid = getUID()
-     // Get the users' stoveInfo data
-     db.collection("users").document(uid).getDocument(completion: { (document, error) in
-         if error != nil {
-             print("--- Could not query database for given fieldType: \n \(error)")
-             let emptyData = [String:String]()
-             completion(emptyData, error)
-         }
-         else {
-             let data = document?.data() as! [String: [String: String]]
-             let specificData = data[fieldType]
-             completion(specificData!, error)
-         }
-     })
- }
- */
-
 
 @end

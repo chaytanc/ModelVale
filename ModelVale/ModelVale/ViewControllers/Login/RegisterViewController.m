@@ -53,7 +53,7 @@
                     
                     NSLog(@"User registered successfully");
                     NSString* uid = authResult.user.uid;
-                    User* user = [[User new] initUser:uid];
+                    __weak User* user = [[User new] initUser:uid];
                     [user addNewUser:self.db vc:self completion:^(NSError * _Nonnull error) {
                         StarterModels* starters = [[StarterModels new] initStarterModels];
                         [starters uploadStarterModels:user db:self.db storage:self.storage vc:self completion:^(NSError * _Nonnull error) {
@@ -61,8 +61,6 @@
                                 [self presentError:@"Error making models for new user" message:error.localizedDescription error:error];
                             }
                             else {
-                                // update remote userdocrefs after uploadStartModels is done updating local copy of userModelDocRefs
-                                //XXX todo
                                 [self transitionToModelVC:starters.models uid:uid];
                             }
                         }];

@@ -73,9 +73,7 @@ NSNumber* const MAXHEALTH = @500;
 
 //MARK: Firebase
 
-
-//XXX todo working here because uploading starter models does not work
-// Checks if the model with the avatarName and owner already exists, if not, uploads the new model, then creates local copies of the remote and returns in a completion. Updates user.models as well
+// Checks if the model with the avatarName and owner already exists, if not, uploads the new model, then creates local copies of the remote and returns in a completion. Updates user.models locally and remotely as well
 - (void) uploadModel: (User*)user db: (FIRFirestore*)db storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
 
     FIRDocumentReference *docRef = [[db collectionWithPath:@"Model"] documentWithPath:self.avatarName];
