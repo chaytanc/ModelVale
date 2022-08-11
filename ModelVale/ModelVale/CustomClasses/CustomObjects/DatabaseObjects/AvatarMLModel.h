@@ -12,6 +12,7 @@
 #import "FirebaseFirestore.h"
 #import "ModelProtocol.h"
 @import FirebaseStorage;
+@class User;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -29,11 +30,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 //- (instancetype)initWithDictionary:(NSDictionary *)dict;
 + (void)initWithDictionary:(NSDictionary *)dict storage:(FIRStorage*)storage completion:(void(^_Nullable)(AvatarMLModel*))completion;
-- (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName uid: (NSString*)uid;
+- (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName;
 - (MLModel*) getMLModelFromModelName;
-- (void) uploadModelToUserWithViewController: (NSString*) uid db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
+- (void) uploadModel: (User*)user db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
 + (void) fetchAndReturnExistingModel: (FIRFirestore*)db storage: (FIRStorage*)storage documentPath: (NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion;
-- (void) updateModelLabeledDataWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
+- (void) updateChangeableData: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
 - (id<ModelProtocol>) loadModel;
 
 @end

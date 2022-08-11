@@ -6,13 +6,19 @@
 //
 
 #import <Foundation/Foundation.h>
+@import FirebaseFirestore;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface User : NSObject
 
-@property (nonatomic, strong) NSArray* models;
+@property (nonatomic, strong) NSMutableArray<NSString*>* userModelDocRefs;
 @property (nonatomic, strong) NSString* uid;
+
+- (instancetype) initUser: (NSString*)uid;
+- (void) updateUserModelDocRefs: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
+- (void) addNewUser: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
+
 
 @end
 

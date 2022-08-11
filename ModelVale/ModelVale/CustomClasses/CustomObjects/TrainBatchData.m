@@ -34,15 +34,14 @@
 }
 
 - (void) setBatchFeatureProvider: (MLImageConstraint*) imageConstraint {
-    NSMutableArray* featureArray = [NSMutableArray new];
     if(self.trainBatchLabels == nil) {
         [NSException raise:@"Invalid training data" format:@"self.trainBatchLabels was empty in TrainBatchData"];
     }
-    for (id label in self.trainBatchLabels) {
-        ModelLabel* l = ((ModelLabel*) label);
-        for (id data in l.localData) {
-            ModelData* d = (ModelData*) data;
-            MLDictionaryFeatureProvider* featureProv = [d getUpdatableDictionaryFeatureProvider:imageConstraint];
+    // Make a MLDictionaryFeatureProvider for each label and data pair and add to array of them
+    NSMutableArray* featureArray = [NSMutableArray new];
+    for (ModelLabel* l in self.trainBatchLabels) {
+        for (ModelData* data in l.localData) {
+            MLDictionaryFeatureProvider* featureProv = [data getUpdatableDictionaryFeatureProvider:imageConstraint];
             [featureArray addObject:featureProv];
         }
     }

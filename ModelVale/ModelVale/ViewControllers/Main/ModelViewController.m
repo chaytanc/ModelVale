@@ -63,6 +63,7 @@ NSInteger const kCornerRadius = 10;
     [super viewDidLoad];
     
     self.models = [NSMutableArray new];
+    //XXX todo refactor to rely on self.models always being set before transition and catch error and refetch if not, or log out. Then only refetch when we know new models are uploaded. Does need to update once when the app first launches to initially get all the models the user has access to in userModelRefs
     [self fetchAndSetVCModels:^{
         [self configUIBasedOnModel];
     }];

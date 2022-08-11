@@ -9,14 +9,15 @@
 @import FirebaseFirestore;
 @import FirebaseStorage;
 @class AvatarMLModel;
+@class User;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface StarterModels : NSObject
 
 @property (nonatomic, strong) NSMutableArray<AvatarMLModel*>* models;
--(instancetype) initStarterModels: (NSString*)uid;
--(void) uploadStarterModels: (NSString*)uid db: (FIRFirestore*)db storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
+-(instancetype) initStarterModels;
+-(void) uploadStarterModels: (User*)user db: (FIRFirestore*)db storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
 
 @end
 
