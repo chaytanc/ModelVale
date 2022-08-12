@@ -23,14 +23,12 @@
 @import FirebaseFirestore;
 
 
-CGFloat const kAnimationDuration = 2.1f;
+CGFloat const kAnimationDuration = 1.9f;
 NSInteger const kXPSize = 20;
-NSInteger const kMinXPPerCluster = 10;
+NSInteger const kMinXPPerCluster = 15;
 BOOL const kDebugAnimations = NO;
 NSInteger const kSeedXOffset = 30;
 NSInteger const kSeedYOffset = 100;
-//XXX todo use this max health in uploads / addDataVC
-NSInteger const kMaxHealth = 100;
 NSInteger const kSigmaXDivisor = 6;
 NSInteger const kSigmaYDivisor = 6;
 // UI consts
@@ -61,11 +59,6 @@ NSInteger const kCornerRadius = 10;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.models = [NSMutableArray new];
-    //XXX todo refactor to rely on self.models always being set before transition and catch error and refetch if not, or log out. Then only refetch when we know new models are uploaded. Does need to update once when the app first launches to initially get all the models the user has access to in userModelRefs
-    [self fetchAndSetVCModels:^{
-        [self configUIBasedOnModel];
-    }];
     
     self.testButton.layer.cornerRadius = kCornerRadius;
     self.trainButton.layer.cornerRadius = kCornerRadius;
@@ -74,12 +67,19 @@ NSInteger const kCornerRadius = 10;
     self.earnedXP = 0;
     self.shouldAnimateXP = YES;
     
-    self.numClusters = 5;
-    NSInteger avgNumXPPerCluster = 30;
+    self.numClusters = 3;
+    NSInteger avgNumXPPerCluster = 100;
     
-    [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:kMaxHealth health:30];
-    [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
-    self.clusters = [self initializeXPClustersOnSubViewAtZero:self.numClusters avgNumPerCluster:avgNumXPPerCluster];
+    self.models = [NSMutableArray new];
+    //XXX todo refactor to rely on self.models always being set before transition and catch error and refetch if not, or log out. Then only refetch when we know new models are uploaded. Does need to update once when the app first launches to initially get all the models the user has access to in userModelRefs
+    [self fetchAndSetVCModels:^{
+        [self configUIBasedOnModel];
+        [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:AvatarMLModel.maxHealth.integerValue health:[self getCurrModel:self.modelIndex].health.integerValue];
+        [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
+        //XXX todo make clusters hidden until we want to animate them
+        self.clusters = [self initializeXPClustersOnSubViewAtZero:self.numClusters avgNumPerCluster:avgNumXPPerCluster];
+        [self hideAllXPImageViews];
+    }];
 
 }
 
@@ -91,7 +91,8 @@ NSInteger const kCornerRadius = 10;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    if(self.shouldAnimateXP) {
+    if(self.shouldAnimateXP && self.clusters) {
+        [self showAllXPImageViews];
         [self animateXPClusters:self.clusters];
     }
 }
@@ -148,11 +149,15 @@ NSInteger const kCornerRadius = 10;
 - (IBAction)didTapLeftNext:(id)sender {
     self.modelIndex -= 1;
     [self configUIBasedOnModel];
-
+    //XXX todo could refactor to avoid fully reinitializing and only redrawing the layer that has the gradient, but marginal difference
+    [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:AvatarMLModel.maxHealth.integerValue health:self.model.health.integerValue];
+    [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
 }
 - (IBAction)didTapRightNext:(id)sender {
     self.modelIndex += 1;
     [self configUIBasedOnModel];
+    [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:AvatarMLModel.maxHealth.integerValue health:self.model.health.integerValue];
+    [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
 }
 
 - (IBAction)didTapLogout:(id)sender {

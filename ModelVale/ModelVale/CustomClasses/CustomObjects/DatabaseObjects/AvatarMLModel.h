@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSURL* modelURL;
 // An array of ALL the ModelLabel references that an AvatarMLModel points to, but not the actual objects themselves
 @property (nonatomic, strong) NSMutableArray<FIRDocumentReference*>* labeledData;
+@property (nonatomic, assign, class, readonly) NSNumber* maxHealth;
 
 //- (instancetype)initWithDictionary:(NSDictionary *)dict;
 + (void)initWithDictionary:(NSDictionary *)dict storage:(FIRStorage*)storage completion:(void(^_Nullable)(AvatarMLModel*))completion;

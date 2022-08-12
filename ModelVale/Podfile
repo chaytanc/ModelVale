@@ -8,7 +8,6 @@ target 'ModelVale' do
 
   # Pods for ModelVale
   pod 'QBImagePickerController'
-  pod 'Parse'
   pod 'iOSDropDown'
   pod 'FirebaseAuth'
   pod 'FirebaseFirestore'
