@@ -12,7 +12,6 @@
 #import "UpdatableSqueezeNet.h"
 #import "CoreML/CoreML.h"
 #import "AvatarMLModel.h"
-//#import "StarterModels.h"
 #import "DataViewController.h"
 #import "RetrainViewController.h"
 #import "TestViewController.h"
@@ -149,13 +148,11 @@ NSInteger const kCornerRadius = 10;
 - (IBAction)didTapLeftNext:(id)sender {
     self.modelIndex -= 1;
     [self configUIBasedOnModel];
-    //XXX todo update which model is showing by fetching, then reloading view / reconfigUI etc
 
 }
 - (IBAction)didTapRightNext:(id)sender {
     self.modelIndex += 1;
     [self configUIBasedOnModel];
-    //XXX todo update which model is showing by fetching etc
 }
 
 - (IBAction)didTapLogout:(id)sender {

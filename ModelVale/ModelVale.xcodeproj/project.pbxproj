@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1E4CDD46D42A8E5C1187B010 /* Pods_ModelVale.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45BCAC78F11EFE2C43042A2E /* Pods_ModelVale.framework */; };
 		45DC8A116154DE4F9D523287 /* Pods_ModelVale_ModelValeUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9568465BF07D23495F84A91 /* Pods_ModelVale_ModelValeUITests.framework */; };
 		8638BAAAD53D8B35B5595295 /* Pods_ModelValeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2CE161195256D3EF42598EA /* Pods_ModelValeTests.framework */; };
 		9C0759342884D240005493D1 /* DropDownTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0759332884D240005493D1 /* DropDownTextField.swift */; };
@@ -181,7 +180,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E4CDD46D42A8E5C1187B010 /* Pods_ModelVale.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -818,8 +816,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 7U2A6R77J6;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -876,8 +876,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 7U2A6R77J6;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
