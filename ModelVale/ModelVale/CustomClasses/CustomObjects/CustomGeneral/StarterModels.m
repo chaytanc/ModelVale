@@ -16,9 +16,9 @@
     NSMutableArray* models = [NSMutableArray new];
     AvatarMLModel* hal = [[AvatarMLModel new] initWithModelName:@"UpdatableSqueezeNet" avatarName: @"Hal"];
     AvatarMLModel* avril = [[AvatarMLModel new] initWithModelName: @"Xception" avatarName: @"Avril"];
-    avril.avatarImage = [UIImage imageNamed:@"koala"];
+    avril.avatarImage = [UIImage imageNamed:@"Avril"];
     AvatarMLModel* orin = [[AvatarMLModel new] initWithModelName:@"UpdatableResnetO" avatarName:@"Orin"];
-    orin.avatarImage = [UIImage imageNamed:@"rhinio"];
+    orin.avatarImage = [UIImage imageNamed:@"tiger_glow"];
     [models addObject:orin];
     [models addObject:avril];
     [models addObject:hal];
