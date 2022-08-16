@@ -189,6 +189,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="avatarImageView" destination="ukO-l4-ah3" id="nPT-GS-Lni"/>
                         <outlet property="avatarStackView" destination="6kY-bT-WRU" id="aw5-WV-W8D"/>
                         <outlet property="dataButton" destination="ESa-hG-I2C" id="LSy-Fe-i1D"/>
                         <outlet property="detailsView" destination="vbN-tA-qOH" id="LaR-f9-fn8"/>
@@ -256,17 +257,17 @@
                                                 </collectionViewFlowLayout>
                                                 <cells>
                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="testDataCell" id="yDv-Rb-RyB" customClass="TestDataCell">
-                                                        <rect key="frame" x="0.0" y="50" width="125" height="125"/>
+                                                        <rect key="frame" x="0.0" y="50" width="115" height="115"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="wBu-jF-j4d">
-                                                            <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="115" height="115"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ue0-pU-l6F" userLabel="testCellImageView">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="115" height="115"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="width" secondItem="Ue0-pU-l6F" secondAttribute="height" id="C4o-dq-4Ai"/>
-                                                                        <constraint firstAttribute="width" constant="125" id="ju0-PF-1i6"/>
+                                                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="115" id="ju0-PF-1i6"/>
                                                                     </constraints>
                                                                 </imageView>
                                                             </subviews>
@@ -573,16 +574,16 @@
                                         </collectionViewFlowLayout>
                                         <cells>
                                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="userDataCell" id="0HI-SS-Btr" userLabel="userDataCell" customClass="UserDataCell">
-                                                <rect key="frame" x="0.0" y="50" width="125" height="125"/>
+                                                <rect key="frame" x="0.0" y="50" width="115" height="115"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="8LT-hr-FC0">
-                                                    <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="115" height="115"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sOE-sN-KbM" userLabel="userDataImageView">
-                                                            <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="115" height="115"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="width" constant="125" id="6eF-8p-5NS"/>
+                                                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="115" id="6eF-8p-5NS"/>
                                                                 <constraint firstAttribute="width" secondItem="sOE-sN-KbM" secondAttribute="height" multiplier="1:1" id="7Cz-pt-fgj"/>
                                                             </constraints>
                                                         </imageView>
@@ -706,16 +707,16 @@
                                                 </collectionViewFlowLayout>
                                                 <cells>
                                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="retrainDataCell" id="Yx9-CJ-B5Q" userLabel="retrainDataCell" customClass="RetrainDataCell">
-                                                        <rect key="frame" x="0.0" y="50" width="125" height="125"/>
+                                                        <rect key="frame" x="0.0" y="50" width="115" height="115"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Jb1-QQ-U4v">
-                                                            <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="115" height="115"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             <subviews>
                                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="U1g-ki-i7W" userLabel="retrainDataCellImageView">
-                                                                    <rect key="frame" x="0.0" y="0.0" width="125" height="125"/>
+                                                                    <rect key="frame" x="0.0" y="0.0" width="115" height="115"/>
                                                                     <constraints>
-                                                                        <constraint firstAttribute="width" constant="125" id="YcU-qg-cUp"/>
+                                                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="115" id="YcU-qg-cUp"/>
                                                                         <constraint firstAttribute="width" secondItem="U1g-ki-i7W" secondAttribute="height" id="eJ6-7r-W65"/>
                                                                     </constraints>
                                                                 </imageView>
@@ -825,7 +826,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="L8M-ue-Kaw"/>
+        <segue reference="Nq6-wS-EMn"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.left.circle.fill" catalog="system" width="128" height="121"/>

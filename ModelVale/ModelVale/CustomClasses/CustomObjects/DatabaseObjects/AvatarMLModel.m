@@ -8,117 +8,128 @@
 #import "AvatarMLModel.h"
 #import "CoreML/CoreML.h"
 #import "UIViewController+PresentError.h"
+#import "Xception.h"
 @import FirebaseFirestore;
 #import "ModelLabel.h"
+#import "ModelProtocol.h"
+#import "User.h"
 
+//XXX todo standardize this constant across VCs (modelVC)
 NSNumber* const MAXHEALTH = @500;
 @interface AvatarMLModel ()
-@property (nonatomic, strong) NSMutableArray<NSString*>* userModelDocRefs;
 @end
 
 @implementation AvatarMLModel
 
-- (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName uid: (NSString*)uid {
+- (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName {
     self = [super init];
     if(self){
         self.modelName = modelName;
         self.avatarName = avatarName;
         self.health = MAXHEALTH;
         self.labeledData = [NSMutableArray new];
+        self.avatarImage = [UIImage imageNamed:@"racoonavatar_glow"];
+        self.modelURL = [self modelURL];
     }
     return self;
 }
 
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    self = [super init];
-    if(self){
-        self.modelName = dict[@"modelName"];
-        self.avatarName = dict[@"avatarName"];
-        self.health = dict[@"health"];
-        self.labeledData = dict[@"labeledData"];
-    }
-    return self;
+// Assumes that model and avatarImage already exist in Firebase
++ (void)initWithDictionary:(NSDictionary *)dict storage: (FIRStorage*)storage completion:(void(^_Nullable)(AvatarMLModel*))completion{
+    AvatarMLModel* model = [AvatarMLModel new];
+    model.modelName = dict[@"modelName"];
+    model.avatarName = dict[@"avatarName"];
+    model.health = dict[@"health"];
+    model.labeledData = dict[@"labeledData"];
+    model.modelURL = [model modelURL];
+    [model fetchAvatarImage:storage completion:^{
+        if(completion) {
+            completion(model);
+        }
+    }];
 }
 
-//XXX todo only works with SqueezeNet rn
+- (NSString*) avatarImagePath {
+    NSString* fullPath = [NSString stringWithFormat:@"/avatars/%@", self.avatarName];
+    return fullPath;
+}
+
 - (MLModel*) getMLModelFromModelName {
-    NSURL* modelURL = [[NSBundle mainBundle] URLForResource:self.modelName withExtension:@"mlmodelc"];
-    MLModel* model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:modelURL error:nil].model;
-    return model;
-}
-    
-- (NSURL*) loadModelURL: (NSString*) resource extension: (NSString*)extension {
-    NSURL* modelURL = [[NSBundle mainBundle] URLForResource:resource withExtension:extension];
-    return modelURL;
-}
-
-- (UpdatableSqueezeNet*) loadModel: (NSString*) resource extension: (NSString*)extension {
-    NSURL* modelURL = [self loadModelURL:resource extension:extension];
-    UpdatableSqueezeNet* model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:modelURL error:nil];
+    id<ModelProtocol> modelClassInstance = [self loadModel];
+    MLModel* model = modelClassInstance.model;
     return model;
 }
 
-- (UpdatableSqueezeNet*) loadModel: (NSURL*)url {
-    UpdatableSqueezeNet* model = [[UpdatableSqueezeNet alloc] initWithContentsOfURL:url error:nil];
-    return model;
+- (NSURL*) modelURL {
+    NSURL* url = [[NSBundle mainBundle] URLForResource:self.modelName withExtension:@"mlmodelc"];
+    return url;
+}
+
+// As long as no functions specfic to either Squeezeable or other networks are needed, this should work
+- (id<ModelProtocol>) loadModel {
+    id<ModelProtocol> modelClassInstance = [[NSClassFromString(self.modelName) alloc] initWithContentsOfURL:self.modelURL error:nil];
+    return modelClassInstance;
 }
 
 //MARK: Firebase
 
-// Checks if the model with the avatarName and owner already exists, if not, uploads the new model and updates user.models as well
-- (void) uploadModelToUserWithViewController: (NSString*) uid db: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
+// Checks if the model with the avatarName and owner already exists, if not, uploads the new model, then creates local copies of the remote and returns in a completion. Updates user.models locally and remotely as well
+- (void) uploadModel: (User*)user db: (FIRFirestore*)db storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
 
     FIRDocumentReference *docRef = [[db collectionWithPath:@"Model"] documentWithPath:self.avatarName];
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
         if(error != nil) {
             [vc presentError:@"Failed to fetch models" message:error.localizedDescription error:error];
+            completion(error);
         }
-        // If a model already exists under that avatarName, update local properties, then update the database model
-        else if(snapshot.data != nil) {
-            [self initWithDictionary:snapshot.data];
-        }
-        [self uploadNewModel:uid db:db vc:vc completion:completion];
-    }];
-}
+        else {
+            // If a model already exists under that avatarName, update this model's local props and then update remote to match labeledData
+            if(snapshot.data != nil) {
+                NSLog(@"Found existing model");
+                [self updateFromExistingRemoteModel:user db:db vc:vc snapshot:snapshot completion:completion];
+            }
+            else {
+                NSLog(@"Did not find existing model in user models");
+                [self uploadNewModel:user db:db storage:storage vc:vc completion:completion];
+            }
 
-- (void) updateUserModelDocRefs: (NSString*)uid db: (FIRFirestore*)db userModelDocRefs: (NSMutableArray*)userModelDocRefs vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
-    
-    // Get the existing document, get its models, update local data to have remote + self.avatarName, finally update remote
-    FIRDocumentReference* docRef = [[db collectionWithPath:@"users"] documentWithPath:uid];
-    [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
-        NSMutableArray* remoteModels = snapshot.data[@"models"];
-        NSMutableArray* userModelDocRefs = (remoteModels) ? remoteModels : [NSMutableArray new];
-        if(![userModelDocRefs containsObject:self.avatarName]) {
-            [userModelDocRefs addObject:self.avatarName];
-            self.userModelDocRefs = userModelDocRefs;
-            [self addUserModelDocRefs:uid db:db userModelDocRefs:userModelDocRefs vc:vc completion:completion];
         }
     }];
 }
 
-- (void) addUserModelDocRefs: (NSString*)uid db: (FIRFirestore*)db userModelDocRefs: (NSMutableArray*)userModelDocRefs vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
-    // Reuploaded modified user.uid.models data
-    [[[db collectionWithPath:@"users"] documentWithPath:uid]
-        setData:@{ @"models": userModelDocRefs }
-            merge:YES
-            completion:^(NSError * _Nullable error) {
-                if(error != nil){
-                    [vc presentError:@"Failed to update users" message:error.localizedDescription error:error];
-                }
-                else {
-                    NSLog(@"Added model in users.models");
-                }
+- (void) updateFromExistingRemoteModel: (User*)user db: (FIRFirestore*)db vc: (UIViewController*)vc snapshot: (FIRDocumentSnapshot*) snapshot completion:(void(^)(NSError *error))completion {
+    // First update this local model to reflect the remote changes it might be missing, then upload the updated version fo this model
+    dispatch_group_t updateGroup = dispatch_group_create();
+    dispatch_group_enter(updateGroup);
+    [self updatePropsLocallyWithDict:snapshot.data];
+    __block NSError* error;
+    [self updateChangeableData:db vc:vc completion:^(NSError * _Nonnull updateError) {
+        error = updateError;
+        dispatch_group_leave(updateGroup);
+    }];
+    dispatch_group_enter(updateGroup);
+    // While model might already exist, since users can share models we still have to update user model refs
+    [user.userModelDocRefs addObject:self.avatarName];
+    [user updateUserModelDocRefs:db vc:vc completion:^(NSError *updateError) {
+        error = updateError;
+        dispatch_group_leave(updateGroup);
+    }];
+    dispatch_group_notify(updateGroup, dispatch_get_main_queue(), ^{
         completion(error);
-    }];
+    });
 }
 
-- (void) uploadNewModel: (NSString*)uid db: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
+- (void) uploadNewModel: (User*)user db: (FIRFirestore*)db storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
+    
+    dispatch_group_t uploadModelGroup = dispatch_group_create();
+    // Set the remote data, upload the avatar icon, and update the user's model references to include this model
     [[[db collectionWithPath:@"Model"] documentWithPath:self.avatarName]
      setData:@{
         @"avatarName": self.avatarName,
         @"modelName" : self.modelName,
         @"health" : self.health,
-         @"labeledData" : self.labeledData
+        @"labeledData" : self.labeledData,
+        @"avatarImagePath" : self.avatarImagePath
     }
          merge:YES
          completion:^(NSError * _Nullable error) {
@@ -127,27 +138,42 @@ NSNumber* const MAXHEALTH = @500;
                 }
                 else {
                     NSLog(@"Uploaded Model to Firestore");
-                    [self.userModelDocRefs addObject:self.avatarName];
-//                    [self addUserModelDocRefs:uid db:db userModelDocRefs:self.userModelDocRefs vc:vc];
-                    [self updateUserModelDocRefs:uid db:db userModelDocRefs:self.userModelDocRefs vc:vc completion:completion];
+                    [user.userModelDocRefs addObject:self.avatarName];
+                    dispatch_group_enter(uploadModelGroup);
+                    [user updateUserModelDocRefs:db vc:vc completion:^(NSError *updateError) {
+                        dispatch_group_leave(uploadModelGroup);
+                    }];
+                    dispatch_group_enter(uploadModelGroup);
+                    [self uploadImageToStorage:storage vc:vc completion:^{
+                        dispatch_group_leave(uploadModelGroup);
+                    }];
+                    dispatch_group_notify(uploadModelGroup, dispatch_get_main_queue(), ^{
+                        completion(error);
+                    });
                 }
     }];
 }
 
-- (void)updatePropsLocallyWithDict:(NSDictionary *)dict vc: (UIViewController*)vc completion:(void(^)(void))completion{
+- (void)updatePropsLocallyWithDict:(NSDictionary *)dict {
     self.modelName = dict[@"modelName"];
     self.avatarName = dict[@"avatarName"];
     self.health = dict[@"health"];
-    self.labeledData = dict[@"labeledData"];
+    for(id data in dict[@"labeledData"]) {
+        if(![self.labeledData containsObject:data]) {
+            [self.labeledData addObject:data];
+        }
+    }
+    self.avatarImagePath = dict[@"avatarImagePath"];
 }
 
-+ (void) fetchAndCreateAvatarMLModel: (FIRFirestore*)db documentPath: (NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion {
++ (void) fetchAndReturnExistingModel: (FIRFirestore*)db storage:(FIRStorage*)storage documentPath:(NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion {
     FIRDocumentReference *docRef = [[db collectionWithPath:@"Model"] documentWithPath:documentPath];
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
        if (snapshot.exists) {
            NSLog(@"Model exists with data: %@", snapshot.data);
-           AvatarMLModel* model = [[AvatarMLModel new] initWithDictionary: snapshot.data];
-           completion(model);
+           [AvatarMLModel initWithDictionary:snapshot.data storage:storage completion:^(AvatarMLModel * model) {
+               completion(model);
+           }];
        }
        else {
            NSLog(@"Model does not exist");
@@ -155,30 +181,57 @@ NSNumber* const MAXHEALTH = @500;
      }];
 }
 
-- (void) updateModelLabeledDataWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
+- (void) updateChangeableData: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
     
     FIRDocumentReference *modelRef = [[db collectionWithPath:@"Model"] documentWithPath:self.avatarName];
     [modelRef updateData:@{
-      @"labeledData": [FIRFieldValue fieldValueForArrayUnion:self.labeledData]
-    } completion:^(NSError * _Nullable error) {
-        completion(error);
+        //XXX not sure that we can update normal int fields in updateData like this
+        @"health" : self.health,
+        @"labeledData": [FIRFieldValue fieldValueForArrayUnion:self.labeledData]
+    } completion:completion];
+}
+
+// Mark: Avatar Image
+//XXX todo subclass so that both ModelData and AvatarMLModel could access these functions
+- (FIRStorageReference*) getStorageRef: (FIRStorage*)storage {
+    FIRStorageReference* storageRef = [storage reference];
+    storageRef = [storageRef child:self.avatarImagePath];
+    return storageRef;
+}
+
+- (void) fetchAvatarImage: (FIRStorage*)storage completion:(void(^_Nullable)(void))completion {
+    // Max size is roughly 75 MB per avatar
+    [[self getStorageRef:storage] dataWithMaxSize:5 * 4096 * 4096 completion:^(NSData *data, NSError *error){
+        if (error != nil) {
+            NSLog(@"%@", error.localizedDescription);
+            NSLog(@"Failed to set UIImage on Model.avatarImage property");
+        }
+        else {
+            UIImage *im = [UIImage imageWithData:data];
+            self.avatarImage = im;
+        }
+        if(completion){
+            completion();
+        }
     }];
 }
 
-// Update the label document found in Firestore with the given docID
-- (void) updateLabeledData: (FIRFirestore*)db docID: (NSString*)docID vc: (UIViewController*)vc {
-    [[[db collectionWithPath:@"Model"] documentWithPath:docID]
-        setData:@{
-        @"labeledData" : self.labeledData
+- (void) uploadImageToStorage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^_Nullable)(void))completion {
+    
+    FIRStorageReference* storageRef = [self getStorageRef:storage];
+    NSData *data = UIImagePNGRepresentation(self.avatarImage);
+    [storageRef putData:data
+                metadata:nil
+                completion:^(FIRStorageMetadata *metadata, NSError *error) {
+        if (error != nil) {
+          [vc presentError:@"Firebase Storage image upload failed" message:error.localizedDescription error:error];
         }
-         merge:YES
-         completion:^(NSError * _Nullable error) {
-                if(error != nil){
-                    [vc presentError:@"Failed to update Model labeledData" message:error.localizedDescription error:error];
-                }
-                else {
-                    NSLog(@"Uploaded Model labeledData to Firestore");
-                }
+        else {
+          NSLog(@"Completed Storage upload");
+        }
+        if(completion){
+            completion();
+        }
     }];
 }
 

@@ -50,7 +50,6 @@ NSInteger const kDataPerLabel = 20;
 
 }
 
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self initProgressBar];
@@ -72,7 +71,6 @@ NSInteger const kDataPerLabel = 20;
     self.contentView.layer.masksToBounds = YES;
 }
 
-
 - (IBAction)didTapData:(id)sender {
     [self performSegueWithIdentifier:@"testToData" sender:nil];
 }
@@ -80,18 +78,23 @@ NSInteger const kDataPerLabel = 20;
 // Make a prediction for every data loaded in the collection view and add correct ones up as we go
 - (IBAction)didTapTest:(id)sender {
     int numPredsSoFar = 0;
-
-    MLImageConstraint* constraint = self.mlmodel.modelDescription.inputDescriptionsByName[@"image"].imageConstraint;
+    self.totalCorrect = 0;
+    
+    //XXX todo not sure what kind of model would have multiple input descriptions, maybe multi-modal, but does not currently support that
+    NSString* inputKey = self.mlmodel.modelDescription.inputDescriptionsByName.allKeys[0];
+    NSString* outputKey = self.mlmodel.modelDescription.outputDescriptionsByName.allKeys[0]; // if array, could argmax the output
+    MLImageConstraint* constraint = self.mlmodel.modelDescription.inputDescriptionsByName[inputKey].imageConstraint;
     for(ModelLabel* label in self.modelLabels) {
         for(ModelData* data in label.localData) {
             struct CGImage* cgImage = data.image.CGImage;
             MLFeatureValue* imFeature = [MLFeatureValue featureValueWithCGImage:cgImage constraint:constraint options:nil error:nil];
             NSMutableDictionary* featureDict = [[NSMutableDictionary alloc] init];
-            featureDict[@"image"] = imFeature;
+            featureDict[inputKey] = imFeature;
             MLDictionaryFeatureProvider* featureProv = (MLDictionaryFeatureProvider*)[[MLDictionaryFeatureProvider new] initWithDictionary:featureDict error:nil];
             // predict and set statslabel w prediction, update total correct label
             id<MLFeatureProvider> pred = [self.mlmodel predictionFromFeatures:featureProv error:nil];
-            MLFeatureValue* output = [pred featureValueForName:@"classLabel"];
+//            MLFeatureValue* output = [pred featureValueForName:@"classLabel"];
+            MLFeatureValue* output = [pred featureValueForName:outputKey];
             //XXX todo scrolling textView that adds prediction for each as we go
 //            self.statsLabel.text = [NSString stringWithFormat:@"Prediction %i: %@", numPredsSoFar, output.stringValue];
             // add prediction to array of predictions for tableview datasource

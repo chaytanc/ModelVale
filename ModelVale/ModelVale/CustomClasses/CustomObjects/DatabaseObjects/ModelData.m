@@ -59,11 +59,11 @@
 }
 
 - (void) fetchAndSetImage: (FIRStorage*)storage completion:(void(^_Nullable)(void))completion {
+    // Max size is roughly 150 MB per image
     [[self getStorageRef:storage] dataWithMaxSize:10 * 4096 * 4096 completion:^(NSData *data, NSError *error){
         if (error != nil) {
             //XXX todo error handling without passing vc
-            NSLog(@
-                  "Failed to set UIImage on ModelData.image property");
+            NSLog(@"Failed to set UIImage on ModelData.image property");
         }
         else {
             UIImage *im = [UIImage imageWithData:data];
@@ -75,27 +75,7 @@
     }];
 }
 
-- (void) saveNewModelDataWithDatabase: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(void))completion {
-    // Add a new ModelData with a generated id.
-    __block FIRDocumentReference *ref =
-        [[db collectionWithPath:@"ModelData"] addDocumentWithData:@{
-          @"label": self.label,
-          @"imagePath": self.imagePath
-        }
-        completion:^(NSError * _Nullable error) {
-            if (error != nil) {
-                NSLog(@"Error adding ModelData: %@", error);
-            }
-            else {
-                NSLog(@"ModelData added with ID: %@", ref.documentID);
-                self.firebaseRef = ref;
-                [self uploadImageToStorage:storage vc:vc];
-                completion();
-            }
-        }];
-}
-
-- (void) saveModelDataInSubColl: (FIRDocumentReference*)labelRef db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(void))completion {
+- (void) saveModelDataInSubCollection: (FIRDocumentReference*)labelRef db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(void))completion {
     __block FIRDocumentReference *ref = [[labelRef collectionWithPath:@"ModelData"] addDocumentWithData:@{
       @"label": self.label,
       @"imagePath": self.imagePath

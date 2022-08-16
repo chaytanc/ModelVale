@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1E4CDD46D42A8E5C1187B010 /* Pods_ModelVale.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45BCAC78F11EFE2C43042A2E /* Pods_ModelVale.framework */; };
 		45DC8A116154DE4F9D523287 /* Pods_ModelVale_ModelValeUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9568465BF07D23495F84A91 /* Pods_ModelVale_ModelValeUITests.framework */; };
 		8638BAAAD53D8B35B5595295 /* Pods_ModelValeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2CE161195256D3EF42598EA /* Pods_ModelValeTests.framework */; };
 		9C0759342884D240005493D1 /* DropDownTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0759332884D240005493D1 /* DropDownTextField.swift */; };
@@ -17,6 +16,12 @@
 		9C15058B289DB85E0090319A /* RetrainDataCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C15058A289DB85E0090319A /* RetrainDataCell.m */; };
 		9C15058E289DB8BB0090319A /* RetrainDataSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C15058D289DB8BB0090319A /* RetrainDataSectionHeader.m */; };
 		9C150590289DCDA00090319A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C15058F289DCDA00090319A /* LaunchScreen.storyboard */; };
+		9C15059328A186170090319A /* LaunchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C15059228A186170090319A /* LaunchViewController.m */; };
+		9C15059828A2C5110090319A /* XceptionOriginal.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9C15059728A2C5110090319A /* XceptionOriginal.mlmodel */; };
+		9C1505AC28A31CEF0090319A /* UpdatableXception.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9C1505AB28A31CEF0090319A /* UpdatableXception.mlmodel */; };
+		9C1505AE28A32BBD0090319A /* Xception.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9C1505AD28A32BBC0090319A /* Xception.mlmodel */; };
+		9C1505B428A431990090319A /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9C1505B328A431990090319A /* Resnet50.mlmodel */; };
+		9C1505B828A436000090319A /* UpdatableResnetO.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9C1505B728A436000090319A /* UpdatableResnetO.mlmodel */; };
 		9C28EF8328877E4E00CE0F2D /* XPCluster.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C28EF8228877E4E00CE0F2D /* XPCluster.m */; };
 		9C28EF862887897F00CE0F2D /* XP.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C28EF852887897F00CE0F2D /* XP.m */; };
 		9C623CC5288743BB00264F50 /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9C623CC4288743BB00264F50 /* Keys.plist */; };
@@ -45,7 +50,6 @@
 		9CADD48A289213DA00C1C6F4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CADD489289213DA00C1C6F4 /* GoogleService-Info.plist */; };
 		9CADD49928922A8E00C1C6F4 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CADD49828922A8E00C1C6F4 /* User.m */; };
 		9CADD4A12893663300C1C6F4 /* FirebaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CADD4A02893663300C1C6F4 /* FirebaseViewController.m */; };
-		9CB423FF287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9CB423FE287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel */; };
 		9CB42403287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9CB42402287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel */; };
 		9CB79C0E2874F21800F67E1C /* UIViewController+PresentError.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C0C2874F21700F67E1C /* UIViewController+PresentError.m */; };
 		9CB79C1528775C7900F67E1C /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1428775C7900F67E1C /* TestViewController.m */; };
@@ -91,6 +95,14 @@
 		9C15058C289DB8BB0090319A /* RetrainDataSectionHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RetrainDataSectionHeader.h; sourceTree = "<group>"; };
 		9C15058D289DB8BB0090319A /* RetrainDataSectionHeader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RetrainDataSectionHeader.m; sourceTree = "<group>"; };
 		9C15058F289DCDA00090319A /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		9C15059128A186170090319A /* LaunchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LaunchViewController.h; sourceTree = "<group>"; };
+		9C15059228A186170090319A /* LaunchViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LaunchViewController.m; sourceTree = "<group>"; };
+		9C15059628A1C2DF0090319A /* ModelProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelProtocol.h; sourceTree = "<group>"; };
+		9C15059728A2C5110090319A /* XceptionOriginal.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = XceptionOriginal.mlmodel; sourceTree = "<group>"; };
+		9C1505AB28A31CEF0090319A /* UpdatableXception.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = UpdatableXception.mlmodel; path = ../../../mycoremltools/UpdatableXception.mlmodel; sourceTree = "<group>"; };
+		9C1505AD28A32BBC0090319A /* Xception.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Xception.mlmodel; sourceTree = "<group>"; };
+		9C1505B328A431990090319A /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
+		9C1505B728A436000090319A /* UpdatableResnetO.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = UpdatableResnetO.mlmodel; path = ../../../mycoremltools/UpdatableResnetO.mlmodel; sourceTree = "<group>"; };
 		9C28EF8128877E4E00CE0F2D /* XPCluster.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XPCluster.h; sourceTree = "<group>"; };
 		9C28EF8228877E4E00CE0F2D /* XPCluster.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = XPCluster.m; sourceTree = "<group>"; };
 		9C28EF842887897F00CE0F2D /* XP.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = XP.h; sourceTree = "<group>"; };
@@ -141,7 +153,6 @@
 		9CADD49828922A8E00C1C6F4 /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		9CADD49F2893663300C1C6F4 /* FirebaseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FirebaseViewController.h; sourceTree = "<group>"; };
 		9CADD4A02893663300C1C6F4 /* FirebaseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FirebaseViewController.m; sourceTree = "<group>"; };
-		9CB423FE287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = SqueezeNetInt8LUT.mlmodel; sourceTree = "<group>"; };
 		9CB42402287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; name = UpdatableSqueezeNet.mlmodel; path = ../../../mycoremltools/UpdatableSqueezeNet.mlmodel; sourceTree = "<group>"; };
 		9CB79C0C2874F21700F67E1C /* UIViewController+PresentError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+PresentError.m"; sourceTree = "<group>"; };
 		9CB79C0D2874F21800F67E1C /* UIViewController+PresentError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+PresentError.h"; sourceTree = "<group>"; };
@@ -169,7 +180,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E4CDD46D42A8E5C1187B010 /* Pods_ModelVale.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -248,6 +258,20 @@
 			path = XPObjects;
 			sourceTree = "<group>";
 		};
+		9C1505B928A58B620090319A /* CustomGeneral */ = {
+			isa = PBXGroup;
+			children = (
+				9C69F736287CD85B0001F608 /* TestTrainEnum.h */,
+				9C69F737287DF38E0001F608 /* TestTrainEnum.m */,
+				9C69F73D287E4DD50001F608 /* TrainBatchData.h */,
+				9C69F73E287E4DD50001F608 /* TrainBatchData.m */,
+				9CADD487288F661800C1C6F4 /* StarterModels.h */,
+				9CADD486288F661800C1C6F4 /* StarterModels.m */,
+				9C15059628A1C2DF0090319A /* ModelProtocol.h */,
+			);
+			path = CustomGeneral;
+			sourceTree = "<group>";
+		};
 		9C69F7212878A8210001F608 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -266,14 +290,9 @@
 		9C69F72F287CAF650001F608 /* CustomObjects */ = {
 			isa = PBXGroup;
 			children = (
+				9C1505B928A58B620090319A /* CustomGeneral */,
 				9C15057A289B57FD0090319A /* XPObjects */,
 				9C150577289B565A0090319A /* DatabaseObjects */,
-				9C69F736287CD85B0001F608 /* TestTrainEnum.h */,
-				9C69F737287DF38E0001F608 /* TestTrainEnum.m */,
-				9C69F73D287E4DD50001F608 /* TrainBatchData.h */,
-				9C69F73E287E4DD50001F608 /* TrainBatchData.m */,
-				9CADD487288F661800C1C6F4 /* StarterModels.h */,
-				9CADD486288F661800C1C6F4 /* StarterModels.m */,
 			);
 			path = CustomObjects;
 			sourceTree = "<group>";
@@ -362,7 +381,11 @@
 			isa = PBXGroup;
 			children = (
 				9CB42402287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel */,
-				9CB423FE287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel */,
+				9C15059728A2C5110090319A /* XceptionOriginal.mlmodel */,
+				9C1505AD28A32BBC0090319A /* Xception.mlmodel */,
+				9C1505AB28A31CEF0090319A /* UpdatableXception.mlmodel */,
+				9C1505B728A436000090319A /* UpdatableResnetO.mlmodel */,
+				9C1505B328A431990090319A /* Resnet50.mlmodel */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -383,6 +406,8 @@
 				9C74E54E28736DED003FFFF7 /* RegisterViewController.m */,
 				9C74E54A28736DBD003FFFF7 /* LoginViewController.h */,
 				9C74E54B28736DBD003FFFF7 /* LoginViewController.m */,
+				9C15059128A186170090319A /* LaunchViewController.h */,
+				9C15059228A186170090319A /* LaunchViewController.m */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -676,12 +701,14 @@
 				9C69F735287CCFC50001F608 /* ModelLabel.m in Sources */,
 				9C74E54428736D12003FFFF7 /* ModelViewController.m in Sources */,
 				9C69F72E287CAB970001F608 /* UserDataSectionHeader.m in Sources */,
+				9C15059328A186170090319A /* LaunchViewController.m in Sources */,
 				9C150585289D88DB0090319A /* TestDataSectionHeader.m in Sources */,
 				9C69F732287CAFDE0001F608 /* ModelData.m in Sources */,
 				9C74E54728736D7B003FFFF7 /* StatsViewController.m in Sources */,
 				9C69F72B287CA94B0001F608 /* UserDataCell.m in Sources */,
 				9C150576289B52F90090319A /* DisplayDataFirebaseViewController.m in Sources */,
 				9C74E54C28736DBD003FFFF7 /* LoginViewController.m in Sources */,
+				9C1505B428A431990090319A /* Resnet50.mlmodel in Sources */,
 				9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */,
 				9CADD49928922A8E00C1C6F4 /* User.m in Sources */,
 				9CB79C1E28775CB400F67E1C /* AddDataViewController.m in Sources */,
@@ -692,19 +719,22 @@
 				9C0759342884D240005493D1 /* DropDownTextField.swift in Sources */,
 				9C69F7262878A8680001F608 /* AddDataCell.m in Sources */,
 				9C28EF862887897F00CE0F2D /* XP.m in Sources */,
+				9C1505AC28A31CEF0090319A /* UpdatableXception.mlmodel in Sources */,
 				9C74E54F28736DED003FFFF7 /* RegisterViewController.m in Sources */,
 				9CEEE36E2880D06900548963 /* AvatarMLModel.m in Sources */,
 				9C28EF8328877E4E00CE0F2D /* XPCluster.m in Sources */,
+				9C1505B828A436000090319A /* UpdatableResnetO.mlmodel in Sources */,
 				9C74E51F2872579A003FFFF7 /* main.m in Sources */,
+				9C15059828A2C5110090319A /* XceptionOriginal.mlmodel in Sources */,
 				9CADD4A12893663300C1C6F4 /* FirebaseViewController.m in Sources */,
 				9C150588289D95450090319A /* TestDataCell.m in Sources */,
 				9C15058B289DB85E0090319A /* RetrainDataCell.m in Sources */,
 				9C15058E289DB8BB0090319A /* RetrainDataSectionHeader.m in Sources */,
+				9C1505AE28A32BBD0090319A /* Xception.mlmodel in Sources */,
 				9CADD488288F661800C1C6F4 /* StarterModels.m in Sources */,
 				9C69F738287DF38E0001F608 /* TestTrainEnum.m in Sources */,
 				9CB79C1828775C8A00F67E1C /* RetrainViewController.m in Sources */,
 				9CB42403287F9C6B001525FA /* UpdatableSqueezeNet.mlmodel in Sources */,
-				9CB423FF287F9A00001525FA /* SqueezeNetInt8LUT.mlmodel in Sources */,
 				9C69F73F287E4DD50001F608 /* TrainBatchData.m in Sources */,
 				9C74E51128725799003FFFF7 /* SceneDelegate.m in Sources */,
 			);
@@ -786,8 +816,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 7U2A6R77J6;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -844,8 +876,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 7U2A6R77J6;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;

@@ -25,7 +25,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *statsLabel;
 @property (strong, nonatomic) MLModel* mlmodel;
 @property (weak, nonatomic) IBOutlet UIButton *retrainButton;
-@property (strong, nonatomic) NSURL* modelURL;
+//@property (strong, nonatomic) NSURL* modelURL;
 @property (nonatomic, assign) int totalData;
 @end
 
@@ -37,14 +37,14 @@
     self.retrainCollView.delegate = self;
     self.retrainCollView.dataSource = self;
     self.mlmodel = [self.model getMLModelFromModelName];
-    self.modelURL = [self.model loadModelURL:self.model.modelName extension:@"mlmodelc"];
+//    self.modelURL = [self.model loadModelURL:self.model.modelName extension:@"mlmodelc"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self initProgressBar];
     [self.loadingBar setHidden:NO];
-    [self fetchAllDataOfModelWithType:Test dataPerLabel:10000 progressCompletion:^(float progress) {
+    [self fetchAllDataOfModelWithType:Train dataPerLabel:10000 progressCompletion:^(float progress) {
         self.loadingBar.progress = progress;
     } completion:^{
         self.totalData = 0;
@@ -83,8 +83,9 @@
 - (IBAction)didTapRetrain:(id)sender {
     
     NSLog(@"Retrain Tapped");
+    NSString* inputKey = self.mlmodel.modelDescription.inputDescriptionsByName.allKeys[0];
     
-    MLImageConstraint* constraint = self.mlmodel.modelDescription.inputDescriptionsByName[@"image"].imageConstraint;
+    MLImageConstraint* constraint = self.mlmodel.modelDescription.inputDescriptionsByName[inputKey].imageConstraint;
     TrainBatchData* trainBatchData = [[TrainBatchData new] initTrainBatch:constraint trainBatchLabels:self.modelLabels];
     
     void(^progHandler)(MLUpdateContext* _Nonnull context) = [self getRetrainingProgressHandler];
@@ -93,7 +94,10 @@
     MLArrayBatchProvider* batchProvider = trainBatchData.trainBatch;
     MLUpdateProgressHandlers* handlers = [[MLUpdateProgressHandlers alloc] initForEvents:MLUpdateProgressEventTrainingBegin | MLUpdateProgressEventMiniBatchEnd | MLUpdateProgressEventEpochEnd progressHandler:progHandler completionHandler:retrainFinishCompletion];
     
-    MLUpdateTask* task = [MLUpdateTask updateTaskForModelAtURL:self.modelURL trainingData:batchProvider progressHandlers:handlers error:nil];
+    MLUpdateTask* task = [MLUpdateTask updateTaskForModelAtURL:self.model.modelURL trainingData:batchProvider progressHandlers:handlers error:nil];
+    if(task == nil) {
+        [self presentError:@"Cannot retrain model" message:@"There is an error with the updatability of the model." error:nil];
+    }
     [task resume];
 }
 
@@ -107,9 +111,9 @@
         if(context.task.state == MLTaskStateFailed) {
             [NSException raise:@"Model retrain failed" format:@"Error: %@", context.task.error];
         }
-        // Write the retrained model to disk
-        [context.model writeToURL:self.modelURL error:nil];
-        self.mlmodel = [self.model loadModel:self.modelURL].model;
+        // Write the retrained model to disk and set the copy in memory to have that data
+        [context.model writeToURL:self.model.modelURL error:nil];
+        self.mlmodel = [self.model loadModel].model;
     };
     return finalCompletion;
 }
