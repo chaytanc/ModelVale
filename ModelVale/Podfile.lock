@@ -596,7 +596,6 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - Bolts/Tasks (1.9.1)
   - BoringSSL-GRPC (0.0.24):
     - BoringSSL-GRPC/Implementation (= 0.0.24)
     - BoringSSL-GRPC/Interface (= 0.0.24)
@@ -730,10 +729,6 @@ PODS:
     - nanopb/encode (= 2.30909.0)
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
-  - Parse (1.19.3):
-    - Parse/Core (= 1.19.3)
-  - Parse/Core (1.19.3):
-    - Bolts/Tasks (= 1.9.1)
   - PromisesObjC (2.1.1)
   - QBImagePickerController (3.4.0)
 
@@ -742,13 +737,11 @@ DEPENDENCIES:
   - FirebaseFirestore
   - FirebaseStorage
   - iOSDropDown
-  - Parse
   - QBImagePickerController
 
 SPEC REPOS:
   trunk:
     - abseil
-    - Bolts
     - BoringSSL-GRPC
     - FirebaseAppCheckInterop
     - FirebaseAuth
@@ -769,13 +762,11 @@ SPEC REPOS:
     - leveldb-library
     - Libuv-gRPC
     - nanopb
-    - Parse
     - PromisesObjC
     - QBImagePickerController
 
 SPEC CHECKSUMS:
   abseil: ebe5b5529fb05d93a8bdb7951607be08b7fa71bc
-  Bolts: 8c1e8aab2f603387b8b9924f57d1d64f43d3ffdc
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   FirebaseAppCheckInterop: f6b9670fb1360cf12006ca426e9c3b9a35317d17
   FirebaseAuth: 9ebc3577fe0acf9092df21ac314024b70aebf21e
@@ -796,10 +787,9 @@ SPEC CHECKSUMS:
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
   Libuv-gRPC: 55e51798e14ef436ad9bc45d12d43b77b49df378
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
-  Parse: 0abb63a0ff6fa34a3f64b81d595a294e2ece143a
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
 
-PODFILE CHECKSUM: b517a55b00d3612024073b3f9c4d360534698078
+PODFILE CHECKSUM: 73064e2743173ad8849d8a8f19f91c5e049b48eb
 
 COCOAPODS: 1.11.3

@@ -6,7 +6,6 @@
 //
 
 #import "AppDelegate.h"
-#import "Parse/Parse.h"
 @import UIKit;
 @import FirebaseCore;
 @import FirebaseAuth;

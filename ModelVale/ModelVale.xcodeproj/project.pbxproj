@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		38EB9A5D6739DE320251EA7F /* Pods_ModelVale.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45BCAC78F11EFE2C43042A2E /* Pods_ModelVale.framework */; };
 		45DC8A116154DE4F9D523287 /* Pods_ModelVale_ModelValeUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9568465BF07D23495F84A91 /* Pods_ModelVale_ModelValeUITests.framework */; };
 		8638BAAAD53D8B35B5595295 /* Pods_ModelValeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2CE161195256D3EF42598EA /* Pods_ModelValeTests.framework */; };
 		9C0759342884D240005493D1 /* DropDownTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0759332884D240005493D1 /* DropDownTextField.swift */; };
@@ -180,6 +181,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38EB9A5D6739DE320251EA7F /* Pods_ModelVale.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

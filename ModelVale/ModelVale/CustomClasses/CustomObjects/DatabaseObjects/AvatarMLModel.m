@@ -14,19 +14,23 @@
 #import "ModelProtocol.h"
 #import "User.h"
 
-//XXX todo standardize this constant across VCs (modelVC)
-NSNumber* const MAXHEALTH = @500;
+NSNumber* const kMaxHealth = @500;
 @interface AvatarMLModel ()
 @end
 
 @implementation AvatarMLModel
+
+static NSNumber* maxHealth = kMaxHealth;
++ (NSNumber*)maxHealth {
+    return maxHealth;
+}
 
 - (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName {
     self = [super init];
     if(self){
         self.modelName = modelName;
         self.avatarName = avatarName;
-        self.health = MAXHEALTH;
+        self.health = AvatarMLModel.maxHealth;
         self.labeledData = [NSMutableArray new];
         self.avatarImage = [UIImage imageNamed:@"racoonavatar_glow"];
         self.modelURL = [self modelURL];
