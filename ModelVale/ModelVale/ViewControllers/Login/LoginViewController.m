@@ -18,8 +18,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
 @property (weak, nonatomic) IBOutlet UIButton *createButton;
-
-
 @end
 
 @implementation LoginViewController
@@ -61,11 +59,8 @@
             NSLog(@"User logged in successfully");
             
             SceneDelegate *sceneDelegate = (SceneDelegate * ) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
-            
             UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
             UINavigationController *modelViewController = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
-
-                
             [sceneDelegate.window setRootViewController:modelViewController];
         }
     }];
