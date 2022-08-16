@@ -76,7 +76,6 @@ NSInteger const kCornerRadius = 10;
         [self configUIBasedOnModel];
         [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:AvatarMLModel.maxHealth.integerValue health:[self getCurrModel:self.modelIndex].health.integerValue];
         [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
-        //XXX todo make clusters hidden until we want to animate them
         self.clusters = [self initializeXPClustersOnSubViewAtZero:self.numClusters avgNumPerCluster:avgNumXPPerCluster];
         [self hideAllXPImageViews];
     }];
