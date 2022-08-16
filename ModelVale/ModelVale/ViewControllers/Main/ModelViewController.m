@@ -71,6 +71,9 @@ NSInteger const kCornerRadius = 10;
     NSInteger avgNumXPPerCluster = 100;
     
     self.models = [NSMutableArray new];
+    [self.dataButton setEnabled:NO];
+    [self.trainButton setEnabled:NO];
+    [self.testButton setEnabled:NO];
     //XXX todo refactor to rely on self.models always being set before transition and catch error and refetch if not, or log out. Then only refetch when we know new models are uploaded. Does need to update once when the app first launches to initially get all the models the user has access to in userModelRefs
     [self fetchAndSetVCModels:^{
         [self configUIBasedOnModel];
@@ -99,6 +102,7 @@ NSInteger const kCornerRadius = 10;
 // Gets models that the user has access to and adds them to the local array of AvatarMLModels, self.models
 - (void) fetchAndSetVCModels: (void(^_Nullable)(void))completion {
     FIRDocumentReference* docRef = [[self.db collectionWithPath:@"users"] documentWithPath:self.uid];
+    __weak ModelViewController *weakSelf = self;
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
         if(error != nil) {
             [self presentError:@"Failed to fetch user models" message:error.localizedDescription error:error];
@@ -107,6 +111,9 @@ NSInteger const kCornerRadius = 10;
             NSMutableArray* userModelDocRefs = snapshot.data[@"models"];
             [self setLocalModels:userModelDocRefs completion:^{
                 completion();
+                [weakSelf.dataButton setEnabled:YES];
+                [weakSelf.trainButton setEnabled:YES];
+                [weakSelf.testButton setEnabled:YES];
             }];
         }
     }];

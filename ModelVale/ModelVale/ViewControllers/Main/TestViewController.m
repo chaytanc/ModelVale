@@ -17,19 +17,21 @@
 #import "TestDataSectionHeader.h"
 #import "TestDataCell.h"
 #import "ModelViewController.h"
+#import "ResultsCell.h"
 
 NSInteger const kDataPerLabel = 20;
 
-@interface TestViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
+@interface TestViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource>
 @property (weak, nonatomic) IBOutlet UILabel *testLabel;
 @property (weak, nonatomic) IBOutlet UICollectionView *testCollView;
 @property (weak, nonatomic) IBOutlet UILabel *totalLabel;
 @property (weak, nonatomic) IBOutlet UIButton *testButton;
-@property (weak, nonatomic) IBOutlet UILabel *statsLabel;
 @property (strong, nonatomic) MLModel* mlmodel;
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (nonatomic, assign) int totalCorrect;
 @property (nonatomic, assign) int totalPreds;
+@property (weak, nonatomic) IBOutlet UITableView *resultsTableView;
+@property (strong, nonatomic) NSMutableArray<NSString*>* resultsArray;
 @end
 
 @implementation TestViewController
@@ -38,15 +40,19 @@ NSInteger const kDataPerLabel = 20;
     [super viewDidLoad];
 
     [self roundCorners];
+    self.resultsArray = [NSMutableArray new];
     self.totalCorrect = 0;
     self.totalPreds = 0;
     self.testCollView.delegate = self;
     self.testCollView.dataSource = self;
+    self.resultsTableView.delegate = self;
+    self.resultsTableView.dataSource = self;
     self.mlmodel = [self.model getMLModelFromModelName];
-    self.testLabel.text = @"Testing Data";
+    self.testLabel.text = @"Testing Data"; // Is hidden
     self.navigationItem.hidesBackButton = YES;
     UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
     self.navigationItem.leftBarButtonItem = newBackButton;
+    [self.resultsTableView setHidden:YES];
 
 }
 
@@ -77,6 +83,7 @@ NSInteger const kDataPerLabel = 20;
 
 // Make a prediction for every data loaded in the collection view and add correct ones up as we go
 - (IBAction)didTapTest:(id)sender {
+    [self.resultsTableView setHidden:NO];
     int numPredsSoFar = 0;
     self.totalCorrect = 0;
     
@@ -94,20 +101,17 @@ NSInteger const kDataPerLabel = 20;
             // predict and set statslabel w prediction, update total correct label
             id<MLFeatureProvider> pred = [self.mlmodel predictionFromFeatures:featureProv error:nil];
             MLFeatureValue* output = [pred featureValueForName:outputKey];
-            //XXX todo scrolling textView that adds prediction for each as we go
-//            self.statsLabel.text = [NSString stringWithFormat:@"Prediction %i: %@", numPredsSoFar, output.stringValue];
-            // add prediction to array of predictions for tableview datasource
-            // reload tableview
-            self.statsLabel.text = [NSString stringWithFormat:@"Latest Prediction: %@", output.stringValue];
+            NSString* latestPred = [NSString stringWithFormat:@"Prediction: %@\nLabel: %@", output.stringValue, data.label];
+            [self.resultsArray addObject:latestPred];
+            [self.resultsTableView reloadData];
 
-            if([output.stringValue isEqualToString:data.label]) {
+            if([data.label containsString:output.stringValue]) {
                 self.totalCorrect += 1;
                 self.totalLabel.text = [NSString stringWithFormat:@"Correct Predictions Out of Total: %i / %i ", self.totalCorrect, self.totalPreds];
             }
             numPredsSoFar += 1;
         }
     }
-
 }
 
 //XXX todo Make proper amount and XP of animations and send to mainvc
@@ -128,6 +132,7 @@ NSInteger const kDataPerLabel = 20;
 }
 
 // MARK: Collection view
+
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     TestDataCell* cell = [self.testCollView dequeueReusableCellWithReuseIdentifier:@"testDataCell" forIndexPath:indexPath];
     ModelLabel* sectionLabel = self.modelLabels[indexPath.section];
@@ -162,6 +167,19 @@ NSInteger const kDataPerLabel = 20;
         [self presentError:@"Cannot load collection" message:@"Header object type incorrect" error:nil];
         return nil;
     }
+}
+
+// MARK: Tableview
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    ResultsCell* cell = [self.resultsTableView dequeueReusableCellWithIdentifier:@"resultsCell"];
+    cell.statsLabel.text = self.resultsArray[indexPath.row];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    return cell;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.resultsArray.count;
 }
 
 @end

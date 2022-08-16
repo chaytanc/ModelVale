@@ -15,18 +15,19 @@
 #import "AddDataViewController.h"
 #import "RetrainDataCell.h"
 #import "RetrainDataSectionHeader.h"
+#import "RetrainResultsCell.h"
 
-@interface RetrainViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
+@interface RetrainViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, strong) TrainBatchData* trainBatch;
 @property (weak, nonatomic) IBOutlet UICollectionView *retrainCollView;
 @property (weak, nonatomic) IBOutlet UILabel *retrainLabel;
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (weak, nonatomic) IBOutlet UILabel *totalLabel;
-@property (weak, nonatomic) IBOutlet UILabel *statsLabel;
-@property (strong, nonatomic) MLModel* mlmodel;
 @property (weak, nonatomic) IBOutlet UIButton *retrainButton;
-//@property (strong, nonatomic) NSURL* modelURL;
+@property (weak, nonatomic) IBOutlet UITableView *resultsTableView;
+@property (strong, nonatomic) MLModel* mlmodel;
 @property (nonatomic, assign) int totalData;
+@property (nonatomic, strong) NSMutableArray<NSString*>* resultsArray;
 @end
 
 @implementation RetrainViewController
@@ -34,10 +35,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self roundCorners];
+    [self.resultsTableView setHidden:YES];
+    self.resultsArray = [NSMutableArray new];
+    self.resultsTableView.delegate = self;
+    self.resultsTableView.dataSource = self;
     self.retrainCollView.delegate = self;
     self.retrainCollView.dataSource = self;
     self.mlmodel = [self.model getMLModelFromModelName];
-//    self.modelURL = [self.model loadModelURL:self.model.modelName extension:@"mlmodelc"];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -81,8 +85,7 @@
 
 //MARK: CoreML
 - (IBAction)didTapRetrain:(id)sender {
-    
-    NSLog(@"Retrain Tapped");
+    [self.resultsTableView setHidden:NO];
     NSString* inputKey = self.mlmodel.modelDescription.inputDescriptionsByName.allKeys[0];
     
     MLImageConstraint* constraint = self.mlmodel.modelDescription.inputDescriptionsByName[inputKey].imageConstraint;
@@ -128,7 +131,9 @@
             NSLog(@"metrics: %@", context.metrics);
             __weak typeof(self) weakSelf = self;
             dispatch_async(dispatch_get_main_queue(), ^{
-                weakSelf.statsLabel.text = [NSString stringWithFormat:@"Loss: %@", context.metrics[MLMetricKey.lossValue]];
+                NSString* latestPred = [NSString stringWithFormat:@"Epoch %@\n\t%@", context.metrics[MLMetricKey.epochIndex], context.metrics[MLMetricKey.lossValue]];
+                [weakSelf.resultsArray addObject:latestPred];
+                [weakSelf.resultsTableView reloadData];
             });
         }
     };
@@ -170,6 +175,26 @@
         [self presentError:@"Cannot load collection" message:@"Header object type incorrect" error:nil];
         return nil;
     }
+}
+
+// MARK: Tableview
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    RetrainResultsCell* cell = [self.resultsTableView dequeueReusableCellWithIdentifier:@"retrainResultsCell"];
+    cell.lossLabel.text = self.resultsArray[indexPath.row];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    return cell;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.resultsArray.count;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    if(section == 0) {
+        return @"Loss";
+    }
+    return @"";
 }
 
 @end
