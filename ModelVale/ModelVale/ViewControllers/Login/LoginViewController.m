@@ -13,7 +13,7 @@
 @import FirebaseFirestore;
 @import FirebaseAuth;
 
-@interface LoginViewController ()
+@interface LoginViewController () <UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
 @property (weak, nonatomic) IBOutlet UIButton *loginButton;
@@ -30,6 +30,14 @@
     self.createButton.layer.cornerRadius = 10;
     self.loginButton.clipsToBounds = YES;
     self.createButton.clipsToBounds = YES;
+    self.emailField.delegate = self;
+    self.passwordField.delegate = self;
+}
+
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
 }
 
 - (IBAction)didTapCreate:(id)sender {

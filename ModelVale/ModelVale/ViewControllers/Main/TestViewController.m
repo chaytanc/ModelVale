@@ -93,7 +93,6 @@ NSInteger const kDataPerLabel = 20;
             MLDictionaryFeatureProvider* featureProv = (MLDictionaryFeatureProvider*)[[MLDictionaryFeatureProvider new] initWithDictionary:featureDict error:nil];
             // predict and set statslabel w prediction, update total correct label
             id<MLFeatureProvider> pred = [self.mlmodel predictionFromFeatures:featureProv error:nil];
-//            MLFeatureValue* output = [pred featureValueForName:@"classLabel"];
             MLFeatureValue* output = [pred featureValueForName:outputKey];
             //XXX todo scrolling textView that adds prediction for each as we go
 //            self.statsLabel.text = [NSString stringWithFormat:@"Prediction %i: %@", numPredsSoFar, output.stringValue];
@@ -111,7 +110,7 @@ NSInteger const kDataPerLabel = 20;
 
 }
 
-//XXX todo Make proper amount and XP of animations and 
+//XXX todo Make proper amount and XP of animations and send to mainvc
 - (void) back:(UIBarButtonItem *)sender {
     if ([self.navigationController.parentViewController isKindOfClass:[ModelViewController class]]) {
         ModelViewController* targetController = (ModelViewController*) self.navigationController.presentingViewController;
