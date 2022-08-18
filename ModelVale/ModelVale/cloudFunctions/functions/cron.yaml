@@ -1,0 +1,4 @@
+- description: "every two hours"
+  url: /mail/weekly
+  schedule: every 2 hours
+  timezone: America/Ensenada

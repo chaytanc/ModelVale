@@ -21,6 +21,7 @@
 
 - (void)animationDidStop:(CAAnimation *)theAnimation finished:(BOOL)flag {
     //XXX todo should hide singular xp at a time and pass into hideXP function which one to hide
+    [self setHidden:YES];
 }
 
 - (void) addXPFadeOutAnimation: (XP*)xp {

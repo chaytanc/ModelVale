@@ -31,7 +31,7 @@ extern CGFloat const kHeightMarginMultiple;
 @property (nonatomic,assign) CGFloat animationDuration;
 
 - (instancetype) initWithAnimationsOfDuration: (NSInteger) animationDuration maxHealth: (NSInteger)maxHealth health: (NSInteger)health;
-- (void) animateFillingHealthBar: (UIBezierPath*)filledBarPath layer: (CALayer*)layer;
+- (void) animateFillingHealthBar: (CGFloat)startingWidthPercentage filledBarPath: (UIBezierPath*)filledBarPath layer: (CALayer*)layer;
 
 @end
 

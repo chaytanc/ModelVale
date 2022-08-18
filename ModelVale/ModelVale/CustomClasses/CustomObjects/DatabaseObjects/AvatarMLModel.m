@@ -158,6 +158,13 @@ static NSNumber* maxHealth = kMaxHealth;
     }];
 }
 
+- (void) updateModelHealth: (User*)user db: (FIRFirestore*)db completion:(void(^)(NSError *error))completion {
+    [[[db collectionWithPath:@"Model"] documentWithPath:self.avatarName]
+        setData:@{@"health" : self.health,}
+        merge:YES
+        completion:completion];
+}
+
 - (void)updatePropsLocallyWithDict:(NSDictionary *)dict {
     self.modelName = dict[@"modelName"];
     self.avatarName = dict[@"avatarName"];

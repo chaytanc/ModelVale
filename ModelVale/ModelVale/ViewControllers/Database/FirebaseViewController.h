@@ -11,17 +11,19 @@
 #import "UIViewController+PresentError.h"
 @class ModelLabel;
 @class AvatarMLModel;
+@class User;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface FirebaseViewController : UIViewController
+@property (nonatomic, strong) User* user;
 @property (nonatomic, readwrite) FIRFirestore *db;
-@property (nonatomic, strong) NSString* uid;
+//@property (nonatomic, strong) NSString* uid;
 @property (nonatomic, strong) FIRStorage* storage;
 
 - (void)performLogout;
--(void)transitionToLoginVC;
--(void)transitionToModelVC: ( NSMutableArray<AvatarMLModel*>* _Nullable )models uid: (NSString* _Nullable)uid;
++ (void)transitionToLoginVC;
++ (void)transitionToModelVC: ( NSMutableArray<AvatarMLModel*>* _Nullable )models uid: (NSString* _Nullable)uid;
 - (NSString*) getImageStoragePath: (ModelLabel*)label;
 
 @end

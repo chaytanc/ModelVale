@@ -105,9 +105,9 @@ CGFloat const kHeightMarginMultiple = 0.4f;
     return path;
 }
 
-- (void) animateFillingHealthBar: (UIBezierPath*)filledBarPath layer: (CALayer*)layer {
+- (void) animateFillingHealthBar: (CGFloat) startingWidthPercentage filledBarPath: (UIBezierPath*)filledBarPath layer: (CALayer*)layer {
     
-    UIBezierPath* startPath = [self getBarPath:0];
+    UIBezierPath* startPath = [self getBarPath:startingWidthPercentage];
     CABasicAnimation * pathAnimation = [CABasicAnimation animationWithKeyPath:@"path"];
     pathAnimation.fromValue = (__bridge id)[startPath CGPath];
     pathAnimation.toValue = (__bridge id)[filledBarPath CGPath];

@@ -32,6 +32,9 @@ NSInteger const kDataPerLabel = 20;
 @property (nonatomic, assign) int totalPreds;
 @property (weak, nonatomic) IBOutlet UITableView *resultsTableView;
 @property (strong, nonatomic) NSMutableArray<NSString*>* resultsArray;
+@property (nonatomic, assign) int XPClustersEarned;
+@property (nonatomic, assign) float XPEarned;
+
 @end
 
 @implementation TestViewController
@@ -43,6 +46,8 @@ NSInteger const kDataPerLabel = 20;
     self.resultsArray = [NSMutableArray new];
     self.totalCorrect = 0;
     self.totalPreds = 0;
+    self.XPClustersEarned = 0;
+    self.XPEarned = 0;
     self.testCollView.delegate = self;
     self.testCollView.dataSource = self;
     self.resultsTableView.delegate = self;
@@ -87,7 +92,7 @@ NSInteger const kDataPerLabel = 20;
     int numPredsSoFar = 0;
     self.totalCorrect = 0;
     
-    //XXX todo not sure what kind of model would have multiple input descriptions, maybe multi-modal, but does not currently support that
+    //Note: not sure what kind of model would have multiple input descriptions, maybe multi-modal, but does not currently support that
     NSString* inputKey = self.mlmodel.modelDescription.inputDescriptionsByName.allKeys[0];
     NSString* outputKey = self.mlmodel.modelDescription.outputDescriptionsByName.allKeys[0]; // if array, could argmax the output
     MLImageConstraint* constraint = self.mlmodel.modelDescription.inputDescriptionsByName[inputKey].imageConstraint;
@@ -112,14 +117,31 @@ NSInteger const kDataPerLabel = 20;
             numPredsSoFar += 1;
         }
     }
+    [self updateXPClustersEarned];
+    [self.delegate earnXP:self.XPClustersEarned];
 }
 
-//XXX todo Make proper amount and XP of animations and send to mainvc
+// Updates self.XPEarned to reflect latest testing results
+- (void) calcXPEarned {
+    float currentXPEarned;
+    int incorrect = self.totalPreds - self.totalCorrect;
+    currentXPEarned = self.totalCorrect * 0.25 - incorrect;
+    // Minimum XP earned is 0, or 1 if correct preds outnumber incorrect
+    if(currentXPEarned < 1) {
+        currentXPEarned = (self.totalCorrect > incorrect) ? 1 : 0;
+    }
+    self.XPEarned += currentXPEarned;
+}
+
+- (void) updateXPClustersEarned {
+    [self calcXPEarned];
+    self.XPClustersEarned = round(self.XPEarned);
+}
+
+//XXX todo Fix this to be regular back button?? Since we're using delegate protocol now?
 - (void) back:(UIBarButtonItem *)sender {
     if ([self.navigationController.parentViewController isKindOfClass:[ModelViewController class]]) {
         ModelViewController* targetController = (ModelViewController*) self.navigationController.presentingViewController;
-        targetController.shouldAnimateXP = YES;
-        targetController.earnedXP = self.totalCorrect;
     }
     [self.navigationController popViewControllerAnimated:YES];
 }

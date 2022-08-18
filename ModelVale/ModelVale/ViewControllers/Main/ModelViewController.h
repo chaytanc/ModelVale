@@ -14,8 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface ModelViewController : FirebaseViewController
 @property (nonatomic, assign) CGPoint seed;
 @property (nonatomic, strong) NSMutableArray<AvatarMLModel*>* models;
-@property (nonatomic,assign) BOOL shouldAnimateXP;
-@property (nonatomic, assign) NSInteger earnedXP;
+- (void) earnXP:(int)XPClustersEarned;
 @end
 
 NS_ASSUME_NONNULL_END
