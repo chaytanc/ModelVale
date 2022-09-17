@@ -1,4 +1,4 @@
-# Modelvale README
+# ModelVale README
 ![Artboard 1180](https://user-images.githubusercontent.com/35582442/183337152-4fead59c-55df-4060-aa0b-8c1bd06ecada.png)
 ## Overview
 ### [Demo](https://recordit.co/wproHGzuGB)
