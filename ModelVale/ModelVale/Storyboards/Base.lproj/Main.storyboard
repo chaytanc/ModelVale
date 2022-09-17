@@ -187,6 +187,19 @@
                                 <action selector="didTapLogout:" destination="VDf-qf-hVa" id="HLF-qv-66I"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="G01-sf-rEy">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="2Nr-jD-gf1" userLabel="importButton">
+                                <rect key="frame" x="302" y="5" width="92" height="34.5"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="plus.rectangle.on.rectangle.fill" catalog="system" title=" ">
+                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" scale="large"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <segue destination="wVW-gN-DZQ" kind="show" id="cBi-CG-X95"/>
+                                </connections>
+                            </button>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="avatarImageView" destination="ukO-l4-ah3" id="nPT-GS-Lni"/>
@@ -882,9 +895,142 @@
             </objects>
             <point key="canvasLocation" x="680" y="759"/>
         </scene>
+        <!--Import Model Controller-->
+        <scene sceneID="RQ9-W8-38T">
+            <objects>
+                <viewController storyboardIdentifier="importModelViewController" id="wVW-gN-DZQ" userLabel="Import Model Controller" customClass="ImportModelViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ntU-4i-E8g">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="5rN-aG-lAC" userLabel="backgroundImageView">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                            </imageView>
+                            <view alpha="0.85000002384185791" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mgq-XU-gzn" userLabel="contentView">
+                                <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="pkz-Ak-6x0" userLabel="buttonsStackView">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="154"/>
+                                        <subviews>
+                                            <button opaque="NO" alpha="0.85000002384185791" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aCf-7k-HFp" userLabel="signInButton">
+                                                <rect key="frame" x="10" y="10" width="394" height="40"/>
+                                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="40" id="HfN-xc-Gaq"/>
+                                                </constraints>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Drive Sign In"/>
+                                                <connections>
+                                                    <action selector="didTapSignIn:" destination="wVW-gN-DZQ" eventType="touchUpInside" id="BcK-61-U9X"/>
+                                                </connections>
+                                            </button>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Search Drive for model file..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fWf-qN-Qwg" userLabel="searchFilesField">
+                                                <rect key="frame" x="10" y="60" width="394" height="34"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                            <button opaque="NO" alpha="0.85000002384185791" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jeA-5n-kHm" userLabel="searchFilesButton">
+                                                <rect key="frame" x="10" y="104" width="394" height="40"/>
+                                                <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="40" id="qKY-Tn-zev"/>
+                                                </constraints>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Search Files"/>
+                                                <connections>
+                                                    <action selector="didTapSearchFiles:" destination="wVW-gN-DZQ" eventType="touchUpInside" id="940-QH-QbB"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <edgeInsets key="layoutMargins" top="10" left="10" bottom="10" right="10"/>
+                                    </stackView>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="XfB-cj-dpn" userLabel="modelsTableView">
+                                        <rect key="frame" x="0.0" y="154" width="414" height="560"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="importModelCell" id="0np-an-ZYt" customClass="ImportModelCell">
+                                                <rect key="frame" x="0.0" y="44.5" width="414" height="41"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0np-an-ZYt" id="qRh-qM-hho">
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="41"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="modelFile" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="foJ-7G-lF9" userLabel="modelFileLabel">
+                                                            <rect key="frame" x="10" y="10" width="394" height="21"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="foJ-7G-lF9" firstAttribute="leading" secondItem="qRh-qM-hho" secondAttribute="leading" constant="10" id="HBL-Yb-4T2"/>
+                                                        <constraint firstAttribute="bottom" secondItem="foJ-7G-lF9" secondAttribute="bottom" constant="10" id="SdU-u8-qCx"/>
+                                                        <constraint firstAttribute="trailing" secondItem="foJ-7G-lF9" secondAttribute="trailing" constant="10" id="WJl-w9-QC3"/>
+                                                        <constraint firstItem="foJ-7G-lF9" firstAttribute="top" secondItem="qRh-qM-hho" secondAttribute="top" constant="10" id="ibD-T8-3EB"/>
+                                                    </constraints>
+                                                </tableViewCellContentView>
+                                                <connections>
+                                                    <outlet property="modelFileLabel" destination="foJ-7G-lF9" id="9em-3y-LR5"/>
+                                                </connections>
+                                            </tableViewCell>
+                                        </prototypes>
+                                    </tableView>
+                                    <button opaque="NO" alpha="0.85000002384185791" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Fb-c5-Te3" userLabel="importButton">
+                                        <rect key="frame" x="10" y="724" width="394" height="40"/>
+                                        <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="40" id="s5E-FP-mkJ"/>
+                                        </constraints>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Import Model"/>
+                                        <connections>
+                                            <action selector="didTapImportModel:" destination="wVW-gN-DZQ" eventType="touchUpInside" id="Ogy-Ml-Jhr"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="XfB-cj-dpn" firstAttribute="leading" secondItem="Mgq-XU-gzn" secondAttribute="leading" id="5cK-Ey-9wD"/>
+                                    <constraint firstItem="pkz-Ak-6x0" firstAttribute="leading" secondItem="Mgq-XU-gzn" secondAttribute="leading" id="5jS-JY-hOs"/>
+                                    <constraint firstAttribute="trailing" secondItem="pkz-Ak-6x0" secondAttribute="trailing" id="7OE-7S-zF2"/>
+                                    <constraint firstAttribute="trailing" secondItem="XfB-cj-dpn" secondAttribute="trailing" id="Cbk-Fp-qKw"/>
+                                    <constraint firstItem="XfB-cj-dpn" firstAttribute="top" secondItem="pkz-Ak-6x0" secondAttribute="bottom" id="JJd-cP-Tfr"/>
+                                    <constraint firstItem="0Fb-c5-Te3" firstAttribute="leading" secondItem="Mgq-XU-gzn" secondAttribute="leading" constant="10" id="Ldh-SN-KWP"/>
+                                    <constraint firstAttribute="bottom" secondItem="0Fb-c5-Te3" secondAttribute="bottom" constant="10" id="Lh6-aA-qVt"/>
+                                    <constraint firstItem="pkz-Ak-6x0" firstAttribute="top" secondItem="Mgq-XU-gzn" secondAttribute="top" id="bUd-h5-XIW"/>
+                                    <constraint firstAttribute="trailing" secondItem="0Fb-c5-Te3" secondAttribute="trailing" constant="10" id="e5n-NX-qka"/>
+                                    <constraint firstItem="0Fb-c5-Te3" firstAttribute="top" secondItem="XfB-cj-dpn" secondAttribute="bottom" constant="10" id="jXY-R2-W9Q"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="e1T-tg-B3g"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="e1T-tg-B3g" firstAttribute="trailing" secondItem="Mgq-XU-gzn" secondAttribute="trailing" id="B22-BE-qq6"/>
+                            <constraint firstAttribute="trailing" secondItem="5rN-aG-lAC" secondAttribute="trailing" id="HcI-5E-riN"/>
+                            <constraint firstAttribute="top" secondItem="5rN-aG-lAC" secondAttribute="top" id="I8C-4M-XXW"/>
+                            <constraint firstItem="5rN-aG-lAC" firstAttribute="bottom" secondItem="ntU-4i-E8g" secondAttribute="bottom" id="MR6-CM-geL"/>
+                            <constraint firstItem="e1T-tg-B3g" firstAttribute="bottom" secondItem="Mgq-XU-gzn" secondAttribute="bottom" id="ZhD-1d-QrE"/>
+                            <constraint firstItem="Mgq-XU-gzn" firstAttribute="top" secondItem="e1T-tg-B3g" secondAttribute="top" id="bBS-wA-N5K"/>
+                            <constraint firstItem="Mgq-XU-gzn" firstAttribute="leading" secondItem="e1T-tg-B3g" secondAttribute="leading" id="bZd-eG-rDO"/>
+                            <constraint firstItem="5rN-aG-lAC" firstAttribute="leading" secondItem="ntU-4i-E8g" secondAttribute="leading" id="rm9-9T-ffk"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Data" id="lSR-Ir-nH6"/>
+                    <connections>
+                        <outlet property="modelsTableView" destination="XfB-cj-dpn" id="MlX-i7-blx"/>
+                        <outlet property="searchFilesField" destination="fWf-qN-Qwg" id="f97-RL-AvY"/>
+                        <outlet property="signInButton" destination="aCf-7k-HFp" id="d33-ne-JxW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oJh-Rl-KWb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1584" y="7"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Nq6-wS-EMn"/>
+        <segue reference="1lD-79-zWl"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="arrow.left.circle.fill" catalog="system" width="128" height="121"/>
@@ -892,6 +1038,7 @@
         <image name="gamemountains" width="3347" height="2104"/>
         <image name="mountain" width="4651" height="3101"/>
         <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="plus.rectangle.on.rectangle.fill" catalog="system" width="128" height="97"/>
         <image name="racoonavatar_glow" width="736" height="621"/>
         <systemColor name="placeholderTextColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>

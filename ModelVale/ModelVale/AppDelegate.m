@@ -6,10 +6,16 @@
 //
 
 #import "AppDelegate.h"
+
+
 @import UIKit;
 @import FirebaseCore;
 @import FirebaseAuth;
 @import FirebaseFirestore;
+//#import <GoogleAPIClientForREST/GTLRDrive.h>
+//#import <GTMSessionFetcher/GTMSessionFetcherService.h>
+//#import <GTMSessionFetcher/GTMSessionFetcherLogging.h>
+//#import <GoogleAPIClientForREST/GTLRUtilities.h>
 
 @interface AppDelegate ()
 @property (nonatomic, strong) FIRAuth* userListener;
@@ -21,8 +27,25 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [FIRApp configure];
+//    signInConfig = [[GIDConfiguration alloc] initWithClientID:@"33294605585-e2eufca8jk11d3ee8rifv1i0tqnbd9va.apps.googleusercontent.com"];
     return YES;
 }
+
+- (BOOL)application:(UIApplication *)app
+            openURL:(NSURL *)url
+            options:(NSDictionary<NSString *, id> *)options {
+    // Sends the URL to the current authorization flow (if any) which will
+    // process it if it relates to an authorization response.
+    if ([_currentAuthorizationFlow resumeExternalUserAgentFlowWithURL:url]) {
+      _currentAuthorizationFlow = nil;
+      return YES;
+    }
+
+    // Your additional URL handling (if any) goes here.
+
+    return NO;
+}
+
 
 
 #pragma mark - UISceneSession lifecycle

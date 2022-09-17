@@ -51,7 +51,7 @@ def resnet_updatable():
 
 def squeezenet_updatable():
 	layers_to_update = []
-	layers_to_update.append('conv1')
+	layers_to_update.append('conv10')
 	return layers_to_update
 
 def make_updatable(builder):
@@ -64,6 +64,7 @@ def make_updatable(builder):
 
 	#layers_to_update = manual_updatable_layers()
 	layers_to_update = resnet_updatable()
+	#layers_to_update = squeezenet_updatable()
 	builder.make_updatable(layers_to_update)
 	builder.set_categorical_cross_entropy_loss(name="lossLayer", input="classLabelProbs")
 
@@ -76,9 +77,9 @@ def make_updatable(builder):
 # https://coremltools.readme.io/docs/updatable-neural-network-classifier-on-mnist-dataset
 
 #"./xception_imagenet.mlmodel"
-model_path = "./Resnet50.mlmodel"
+model_path = "../models/Resnet50.mlmodel"
 #"./UpdatableXception.mlmodel"
-output_path = "./UpdatableResnetO.mlmodel"
+output_path = "../models/UpdatableResnetO.mlmodel"
 
 model = coremltools.models.MLModel(model_path)
 spec = model._spec

@@ -9,7 +9,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface importModelCellTableViewCell : UITableViewCell
+@interface ImportModelCell : UITableViewCell
+@property (weak, nonatomic) IBOutlet UILabel *modelFileLabel;
 
 @end
 

@@ -7,7 +7,6 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "UpdatableSqueezeNet.h"
 @class ModelLabel;
 #import "FirebaseFirestore.h"
 #import "ModelProtocol.h"

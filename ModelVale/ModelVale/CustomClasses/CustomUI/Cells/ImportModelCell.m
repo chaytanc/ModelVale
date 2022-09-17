@@ -1,13 +1,13 @@
 //
-//  importModelCellTableViewCell.m
+//  ImportModelCell.m
 //  ModelVale
 //
 //  Created by Chaytan Inman on 9/12/22.
 //
 
-#import "importModelCellTableViewCell.h"
+#import "ImportModelCell.h"
 
-@implementation importModelCellTableViewCell
+@implementation ImportModelCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
