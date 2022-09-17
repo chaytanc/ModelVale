@@ -70,7 +70,7 @@
                                 [self presentError:@"Error making models for new user" message:error.localizedDescription error:error];
                             }
                             else {
-                                [self transitionToModelVC:starters.models uid:uid];
+                                [FirebaseViewController transitionToModelVC:starters.models uid:uid];
                             }
                         }];
                     }];

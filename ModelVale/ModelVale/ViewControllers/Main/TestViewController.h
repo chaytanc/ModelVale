@@ -11,7 +11,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol TestVCDelegate <NSObject>
+- (void) earnXP: (int) XPClustersEarned;
+@end
+
 @interface TestViewController : DisplayDataFirebaseViewController
+@property (nonatomic, weak) id<TestVCDelegate> delegate;
 @end
 
 NS_ASSUME_NONNULL_END

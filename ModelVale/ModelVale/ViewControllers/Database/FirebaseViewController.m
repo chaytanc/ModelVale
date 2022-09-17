@@ -13,6 +13,7 @@
 #import "ModelLabel.h"
 #import <QuartzCore/QuartzCore.h>
 #import "ModelViewController.h"
+#import "User.h"
 
 @interface FirebaseViewController ()
 @property (nonatomic, strong) FIRAuth* userListener;
@@ -22,8 +23,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if(self.uid == nil) {
-        self.uid = [FIRAuth auth].currentUser.uid;
+    self.user = [User new];
+    if(self.user.uid == nil) {
+        self.user.uid = [FIRAuth auth].currentUser.uid;
     }
     self.db = [FIRFirestore firestore];
     self.storage = [FIRStorage storage];
@@ -46,14 +48,14 @@
   [[FIRAuth auth] removeAuthStateDidChangeListener:self.userListener];
 }
 
--(void)transitionToLoginVC {
++ (void)transitionToLoginVC {
     SceneDelegate *sceneDelegate = (SceneDelegate *) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Login" bundle:nil];
     UIViewController *loginViewController = (UIViewController*) [storyboard instantiateViewControllerWithIdentifier:@"loginViewController"];
     [sceneDelegate.window setRootViewController:loginViewController];
 }
 
--(void)transitionToModelVC: (NSMutableArray<AvatarMLModel*>* _Nullable)models uid: (NSString* _Nullable)uid {
++ (void)transitionToModelVC: (NSMutableArray<AvatarMLModel*>* _Nullable)models uid: (NSString* _Nullable)uid {
     SceneDelegate *sceneDelegate = (SceneDelegate * ) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     UINavigationController *modelNavController = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
@@ -61,13 +63,13 @@
         ModelViewController* modelViewController = (ModelViewController*) modelNavController.viewControllers.firstObject;
         modelViewController.models = models;
         if(uid){
-            modelViewController.uid = uid;
+            modelViewController.user.uid = uid;
         }
     }
     [sceneDelegate.window setRootViewController:modelNavController];
 }
 
--(NSString*) getImageStoragePath: (ModelLabel*)label {
+- (NSString*) getImageStoragePath: (ModelLabel*)label {
 //    NSNumber* dateNum = [NSNumber numberWithDouble: CACurrentMediaTime()];
 //    NSString* date = [dateNum stringValue];
     //XXX todo human readable date

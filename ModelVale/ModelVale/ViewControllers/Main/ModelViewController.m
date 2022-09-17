@@ -12,6 +12,7 @@
 #import "UpdatableSqueezeNet.h"
 #import "CoreML/CoreML.h"
 #import "AvatarMLModel.h"
+#import "User.h"
 #import "DataViewController.h"
 #import "RetrainViewController.h"
 #import "TestViewController.h"
@@ -27,6 +28,7 @@
 CGFloat const kAnimationDuration = 1.9f;
 NSInteger const kXPSize = 20;
 NSInteger const kMinXPPerCluster = 15;
+NSInteger const kMaxXPClusters = 20;
 BOOL const kDebugAnimations = NO;
 NSInteger const kSeedXOffset = 30;
 NSInteger const kSeedYOffset = 100;
@@ -35,7 +37,7 @@ NSInteger const kSigmaYDivisor = 6;
 // UI consts
 NSInteger const kCornerRadius = 10;
 
-@interface ModelViewController () <CAAnimationDelegate>
+@interface ModelViewController () <CAAnimationDelegate, TestVCDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *modelNameLabel;
 @property (nonatomic, assign) NSInteger modelIndex;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
@@ -49,9 +51,11 @@ NSInteger const kCornerRadius = 10;
 @property (weak, nonatomic) IBOutlet UIImageView *avatarImageView;
 
 @property (strong, nonatomic) AvatarMLModel* model;
-@property (nonatomic, assign) NSInteger numClusters;
+@property (nonatomic, assign) NSInteger numXPClusters;
+@property (nonatomic, assign) NSInteger avgNumXPPerCluster;
 @property (nonatomic, assign) CGPoint XPEndPoint;
 @property (nonatomic,strong) NSMutableArray<XPCluster*>* clusters;
+@property (nonatomic,assign) BOOL shouldAnimateXP;
 
 @end
 
@@ -60,30 +64,26 @@ NSInteger const kCornerRadius = 10;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
     self.testButton.layer.cornerRadius = kCornerRadius;
     self.trainButton.layer.cornerRadius = kCornerRadius;
     self.dataButton.layer.cornerRadius = kCornerRadius;
     self.modelIndex = 0;
-    self.earnedXP = 0;
     self.shouldAnimateXP = YES;
-    
-    self.numClusters = 3;
-    NSInteger avgNumXPPerCluster = 100;
+    self.numXPClusters = 0;
+    self.avgNumXPPerCluster = 30;
     
     self.models = [NSMutableArray new];
     [self.dataButton setEnabled:NO];
     [self.trainButton setEnabled:NO];
     [self.testButton setEnabled:NO];
-    //XXX todo refactor to rely on self.models always being set before transition and catch error and refetch if not, or log out. Then only refetch when we know new models are uploaded. Does need to update once when the app first launches to initially get all the models the user has access to in userModelRefs
-    [self fetchAndSetVCModels:^{
-        [self configUIBasedOnModel];
-        [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:AvatarMLModel.maxHealth.integerValue health:[self getCurrModel:self.modelIndex].health.integerValue];
-        [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
-        self.clusters = [self initializeXPClustersOnSubViewAtZero:self.numClusters avgNumPerCluster:avgNumXPPerCluster];
-        [self hideAllXPImageViews];
-    }];
+    [self updateLocalUserModels];
+}
 
+- (void)viewWillAppear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter]addObserver:self
+                                            selector:@selector(updateLocalUserModels)
+                                                name:UIApplicationDidBecomeActiveNotification
+                                              object:nil];
 }
 
 - (void) viewDidLayoutSubviews {
@@ -94,15 +94,36 @@ NSInteger const kCornerRadius = 10;
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
     if(self.shouldAnimateXP && self.clusters) {
+        // Have to remove and reinitialize XP under the assumption that number of XP changes based XP earned
+        [self removeAllXP];
+        self.clusters = [self initializeXPClustersOnSubViewAtZero:self.numXPClusters avgNumPerCluster:self.avgNumXPPerCluster];
+        [self setXPPathsAndClusterCenters:self.seed reanimate:FALSE];
+        // Animate
         [self showAllXPImageViews];
         [self animateXPClusters:self.clusters];
     }
 }
 
+- (void) updateLocalUserModels {
+    self.models = [NSMutableArray new];
+    [self fetchAndSetVCModels:^{
+        [self configUIBasedOnModel];
+        [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:AvatarMLModel.maxHealth.integerValue health:[self getModelHealth]];
+        [self.healthBarView animateFillingHealthBar: 0 filledBarPath:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
+        self.clusters = [self initializeXPClustersOnSubViewAtZero:self.numXPClusters avgNumPerCluster:self.avgNumXPPerCluster];
+        [self hideAllXPImageViews];
+    }];
+}
+
+- (NSInteger) getModelHealth {
+    return [self getCurrModel:self.modelIndex].health.integerValue;
+}
+
 // Gets models that the user has access to and adds them to the local array of AvatarMLModels, self.models
 - (void) fetchAndSetVCModels: (void(^_Nullable)(void))completion {
-    FIRDocumentReference* docRef = [[self.db collectionWithPath:@"users"] documentWithPath:self.uid];
+    FIRDocumentReference* docRef = [[self.db collectionWithPath:@"users"] documentWithPath:self.user.uid];
     __weak ModelViewController *weakSelf = self;
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
         if(error != nil) {
@@ -138,7 +159,6 @@ NSInteger const kCornerRadius = 10;
     NSInteger relInd = ind % self.models.count;
     if(self.models.count == 0) {
         [self performLogout];
-//        [self transitionToLoginVC];
         NSLog(@"No models found, logging out");
         return [AvatarMLModel new];
     }
@@ -153,24 +173,25 @@ NSInteger const kCornerRadius = 10;
     self.nameLabel.text = self.model.avatarName;
     self.modelNameLabel.text = self.model.modelName;
 }
+
 - (IBAction)didTapLeftNext:(id)sender {
     self.modelIndex -= 1;
     [self configUIBasedOnModel];
-    //XXX todo could refactor to avoid fully reinitializing and only redrawing the layer that has the gradient, but marginal difference
     [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:AvatarMLModel.maxHealth.integerValue health:self.model.health.integerValue];
-    [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
+    [self.healthBarView animateFillingHealthBar: 0 filledBarPath:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
 }
+
 - (IBAction)didTapRightNext:(id)sender {
     self.modelIndex += 1;
     [self configUIBasedOnModel];
     [self.healthBarView initWithAnimationsOfDuration:kAnimationDuration maxHealth:AvatarMLModel.maxHealth.integerValue health:self.model.health.integerValue];
-    [self.healthBarView animateFillingHealthBar:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
+    [self.healthBarView animateFillingHealthBar: 0 filledBarPath:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
 }
 
 - (IBAction)didTapLogout:(id)sender {
     NSLog(@"Logout Tapped");
     [self performLogout];
-    [self transitionToLoginVC];
+    [FirebaseViewController transitionToLoginVC];
 }
 //XXX
 //- (IBAction)didTapImport:(id)sender {
@@ -185,6 +206,7 @@ NSInteger const kCornerRadius = 10;
     else if ([segue.identifier isEqualToString:@"modelToTest"]) {
         TestViewController* target = (TestViewController*) [segue destinationViewController];
         target.model = self.model;
+        target.delegate = self;
     }
     else if ([segue.identifier isEqualToString:@"modelToRetrain"]) {
         RetrainViewController* target = (RetrainViewController*) [segue destinationViewController];
@@ -196,6 +218,26 @@ NSInteger const kCornerRadius = 10;
     }
 }
 //MARK: XP animations
+
+- (void) earnXP:(int)XPClustersEarned {
+    if(XPClustersEarned > 0) {
+        self.shouldAnimateXP = YES;
+    }
+    else {
+        self.shouldAnimateXP = NO;
+    }
+    // Cap the max number of xpclusters to animate
+    self.numXPClusters = (XPClustersEarned < kMaxXPClusters) ? XPClustersEarned : kMaxXPClusters;
+    
+    // Update local model health
+    self.model.health = [NSNumber numberWithInt: self.model.health.integerValue + XPClustersEarned];
+    // Update model database health
+    [self.model updateModelHealth:self.user db:self.db completion:^(NSError * _Nonnull error) {
+        if(error != nil) {
+            [self presentError:@"Failed to update model health after testing" message:error.localizedDescription error:error];
+        }
+    }];
+}
 
 - (void) setHealthBarPropsForXP {
     self.seed = CGPointMake(self.view.frame.size.width - kSeedXOffset, self.view.frame.size.height - kSeedYOffset);
@@ -254,6 +296,17 @@ NSInteger const kCornerRadius = 10;
     CAShapeLayer* XPLayer = [CAShapeLayer new];
     XPLayer.fillColor = [UIColor clearColor].CGColor;
     return XPLayer;
+}
+
+- (void) removeAllXP {
+    for (XPCluster* cluster in self.clusters) {
+        for(XP* xp in cluster.cluster) {
+            [xp removeFromSuperview];
+            [cluster.cluster removeObject:xp];
+        }
+        [self.clusters removeObject:cluster];
+    }
+    assert(self.clusters.count == 0);
 }
 
 - (void) hideAllXPImageViews {
