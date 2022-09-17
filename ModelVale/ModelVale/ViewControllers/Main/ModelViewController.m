@@ -16,6 +16,7 @@
 #import "DataViewController.h"
 #import "RetrainViewController.h"
 #import "TestViewController.h"
+#import "ImportModelViewController.h"
 #import "HealthBarView.h"
 #import "XPCluster.h"
 #import "XP.h"
@@ -192,6 +193,10 @@ NSInteger const kCornerRadius = 10;
     [self performLogout];
     [FirebaseViewController transitionToLoginVC];
 }
+//XXX
+//- (IBAction)didTapImport:(id)sender {
+//    UINavigationController* nav
+//}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if([[segue identifier] isEqualToString:@"modelToData"]) {
@@ -205,6 +210,10 @@ NSInteger const kCornerRadius = 10;
     }
     else if ([segue.identifier isEqualToString:@"modelToRetrain"]) {
         RetrainViewController* target = (RetrainViewController*) [segue destinationViewController];
+        target.model = self.model;
+    }
+    else if([segue.identifier isEqualToString:@"modelToImport"]) {
+        ImportModelViewController* target = (ImportModelViewController*) [segue destinationViewController];
         target.model = self.model;
     }
 }

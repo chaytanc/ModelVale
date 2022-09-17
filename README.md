@@ -1,15 +1,15 @@
-# Modelvale README
+# ModelVale README
 ![Artboard 1180](https://user-images.githubusercontent.com/35582442/183337152-4fead59c-55df-4060-aa0b-8c1bd06ecada.png)
 ## Overview
 ### [Demo](https://recordit.co/wproHGzuGB)
 
 ### Description
-Modelvale is an app designed to bring machine learning to life. Each model is represented by an avatar with a dynamic health bar representing the overall model's performance. For instance, with a model classifying objects (e.g. if there is a picture of a dog, it will predict the label "dog"), the health bar fills when the model correctly classifies an object, decreases when more computation is used to train it, and more. Over time you can see your best performing models and their attributes, and keep training and testing their predictions to keep up their health.
+ModelVale is an app designed to bring machine learning to life. Each model is represented by an avatar with a dynamic health bar representing the overall model's performance. For instance, with a model classifying objects (e.g. if there is a picture of a dog, it will predict the label "dog"), the health bar fills when the model correctly classifies an object, decreases when more computation is used to train it, and more. Over time you can see your best performing models and their attributes, and keep training and testing their predictions to keep up their health.
 
 ## 1. User Stories (Required and Optional)
 
 **Required Must-have Stories**
-* Sign in and register with Modelvale account
+* Sign in and register with ModelVale account
      * User persistence
  * Unique avatars to represent each user's model(s)
      * Uses CoreML to package models and be able to use them for predictions and retraining
