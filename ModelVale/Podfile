@@ -12,6 +12,12 @@ target 'ModelVale' do
   pod 'FirebaseAuth'
   pod 'FirebaseFirestore'
   pod 'FirebaseStorage'
+  pod 'GTMAppAuth'
+  pod 'AppAuth'
+  pod 'GoogleAPIClientForREST/Drive'
+  #pod 'GoogleSignIn'
+  #pod 'GTMSessionFetcher/Core', '>= 1.0', '< 3.0'
+  
 
   target 'ModelValeTests' do
     inherit! :search_paths
