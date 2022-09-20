@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGPoint seed;
 @property (nonatomic, strong) NSMutableArray<AvatarMLModel*>* models;
 - (void) earnXP:(int)XPClustersEarned;
+- (void) fetchAndSetVCModels: (void(^_Nullable)(void))completion;
 @end
 
 NS_ASSUME_NONNULL_END

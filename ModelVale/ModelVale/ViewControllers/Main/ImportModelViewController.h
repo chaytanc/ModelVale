@@ -7,12 +7,12 @@
 
 #import <UIKit/UIKit.h>
 #import "AvatarMLModel.h"
+#import "FirebaseViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ImportModelViewController : UIViewController
+@interface ImportModelViewController : FirebaseViewController
 @property (strong, nonatomic) AvatarMLModel* model;
-
 @end
 
 NS_ASSUME_NONNULL_END

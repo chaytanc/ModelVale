@@ -138,7 +138,6 @@ NSInteger const kDataPerLabel = 20;
     self.XPClustersEarned = round(self.XPEarned);
 }
 
-//XXX todo Fix this to be regular back button?? Since we're using delegate protocol now?
 - (void) back:(UIBarButtonItem *)sender {
     if ([self.navigationController.parentViewController isKindOfClass:[ModelViewController class]]) {
         ModelViewController* targetController = (ModelViewController*) self.navigationController.presentingViewController;

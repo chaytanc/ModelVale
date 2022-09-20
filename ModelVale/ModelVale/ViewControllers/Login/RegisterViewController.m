@@ -62,7 +62,7 @@
                     NSLog(@"User registered successfully");
                     NSString* uid = authResult.user.uid;
                     //XXX todo how to deal with retain cycle
-                    User* user = [[User new] initUser:uid];
+                    User* user = [[User new] initUser:uid db: self.db];
                     [user addNewUser:self.db vc:self completion:^(NSError * _Nonnull error) {
                         StarterModels* starters = [[StarterModels new] initStarterModels];
                         [starters uploadStarterModels:user db:self.db storage:self.storage vc:self completion:^(NSError * _Nonnull error) {

@@ -1019,7 +1019,9 @@
                     </view>
                     <navigationItem key="navigationItem" title="Data" id="lSR-Ir-nH6"/>
                     <connections>
+                        <outlet property="importButton" destination="0Fb-c5-Te3" id="8Jn-Ex-hXb"/>
                         <outlet property="modelsTableView" destination="XfB-cj-dpn" id="MlX-i7-blx"/>
+                        <outlet property="searchFilesButton" destination="jeA-5n-kHm" id="BCr-f2-vJ4"/>
                         <outlet property="searchFilesField" destination="fWf-qN-Qwg" id="f97-RL-AvY"/>
                         <outlet property="signInButton" destination="aCf-7k-HFp" id="d33-ne-JxW"/>
                     </connections>

@@ -12,13 +12,23 @@
 
 @implementation User
 
-- (instancetype) initUser: (NSString*)uid {
+- (instancetype) initUser: (NSString*)uid db: (FIRFirestore*)db {
     self = [super init];
     if(self) {
         self.uid = uid;
-        self.userModelDocRefs = [NSMutableArray new];
+        self.userModelDocRefs = [NSMutableArray new]; // Array of avatarNames
+        [self getExistingUserModelDocRefs:db];
     }
     return self;
+}
+
+- (void) getExistingUserModelDocRefs: (FIRFirestore*)db {
+    FIRDocumentReference* docRef = [[db collectionWithPath:@"users"] documentWithPath:self.uid];
+    [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+        if(snapshot.data) {
+            self.userModelDocRefs = snapshot.data[@"models"];
+        }
+    }];
 }
 
 - (void) updateUserModelDocRefs: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {

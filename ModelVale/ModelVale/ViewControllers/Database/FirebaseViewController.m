@@ -23,12 +23,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.user = [User new];
-    if(self.user.uid == nil) {
-        self.user.uid = [FIRAuth auth].currentUser.uid;
-    }
     self.db = [FIRFirestore firestore];
     self.storage = [FIRStorage storage];
+    self.user = [[User new] initUser:[FIRAuth auth].currentUser.uid db: self.db];
 }
 
 - (void)viewWillAppear:(BOOL)animated {

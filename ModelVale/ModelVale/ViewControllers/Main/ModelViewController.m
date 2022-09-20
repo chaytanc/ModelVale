@@ -193,10 +193,6 @@ NSInteger const kCornerRadius = 10;
     [self performLogout];
     [FirebaseViewController transitionToLoginVC];
 }
-//XXX
-//- (IBAction)didTapImport:(id)sender {
-//    UINavigationController* nav
-//}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if([[segue identifier] isEqualToString:@"modelToData"]) {
@@ -340,6 +336,7 @@ NSInteger const kCornerRadius = 10;
 
 - (NSMutableArray*) getXPStartsAroundCenter: (NSInteger) numXP center: (CGPoint) center {
     NSMutableArray* XPStarts = [NSMutableArray new];
+    // These constants are a range of how far XP can start from the cluster center (or how far whatever can start from whatever center)
     int xMax = 20;
     int yMax = 25;
     for(int i=0; i<numXP; i++) {
