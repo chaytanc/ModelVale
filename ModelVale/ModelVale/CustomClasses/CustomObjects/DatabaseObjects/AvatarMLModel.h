@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName;
 - (MLModel*) getMLModelFromModelName;
 - (void) uploadModel: (User*)user db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
+- (void) uploadStarterModel: (User*)user db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
 + (void) fetchAndReturnExistingModel: (FIRFirestore*)db storage: (FIRStorage*)storage documentPath: (NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion;
 - (void) updateChangeableData: (FIRFirestore*)db completion:(void(^)(NSError *error))completion;
 - (id<ModelProtocol>) loadModel;

@@ -10,7 +10,6 @@
 #import "UIViewController+PresentError.h"
 @import FirebaseFirestore;
 #import "ModelLabel.h"
-#import "ModelProtocol.h"
 #import "User.h"
 #import "ModelConstants.h"
 
@@ -62,8 +61,7 @@ static NSNumber* maxHealth = kMaxHealth;
 }
 
 - (MLModel*) getMLModelFromModelName {
-    id<ModelProtocol> modelClassInstance = [self loadModel];
-    MLModel* model = modelClassInstance.model;
+    MLModel* model = [MLModel modelWithContentsOfURL:self.modelURL error:nil];
     return model;
 }
 
@@ -75,13 +73,28 @@ static NSNumber* maxHealth = kMaxHealth;
     if(!url) {
         url = [[NSBundle mainBundle] URLForResource:self.modelName withExtension:@"mlmodel"];
     }
-    return url;
-}
+    if(!url) {
+        NSFileManager *manager = [NSFileManager defaultManager];
+        NSURL* contents = [manager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+        NSLog(@"%@", contents.path);
+        
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mlmodelc", self.modelName]];
+        //XXX clean this up
+        if ([manager fileExistsAtPath: filePath] == YES) {
+            url = [NSURL fileURLWithPath:filePath];
+        }
+        else {
+            filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mlmodel", self.modelName]];
+            if ([manager fileExistsAtPath: filePath] == YES) {
+                url = [NSURL fileURLWithPath:filePath];
+                url = [MLModel compileModelAtURL:url error:nil];
+            }
+        }
 
-// As long as no functions specfic to either Squeezeable or other networks are needed, this should work
-- (id<ModelProtocol>) loadModel {
-    id<ModelProtocol> modelClassInstance = [[NSClassFromString(self.modelName) alloc] initWithContentsOfURL:self.modelURL error:nil];
-    return modelClassInstance;
+    }
+    return url;
 }
 
 + (NSString*) getDefaultModelName {
@@ -120,26 +133,38 @@ static NSNumber* maxHealth = kMaxHealth;
     }];
 }
 
-- (void) updateFromExistingRemoteModel: (User*)user db: (FIRFirestore*)db vc: (UIViewController*)vc snapshot: (FIRDocumentSnapshot*) snapshot completion:(void(^)(NSError *error))completion {
-    // First update this local model to reflect the remote changes it might be missing, then upload the updated version fo this model
-    dispatch_group_t updateGroup = dispatch_group_create();
-    dispatch_group_enter(updateGroup);
+// Checks if the model with the avatarName and owner already exists, if not, uploads the new model, then creates local copies of the remote and returns in a completion. Updates user.models locally and remotely as well
+- (void) uploadStarterModel: (User*)user db: (FIRFirestore*)db storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
+
+    FIRDocumentReference *docRef = [[db collectionWithPath:@"Model"] documentWithPath:self.avatarName];
+    [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
+        if(error != nil) {
+            [vc presentError:@"Failed to fetch models" message:error.localizedDescription error:error];
+            completion(error);
+        }
+        else {
+            // If a model already exists under that avatarName, update this model's local props and then update remote to match labeledData
+            if(snapshot.data != nil) {
+                NSLog(@"Found existing model");
+                [self updateModelFromExistingRemoteModel:db vc:vc snapshot:snapshot completion:completion];
+            }
+            else {
+                NSLog(@"Did not find existing model in user models");
+                [self uploadNewModel:user db:db storage:storage vc:vc completion:completion];
+            }
+
+        }
+    }];
+}
+
+- (void) updateModelFromExistingRemoteModel: (FIRFirestore*)db vc: (UIViewController*)vc snapshot: (FIRDocumentSnapshot*) snapshot completion:(void(^)(NSError *error))completion {
+    // First update this local model to reflect the remote changes it might be missing, then upload the updated version of this model
     [self updatePropsLocallyWithDict:snapshot.data];
     __block NSError* error;
     [self updateChangeableData:db completion:^(NSError * _Nonnull updateError) {
         error = updateError;
-        dispatch_group_leave(updateGroup);
-    }];
-    dispatch_group_enter(updateGroup);
-    // While model might already exist, since users can share models we still have to update user model refs
-    [user.userModelDocRefs addObject:self.avatarName];
-    [user updateUserModelDocRefs:db vc:vc completion:^(NSError *updateError) {
-        error = updateError;
-        dispatch_group_leave(updateGroup);
-    }];
-    dispatch_group_notify(updateGroup, dispatch_get_main_queue(), ^{
         completion(error);
-    });
+    }];
 }
 
 - (void) uploadNewModel: (User*)user db: (FIRFirestore*)db storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
@@ -161,12 +186,9 @@ static NSNumber* maxHealth = kMaxHealth;
                     [vc presentError:@"Failed to update Model" message:error.localizedDescription error:error];
                 }
                 else {
+                    //XXX move this user handling to completion
                     NSLog(@"Uploaded Model to Firestore");
-                    [user.userModelDocRefs addObject:self.avatarName];
-                    dispatch_group_enter(uploadModelGroup);
-                    [user updateUserModelDocRefs:db vc:vc completion:^(NSError *updateError) {
-                        dispatch_group_leave(uploadModelGroup);
-                    }];
+
                     dispatch_group_enter(uploadModelGroup);
                     [self uploadImageToStorage:storage vc:vc completion:^{
                         dispatch_group_leave(uploadModelGroup);
@@ -231,7 +253,6 @@ static NSNumber* maxHealth = kMaxHealth;
 }
 
 // MARK: Avatar Image
-//XXX todo subclass so that both ModelData and AvatarMLModel could access these functions
 - (FIRStorageReference*) getStorageRef: (FIRStorage*)storage {
     FIRStorageReference* storageRef = [storage reference];
     storageRef = [storageRef child:self.avatarImagePath];

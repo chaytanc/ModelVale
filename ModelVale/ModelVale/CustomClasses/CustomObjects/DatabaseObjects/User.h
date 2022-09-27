@@ -14,11 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSMutableArray<NSString*>* userModelDocRefs;
 @property (nonatomic, strong) NSString* uid;
+@property (nonatomic, strong) NSString* username;
 
-- (instancetype) initUser: (NSString*)uid db:(FIRFirestore*)db;
+- (instancetype) initUser: (NSString*)uid username: (NSString*)username db: (FIRFirestore*)db;
 - (void) updateUserModelDocRefs: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
 - (void) addNewUser: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
-
 
 @end
 

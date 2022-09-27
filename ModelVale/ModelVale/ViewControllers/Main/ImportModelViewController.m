@@ -22,6 +22,7 @@
 #import "UIViewController+PresentError.h"
 #import "ModelPopupView.h"
 #import "ModelViewController.h"
+#import "User.h"
 
 static NSString *const kClientID = @"482495501232-l6fn3jhv1v00co5jo7pm1os4glgjio58.apps.googleusercontent.com";
 NSString *const kGTMAppAuthKeychainItemName = @"ModelVale: Google Drive. GTMAppAuth.";
@@ -175,6 +176,7 @@ static NSString* const kNoFilesString = @"No files found.";
     NSArray *paths = [[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask];
     NSURL *documentsURL = [paths lastObject];
     NSURL* destURL = [documentsURL URLByAppendingPathComponent:file.name];
+    //XXX alert if overwriting existing file
     return destURL;
 }
 
@@ -193,57 +195,30 @@ static NSString* const kNoFilesString = @"No files found.";
     // cannot be downloaded in its native server format.
     query = [GTLRDriveQuery_FilesGet queryForMediaWithFileId:file.identifier];
 
-  // GTLR queries are suitable for downloading and exporting small files.
-  //
-  // For large files, apps typically will want to monitor the progress of a download
-  // or to download with a Range request header to specify a subset of bytes.
-  //
-  // To download large files, get the full NSURLRequest from the GTLR query instead of
-  // executing the query.
-  //
-  // Here's how to download with a GTMSessionFetcher. The fetcher will use the authorizer that's
-  // attached to the GTLR service's fetcherService.
-  //
-  //  NSURLRequest *downloadRequest = [service requestForQuery:query];
-  //  GTMSessionFetcher *fetcher = [service.fetcherService fetcherWithRequest:downloadRequest];
-  //
-  //  [fetcher setCommentWithFormat:@"Downloading %@", file.name];
-  //  fetcher.destinationFileURL = destinationURL;
-  //
-  //  [fetcher beginFetchWithCompletionHandler:^(NSData *data, NSError *error) {
-  //    if (error == nil) {
-  //      NSLog(@"Download succeeded.");
-  //
-  //      // With a destinationFileURL property set, the fetcher's callback
-  //      // data parameter here will be nil.
-  //    }
-  //  }];
-
-  [service executeQuery:query
+    [service executeQuery:query
       completionHandler:^(GTLRServiceTicket *callbackTicket,
                           GTLRDataObject *object,
                           NSError *callbackError) {
-      NSError *errorToReport = callbackError;
-      NSError *writeError;
-      NSURL* destinationURL = [self getFileDestination:file];
-
-    if (callbackError == nil) {
-      BOOL didSave = [object.data writeToURL:destinationURL
-                                     options:NSDataWritingAtomic
-                                       error:&writeError];
-      if (!didSave) {
-        errorToReport = writeError;
-      }
-    }
-    if (errorToReport == nil) {
-        NSString* success = [NSString stringWithFormat:@"Successfully downloaded file %@", file.name];
-        [self presentError:success message:destinationURL.path error:nil];
-        completion(destinationURL);
-    }
-    else {
-        [self presentError:@"Error downloading File" message:errorToReport.localizedDescription error:errorToReport];
-    }
-  }];
+        NSError *errorToReport = callbackError;
+        NSError *writeError;
+        NSURL* destinationURL = [self getFileDestination:file];
+        if (callbackError == nil) {
+            BOOL didSave = [object.data writeToURL:destinationURL
+                                         options:NSDataWritingAtomic
+                                           error:&writeError];
+            if (!didSave) {
+                errorToReport = writeError;
+            }
+        }
+        if (errorToReport == nil) {
+            NSString* success = [NSString stringWithFormat:@"Successfully downloaded file %@", file.name];
+            [self presentError:success message:destinationURL.path error:nil];
+            completion(destinationURL);
+        }
+        else {
+            [self presentError:@"Error downloading File" message:errorToReport.localizedDescription error:errorToReport];
+        }
+    }];
 }
 
 - (void) makePopup: (NSURL*)modelURL {
@@ -256,7 +231,7 @@ static NSString* const kNoFilesString = @"No files found.";
     [UIView animateWithDuration:1 animations:^{
         popup.alpha = 0.95;
     }];
-    int frameHeight = self.view.frame.size.height * 0.60;
+    int frameHeight = self.view.frame.size.height * 0.45;
     int frameWidth = self.view.frame.size.width * 0.80;
     popup.frame = CGRectMake(self.view.center.x - (frameWidth/2), self.view.center.y - (frameHeight/2), frameWidth, frameHeight);
     [self.view addSubview:popup];
@@ -311,14 +286,13 @@ static NSString* const kNoFilesString = @"No files found.";
         }
         else {
             [self presentError:@"Successfully uploaded new model" message:@"Yay!" error:nil];
-            SceneDelegate *sceneDelegate = (SceneDelegate *) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-            UINavigationController *modelVC = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
-//            ModelViewController* m = ((ModelViewController*)modelVC.topViewController);
-//            [m fetchAndSetVCModels:^{
-//                NSLog(@"Resetting local models");
-//            }];
-            [sceneDelegate.window setRootViewController:modelVC];
+            [self.user.userModelDocRefs addObject:model.avatarName];
+            [self.user updateUserModelDocRefs:self.db vc:self completion:^(NSError *updateError) {
+                SceneDelegate *sceneDelegate = (SceneDelegate *) UIApplication.sharedApplication.connectedScenes.allObjects.firstObject.delegate;
+                UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                UINavigationController *modelVC = (UINavigationController*) [storyboard instantiateViewControllerWithIdentifier:@"modelNavController"];
+                [sceneDelegate.window setRootViewController:modelVC];
+            }];
         }
     }];
 }

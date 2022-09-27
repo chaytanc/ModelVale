@@ -28,6 +28,7 @@
     }
     md.label = label;
     md.imagePath = imagePath;
+    md.testedCount = @0;
     return md;
 }
 
@@ -35,6 +36,12 @@
     ModelData* md = [ModelData new];
     md.label = dict[@"label"];
     md.imagePath = dict[@"imagePath"];
+    if(dict[@"testedCount"]) {
+        md.testedCount = dict[@"testedCount"];
+    }
+    else {
+        md.testedCount = @0;
+    }
     [md fetchAndSetImage:storage completion:^{
         if(completion) {
             completion(md);
@@ -115,23 +122,18 @@
     }];
 }
 
+- (void) incrementTestedCount: (FIRFirestore*)db labelRef: (FIRDocumentReference*)labelRef completion:( void(^ _Nullable )(NSError *error))completion {
+    [self.firebaseRef updateData:@{
+        @"testedCount": [FIRFieldValue fieldValueForIntegerIncrement:1]
+    } completion:completion];
+}
+
 
 //MARK: CoreML
 - (MLFeatureValue*) getImageFeatureValue: (MLImageConstraint*)modelConstraints {
     struct CGImage* cgtest = self.image.CGImage;
     MLFeatureValue* imageFeature = [MLFeatureValue featureValueWithCGImage:cgtest constraint:modelConstraints options:nil error:nil];
     return imageFeature;
-}
-
-- (MLDictionaryFeatureProvider*) getDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints {
-    MLFeatureValue* imageFeature = [self getImageFeatureValue:modelConstraints];
-    if(imageFeature == nil) {
-        [NSException raise:@"Invalid training data" format:@"Could not get imageFeature in getDictionaryFeatureProvider"];
-    }
-    NSMutableDictionary* featureDict = [[NSMutableDictionary alloc] init];
-    featureDict[@"image"] = imageFeature;
-    MLDictionaryFeatureProvider* featureProv = (MLDictionaryFeatureProvider*)[[MLDictionaryFeatureProvider new] initWithDictionary:featureDict error:nil];
-    return featureProv;
 }
 
 
@@ -147,5 +149,6 @@
     MLDictionaryFeatureProvider* featureProv = (MLDictionaryFeatureProvider*)[[MLDictionaryFeatureProvider new] initWithDictionary:featureDict error:nil];
     return featureProv;
 }
+
 
 @end

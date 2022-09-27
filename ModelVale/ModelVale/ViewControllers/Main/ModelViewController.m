@@ -131,6 +131,7 @@ NSInteger const kCornerRadius = 10;
         }
         else {
             NSMutableArray* userModelDocRefs = snapshot.data[@"models"];
+            self.user.username = snapshot.data[@"username"];
             [self setLocalModels:userModelDocRefs completion:^{
                 completion();
                 [weakSelf.dataButton setEnabled:YES];
@@ -169,6 +170,7 @@ NSInteger const kCornerRadius = 10;
 
 - (void) configUIBasedOnModel {
     self.model = [self getCurrModel:self.modelIndex];
+    [self setTitle:self.user.username];
     self.avatarImageView.image = self.model.avatarImage;
     self.nameLabel.text = self.model.avatarName;
     self.modelNameLabel.text = self.model.modelName;
@@ -295,14 +297,7 @@ NSInteger const kCornerRadius = 10;
 }
 
 - (void) removeAllXP {
-    for (XPCluster* cluster in self.clusters) {
-        for(XP* xp in cluster.cluster) {
-            [xp removeFromSuperview];
-            [cluster.cluster removeObject:xp];
-        }
-        [self.clusters removeObject:cluster];
-    }
-    assert(self.clusters.count == 0);
+    self.clusters = [NSMutableArray<XPCluster*> new];
 }
 
 - (void) hideAllXPImageViews {

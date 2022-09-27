@@ -43,20 +43,10 @@
     return self;
 }
 
-//XXX remove
-- (instancetype) initWithModel: (AvatarMLModel*)model {
-    self = [super init];
-    if (self) {
-        self.model = model;
-    }
-    return self;
-}
-
 - (void) layoutSubviews {
     [super layoutSubviews];
     // Frame based layouts here
     [self setStackViewConstraints];
-
 }
 
 - (void) formatTitleLabel {

@@ -8,10 +8,6 @@
 #ifndef ModelConstants_h
 #define ModelConstants_h
 static NSArray* kNamesList = @[
-//#define kNamesList @[
-    @"Hal",
-    @"Avril",
-    @"Orin",
     @"Mario",
     @"James O. Incandenza",
     @"C.T.",
@@ -67,6 +63,12 @@ static NSArray* kImagesList = @[
     @"racoonavatar_glow",
     @"tiger_glow",
     @"Avril",
+    @"addax",
+    @"flyingtoad",
+    @"highpriest",
+    @"deserttoad",
+    @"wallaby",
+    @"nematode"
 ];
 
 

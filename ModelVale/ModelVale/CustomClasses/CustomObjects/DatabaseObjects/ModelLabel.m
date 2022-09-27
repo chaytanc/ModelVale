@@ -124,7 +124,7 @@
 }
 
 - (void) saveNewModelLabelWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(FIRDocumentReference* ref))completion {
-    // Add a new ModelData with a generated id.
+    // Add a new ModelLabel with generated id.
     __block FIRDocumentReference* ref =
         [[db collectionWithPath:@"ModelLabel"] addDocumentWithData:@{
           @"label": self.label,

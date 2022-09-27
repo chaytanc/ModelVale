@@ -12,11 +12,12 @@
 
 @implementation User
 
-- (instancetype) initUser: (NSString*)uid db: (FIRFirestore*)db {
+- (instancetype) initUser: (NSString*)uid username: (NSString*)username db: (FIRFirestore*)db {
     self = [super init];
     if(self) {
         self.uid = uid;
         self.userModelDocRefs = [NSMutableArray new]; // Array of avatarNames
+        self.username = username;
         [self getExistingUserModelDocRefs:db];
     }
     return self;
@@ -27,6 +28,7 @@
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot *snapshot, NSError *error) {
         if(snapshot.data) {
             self.userModelDocRefs = snapshot.data[@"models"];
+            self.username = snapshot.data[@"username"];
         }
     }];
 }
@@ -65,6 +67,7 @@
 - (void) addNewUser: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion {
     // Upload or create modified user.uid.models data
     [[[db collectionWithPath:@"users"] documentWithPath:self.uid] setData:@{
+        @"username" : self.username,
         @"models" : self.userModelDocRefs
     } completion:^(NSError * _Nullable error) {
         if(error != nil){

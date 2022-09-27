@@ -11,7 +11,6 @@
 #import "ModelLabel.h"
 #import "UpdatableSqueezeNet.h"
 
-//XXX TODO add beenUsed boolean field to modelData to make sure we can't keep retraining on the same data
 // Given the ModelLabels to use, this provides an interface to use those data to retrain models with CoreML's MLArrayBatchProvider
 @implementation TrainBatchData
 

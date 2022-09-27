@@ -25,7 +25,7 @@
     [super viewDidLoad];
     self.db = [FIRFirestore firestore];
     self.storage = [FIRStorage storage];
-    self.user = [[User new] initUser:[FIRAuth auth].currentUser.uid db: self.db];
+    self.user = [[User new] initUser:[FIRAuth auth].currentUser.uid username:@"" db: self.db];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
