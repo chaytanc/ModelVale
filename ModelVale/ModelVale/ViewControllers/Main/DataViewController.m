@@ -77,8 +77,12 @@
 
 - (IBAction)didTapLoadMore:(id)sender {
     for(ModelLabel* label in self.modelLabels) {
-        [self fetchAndCreateData:label queryLimit:kDataQueryLimit completion:^{
+        [self fetchAndCreateData:label queryLimit:kDataQueryLimit completion:^(NSError * error) {
+            if(error) {
+                [self presentError:@"Failed to fetch data" message:error.localizedDescription error:error];
+            }
             [self.userDataCollectionView reloadData];
+
         }];
     }
 }

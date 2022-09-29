@@ -276,9 +276,19 @@ static NSNumber* maxHealth = kMaxHealth;
     }];
 }
 
++ (UIImage *)compressedImage:(UIImage *)image scaleFactor: (CGFloat)scaleFactor {
+    CGSize newSize = CGSizeMake(image.size.width * scaleFactor, image.size.height * scaleFactor);
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 - (void) uploadImageToStorage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^_Nullable)(void))completion {
     
     FIRStorageReference* storageRef = [self getStorageRef:storage];
+    self.avatarImage = [AvatarMLModel compressedImage:self.avatarImage scaleFactor: 0.8];
     NSData *data = UIImagePNGRepresentation(self.avatarImage);
     [storageRef putData:data
                 metadata:nil

@@ -21,6 +21,7 @@
 #import "XPCluster.h"
 #import "XP.h"
 #import "GameplayKit/GameplayKit.h"
+#import "SharedUsersPopup.h"
 @import FirebaseAuth;
 @import FirebaseFirestore;
 
@@ -37,7 +38,7 @@ NSInteger const kSigmaYDivisor = 6;
 // UI consts
 NSInteger const kCornerRadius = 10;
 
-@interface ModelViewController () <CAAnimationDelegate, TestVCDelegate>
+@interface ModelViewController () <CAAnimationDelegate, TestVCDelegate,UIGestureRecognizerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *modelNameLabel;
 @property (nonatomic, assign) NSInteger modelIndex;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
@@ -56,6 +57,9 @@ NSInteger const kCornerRadius = 10;
 @property (nonatomic, assign) CGPoint XPEndPoint;
 @property (nonatomic,strong) NSMutableArray<XPCluster*>* clusters;
 @property (nonatomic,assign) BOOL shouldAnimateXP;
+@property (weak, nonatomic) IBOutlet UIButton *leftNextButton;
+@property (weak, nonatomic) IBOutlet UIButton *rightNextButton;
+@property (strong, nonatomic) SharedUsersPopup* sharedUsersPopup;
 
 @end
 
@@ -77,6 +81,7 @@ NSInteger const kCornerRadius = 10;
     [self.trainButton setEnabled:NO];
     [self.testButton setEnabled:NO];
     [self updateLocalUserModels];
+    [self setupAvatarImageLongPress];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -104,6 +109,46 @@ NSInteger const kCornerRadius = 10;
         [self showAllXPImageViews];
         [self animateXPClusters:self.clusters];
     }
+    [self.leftNextButton setEnabled:YES];
+    [self.rightNextButton setEnabled:YES];
+}
+
+- (void) setupAvatarImageLongPress {
+    [self.avatarImageView setUserInteractionEnabled:YES];
+    UILongPressGestureRecognizer *longPressImage = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(sharedUsersPopup:)];
+    longPressImage.minimumPressDuration = 0.03;
+    longPressImage.delegate = self;
+    [self.avatarImageView addGestureRecognizer:longPressImage];
+}
+
+- (void) sharedUsersPopup: (UILongPressGestureRecognizer*)sender {
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        [self.sharedUsersPopup removeFromSuperview];
+    }
+    else if(sender.state == UIGestureRecognizerStateBegan){
+        self.sharedUsersPopup = [self makePopup];
+    }
+}
+
+- (SharedUsersPopup*) makePopup {
+    SharedUsersPopup* popup = [SharedUsersPopup new];
+    popup.model = self.model;
+    popup.db = self.db;
+    popup.user = self.user;
+    [popup getModelSharedUsersWithCompletion:^(NSError *error) {
+        if(error) {
+            NSLog(@"Failed to fetch users with particular model");
+        }
+        [popup.usersTableView reloadData];
+    }];
+    [UIView animateWithDuration:0.3 animations:^{
+        popup.alpha = 0.9;
+    }];
+    int frameHeight = self.view.frame.size.height * 0.35;
+    int frameWidth = self.view.frame.size.width * 0.50;
+    popup.frame = CGRectMake(self.view.center.x - (frameWidth/2), self.view.center.y - (frameHeight/2), frameWidth, frameHeight);
+    [self.view addSubview:popup];
+    return popup;
 }
 
 - (void) updateLocalUserModels {
@@ -170,7 +215,7 @@ NSInteger const kCornerRadius = 10;
 
 - (void) configUIBasedOnModel {
     self.model = [self getCurrModel:self.modelIndex];
-    [self setTitle:self.user.username];
+    [self setTitle:[NSString stringWithFormat:@"@%@", self.user.username]];
     self.avatarImageView.image = self.model.avatarImage;
     self.nameLabel.text = self.model.avatarName;
     self.modelNameLabel.text = self.model.modelName;
@@ -197,6 +242,8 @@ NSInteger const kCornerRadius = 10;
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    [self.leftNextButton setEnabled:NO];
+    [self.rightNextButton setEnabled:NO];
     if([[segue identifier] isEqualToString:@"modelToData"]) {
         DataViewController* targetController = (DataViewController*) [segue destinationViewController];
         targetController.model = self.model;

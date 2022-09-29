@@ -23,7 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) AvatarMLModel* model;
 @property (weak, nonatomic) id<ModelPopupDelegate> delegate;
 
-- (instancetype) initWithModel: (AvatarMLModel*)model;
 @end
 
 NS_ASSUME_NONNULL_END

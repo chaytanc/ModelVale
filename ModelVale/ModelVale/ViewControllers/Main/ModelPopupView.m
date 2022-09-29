@@ -11,7 +11,7 @@
 /*
  This view pops up and makes a model using the information inputted.
  It uploads this model to the database after creating it and dismisses when successful
- XXX It then calls the modelCreatedCompletion of its delegate when the local model has been made. The delegate could then transition to an appropriate VC, also passing the newly created model to the delegate
+ It then calls the modelCreatedCompletion of its delegate when the local model has been made. The delegate could then transition to an appropriate VC, also passing the newly created model to the delegate
  */
 @implementation ModelPopupView
 

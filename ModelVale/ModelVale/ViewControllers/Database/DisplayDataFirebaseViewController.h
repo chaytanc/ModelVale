@@ -24,7 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void) initProgressBar;
 - (void) fetchSomeDataOfModel: (void(^_Nullable)(float progress))progressCompletion allDataFetchedCompletion:(void(^_Nullable)(void))completion;
-- (void) fetchAndCreateData: (ModelLabel*)label queryLimit: (NSInteger)queryLimit completion:(void(^_Nullable)(void))completion;
+- (void) fetchAndCreateData: (ModelLabel*)label queryLimit: (NSInteger)queryLimit completion:(void(^_Nullable)(NSError*))completion;
 - (void) fetchAllDataOfModelWithType: (testTrain)testTrainType dataPerLabel: (NSInteger)dataPerLabel progressCompletion: (void(^_Nullable)(float progress))progressCompletion completion: (void(^_Nullable)(void))completion;
 -(void) createFakeData: (NSMutableArray<ModelLabel*>*)modelArray;
 @end

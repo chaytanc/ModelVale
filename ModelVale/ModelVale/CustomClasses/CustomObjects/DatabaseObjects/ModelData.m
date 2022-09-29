@@ -32,7 +32,7 @@
     return md;
 }
 
-+ (instancetype)initWithDictionary:(NSDictionary *)dict storage: (FIRStorage*)storage completion:(void(^_Nullable)(ModelData*))completion{
++ (instancetype)initWithDictionary:(NSDictionary *)dict storage: (FIRStorage*)storage completion:(void(^_Nullable)(NSError*, ModelData*))completion{
     ModelData* md = [ModelData new];
     md.label = dict[@"label"];
     md.imagePath = dict[@"imagePath"];
@@ -42,41 +42,41 @@
     else {
         md.testedCount = @0;
     }
-    [md fetchAndSetImage:storage completion:^{
+    [md fetchAndSetImage:storage completion:^(NSError *error) {
         if(completion) {
-            completion(md);
+            completion(error, md);
         }
     }];
     return md;
 }
 
 //MARK: Firebase
-+ (void) fetchFromReference: (FIRDocumentReference*)docRef storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(ModelData*))completion {
++ (void) fetchFromReference: (FIRDocumentReference*)docRef storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^ _Nullable)(NSError*, ModelData*))completion {
     [docRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
         if(error != nil) {
             [vc presentError:@"Failed to fetch ModelData" message:error.localizedDescription error:error];
         }
         else {
             ModelData* d = [ModelData initWithImage:nil label:snapshot.data[@"label"] imagePath:snapshot.data[@"imagePath"]];
-            [d fetchAndSetImage:storage completion:^{
-                completion(d);
+            [d fetchAndSetImage:storage completion:^(NSError *error) {
+                completion(error, d);
             }];
         }
     }];
 }
 
-- (void) fetchAndSetImage: (FIRStorage*)storage completion:(void(^_Nullable)(void))completion {
+- (void) fetchAndSetImage: (FIRStorage*)storage completion:(void(^_Nullable)(NSError* error))completion {
     // Max size is roughly 150 MB per image
     [[self getStorageRef:storage] dataWithMaxSize:10 * 4096 * 4096 completion:^(NSData *data, NSError *error){
         if (error != nil) {
-            //XXX todo error handling without passing vc
             NSLog(@"Failed to set UIImage on ModelData.image property");
+            completion(error);
         }
         else {
             UIImage *im = [UIImage imageWithData:data];
             self.image = im;
             if(completion){
-                completion();
+                completion(error);
             }
         }
     }];
@@ -107,8 +107,18 @@
     return storageRef;
 }
 
++ (UIImage *)compressedImage:(UIImage *)image scaleFactor: (CGFloat)scaleFactor {
+    CGSize newSize = CGSizeMake(image.size.width * scaleFactor, image.size.height * scaleFactor);
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 - (void) uploadImageToStorage: (FIRStorage*)storage vc: (UIViewController*)vc  {
     FIRStorageReference* storageRef = [self getStorageRef:storage];
+    self.image = [ModelData compressedImage:self.image scaleFactor:0.8];
     NSData *data = UIImagePNGRepresentation(self.image);
     [storageRef putData:data
                 metadata:nil

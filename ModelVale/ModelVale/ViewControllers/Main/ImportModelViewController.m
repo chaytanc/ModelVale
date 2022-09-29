@@ -50,14 +50,15 @@ static NSString* const kNoFilesString = @"No files found.";
     id<GTMFetcherAuthorizationProtocol> authorization =
         [GTMAppAuthFetcherAuthorization authorizationFromKeychainForName:kGTMAppAuthKeychainItemName];
     self.driveService.authorizer = authorization;
-    self.modelsTableView.delegate = self;
-    self.modelsTableView.dataSource = self;
     if(authorization.canAuthorize) {
         [self.signInButton setHidden:YES];
     }
     else {
         [self.signInButton setHidden:NO];
     }
+    self.searchFilesField.delegate = self;
+    self.modelsTableView.delegate = self;
+    self.modelsTableView.dataSource = self;
     self.signInButton.layer.cornerRadius = 10;
     self.searchFilesButton.layer.cornerRadius = 10;
     self.importButton.layer.cornerRadius = 10;
@@ -245,6 +246,30 @@ static NSString* const kNoFilesString = @"No files found.";
         NSLog(@"Ran handler after successful login!");
         [self.signInButton setHidden:YES];
     }];
+}
+
+- (IBAction)didTapHelp:(id)sender {
+    NSString* message = @"To run models on iOS, you can convert Keras and PyTorch models into compatible .mlmodel files. Click Ok for an external tutorial.";
+    NSString* title = @"Learn how to create Apple CoreML models";
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                   message:message
+                                   preferredStyle:UIAlertControllerStyleAlert];
+
+    NSURL* url = [NSURL URLWithString: @"https://coremltools.readme.io/docs/unified-conversion-api"];
+    UIAlertAction* okAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+       handler:^(UIAlertAction * action) {
+        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:^(BOOL success) {
+            if (success) {
+                NSLog(@"Opened CoreMLTools help");
+            }
+        }];
+    }];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+       handler:^(UIAlertAction * action) {}];
+
+    [alert addAction:okAction];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (IBAction)didTapSearchFiles:(id)sender {

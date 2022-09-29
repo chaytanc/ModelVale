@@ -116,7 +116,7 @@
         }
         // Write the retrained model to disk and set the copy in memory to have that data
         [context.model writeToURL:self.model.modelURL error:nil];
-        self.mlmodel = [self.model loadModel].model;
+        self.mlmodel = [self.model getMLModelFromModelName];
     };
     return finalCompletion;
 }
