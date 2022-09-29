@@ -9,9 +9,9 @@
 #import <UIKit/UIKit.h>
 @class ModelLabel;
 #import "FirebaseFirestore.h"
-#import "ModelProtocol.h"
 @import FirebaseStorage;
 @class User;
+#import "CoreML/CoreML.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -22,21 +22,22 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) NSNumber* health;
 @property (nonatomic, strong) UIImage* avatarImage;
 @property (nonatomic, strong) NSString* avatarImagePath;
+@property (nonatomic, assign) NSNumber* duplicateCount;
 // URL to the locally stored model
 @property (nonatomic, strong) NSURL* modelURL;
 // An array of ALL the ModelLabel references that an AvatarMLModel points to, but not the actual objects themselves
 @property (nonatomic, strong) NSMutableArray<FIRDocumentReference*>* labeledData;
 @property (nonatomic, assign, class, readonly) NSNumber* maxHealth;
 
-//- (instancetype)initWithDictionary:(NSDictionary *)dict;
 + (void)initWithDictionary:(NSDictionary *)dict storage:(FIRStorage*)storage completion:(void(^_Nullable)(AvatarMLModel*))completion;
 - (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName;
 - (MLModel*) getMLModelFromModelName;
 - (void) uploadModel: (User*)user db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
+- (void) uploadStarterModel: (User*)user db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
 + (void) fetchAndReturnExistingModel: (FIRFirestore*)db storage: (FIRStorage*)storage documentPath: (NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion;
-- (void) updateChangeableData: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
-- (id<ModelProtocol>) loadModel;
+- (void) updateChangeableData: (FIRFirestore*)db completion:(void(^)(NSError *error))completion;
 - (void) updateModelHealth: (User*)user db: (FIRFirestore*)db completion:(void(^)(NSError *error))completion;
++ (NSString*) getDefaultModelName;
 
 @end
 

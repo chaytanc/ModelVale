@@ -44,7 +44,7 @@
     self.data = [NSMutableArray new];
     self.phManager = [PHImageManager new];
     self.testTrainPickerView.tag = 0;
-    self.modelLabel = [[ModelLabel new] initEmptyLabel:self.labelField.text testTrainType:dataTypeEnumToString(Train)];
+    self.modelLabel = [[ModelLabel new] initEmptyLabel:self.labelField.text testTrainType:dataTypeEnumToString(Test)];
 
     self.imagePickerVC = [QBImagePickerController new];
     self.imagePickerVC.delegate = self;
@@ -76,10 +76,21 @@
     self.contentView.layer.cornerRadius = 10;
     self.contentView.layer.masksToBounds = YES;
     self.selectDataButton.layer.cornerRadius = 10;
-    self.selectDataButton.layer.masksToBounds = YES; self.createDataButton.layer.cornerRadius = 10;
-    self.createDataButton.layer.masksToBounds = YES;    self.addDataView.layer.cornerRadius = 10;
+    self.selectDataButton.layer.masksToBounds = YES;
+    self.createDataButton.layer.cornerRadius = 10;
+    self.createDataButton.layer.masksToBounds = YES;
+    self.addDataView.layer.cornerRadius = 10;
     self.addDataView.layer.masksToBounds = YES;
 }
+
+- (BOOL) checkLabelSet {
+    if(![self.labelField.text isEqualToString:@""]) {
+        return YES;
+    }
+    return NO;
+}
+
+//MARK: IBActions
 
 - (void) didTapDropDown:(id) obj {
     [self.labelField wasTapped];
@@ -90,7 +101,12 @@
 }
 
 - (IBAction)didTapSelectData:(id)sender {
-    [self presentViewController:self.imagePickerVC animated:YES completion:nil];
+    if([self checkLabelSet]) {
+        [self presentViewController:self.imagePickerVC animated:YES completion:nil];
+    }
+    else {
+        [self presentError:@"Please set a label first!" message:@"What should the model answer in response to these data?" error:nil];
+    }
 }
 
 - (IBAction)didTapCreateData:(id)sender {
@@ -100,11 +116,18 @@
     else {
         [self presentError:@"Cannot access Camera" message:@"Please check that a camera is available and access is enabled." error:nil];
     }
-    [self presentViewController:self.cameraPickerVC animated:YES completion:nil];
+    
+    if([self checkLabelSet]) {
+        [self presentViewController:self.cameraPickerVC animated:YES completion:nil];
+    }
+    else {
+        [self presentError:@"Please set a label first!" message:@"What should the model answer in response to these data?" error:nil];
+    }
 }
 
 - (IBAction)didTapDone:(id)sender {
     self.modelLabel.label = self.labelField.text;
+    self.modelLabel.testTrainType = self.testTrainOptions[[self.testTrainPickerView selectedRowInComponent:0]];
     [self.modelLabel updateModelLabelWithDatabase:self.db vc:self model:self.model completion:^(FIRDocumentReference * _Nonnull labelRef, NSError * _Nonnull error) {
         [self uploadModelDataSubColl:labelRef completion:^{
             if(error != nil) {
@@ -176,7 +199,7 @@
     // Get the image captured by the UIImagePickerController
     UIImage *editedImage = info[UIImagePickerControllerEditedImage];
     NSString* path = [self getImageStoragePath: self.modelLabel];
-    ModelData* data = [ModelData initWithImage:editedImage label:self.modelLabel.label imagePath:path];
+    ModelData* data = [ModelData initWithImage:editedImage label:self.labelField.text imagePath:path];
     [self.data addObject:data];
     // Lock changes to test/train type after data has been selected to upload since we can only choose one type at a time
     [self.testTrainPickerView setUserInteractionEnabled:NO];

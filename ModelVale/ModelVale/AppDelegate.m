@@ -12,10 +12,6 @@
 @import FirebaseCore;
 @import FirebaseAuth;
 @import FirebaseFirestore;
-//#import <GoogleAPIClientForREST/GTLRDrive.h>
-//#import <GTMSessionFetcher/GTMSessionFetcherService.h>
-//#import <GTMSessionFetcher/GTMSessionFetcherLogging.h>
-//#import <GoogleAPIClientForREST/GTLRUtilities.h>
 
 @interface AppDelegate ()
 @property (nonatomic, strong) FIRAuth* userListener;
@@ -27,7 +23,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [FIRApp configure];
-//    signInConfig = [[GIDConfiguration alloc] initWithClientID:@"33294605585-e2eufca8jk11d3ee8rifv1i0tqnbd9va.apps.googleusercontent.com"];
     return YES;
 }
 

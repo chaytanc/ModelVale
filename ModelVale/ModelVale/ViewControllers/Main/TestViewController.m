@@ -18,6 +18,7 @@
 #import "TestDataCell.h"
 #import "ModelViewController.h"
 #import "ResultsCell.h"
+//#import "UIViewController+PresentError.h"
 
 NSInteger const kDataPerLabel = 20;
 
@@ -30,6 +31,7 @@ NSInteger const kDataPerLabel = 20;
 @property (weak, nonatomic) IBOutlet UIView *contentView;
 @property (nonatomic, assign) int totalCorrect;
 @property (nonatomic, assign) int totalPreds;
+@property (nonatomic, assign) int totalPriorTests;
 @property (weak, nonatomic) IBOutlet UITableView *resultsTableView;
 @property (strong, nonatomic) NSMutableArray<NSString*>* resultsArray;
 @property (nonatomic, assign) int XPClustersEarned;
@@ -103,7 +105,7 @@ NSInteger const kDataPerLabel = 20;
             NSMutableDictionary* featureDict = [[NSMutableDictionary alloc] init];
             featureDict[inputKey] = imFeature;
             MLDictionaryFeatureProvider* featureProv = (MLDictionaryFeatureProvider*)[[MLDictionaryFeatureProvider new] initWithDictionary:featureDict error:nil];
-            // predict and set statslabel w prediction, update total correct label
+            // Predict and set statslabel w prediction, update total correct label
             id<MLFeatureProvider> pred = [self.mlmodel predictionFromFeatures:featureProv error:nil];
             MLFeatureValue* output = [pred featureValueForName:outputKey];
             NSString* latestPred = [NSString stringWithFormat:@"Prediction: %@\nLabel: %@", output.stringValue, data.label];
@@ -115,10 +117,20 @@ NSInteger const kDataPerLabel = 20;
                 self.totalLabel.text = [NSString stringWithFormat:@"Correct Predictions Out of Total: %i / %i ", self.totalCorrect, self.totalPreds];
             }
             numPredsSoFar += 1;
+            self.totalPriorTests += (int) data.testedCount.integerValue;
+            [self updateTestedCount:label data:data];
         }
     }
     [self updateXPClustersEarned];
     [self.delegate earnXP:self.XPClustersEarned];
+}
+
+- (void) updateTestedCount: (ModelLabel*)label data: (ModelData*)data {
+    [data incrementTestedCount:self.db labelRef: label.firebaseRef completion:^(NSError * _Nonnull dataError) {
+        if(dataError) {
+            [self presentError:@"Nonfatal error" message:@"Couldn't increment testing count on data" error:dataError];
+        }
+    }];
 }
 
 // Updates self.XPEarned to reflect latest testing results
@@ -126,6 +138,7 @@ NSInteger const kDataPerLabel = 20;
     float currentXPEarned;
     int incorrect = self.totalPreds - self.totalCorrect;
     currentXPEarned = self.totalCorrect * 0.25 - incorrect;
+    currentXPEarned = currentXPEarned / self.totalPriorTests;
     // Minimum XP earned is 0, or 1 if correct preds outnumber incorrect
     if(currentXPEarned < 1) {
         currentXPEarned = (self.totalCorrect > incorrect) ? 1 : 0;
@@ -138,7 +151,6 @@ NSInteger const kDataPerLabel = 20;
     self.XPClustersEarned = round(self.XPEarned);
 }
 
-//XXX todo Fix this to be regular back button?? Since we're using delegate protocol now?
 - (void) back:(UIBarButtonItem *)sender {
     if ([self.navigationController.parentViewController isKindOfClass:[ModelViewController class]]) {
         ModelViewController* targetController = (ModelViewController*) self.navigationController.presentingViewController;
@@ -181,7 +193,8 @@ NSInteger const kDataPerLabel = 20;
     if([kind isEqualToString:UICollectionElementKindSectionHeader]) {
         TestDataSectionHeader* sectionHeader = [self.testCollView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:@"testDataSectionHeader" forIndexPath:indexPath];
         ModelLabel* label = self.modelLabels[indexPath.section];
-        NSString* dataType = [label.testTrainType stringByAppendingString:@": "];
+        // Note that the displayed test count assumes that all data in the label are tested the same number of times
+        NSString* dataType = [label.testTrainType stringByAppendingFormat:@" %@: ", label.localData[0].testedCount];
         sectionHeader.testDataLabel.text = [dataType stringByAppendingString: label.label];
         return sectionHeader;
     }

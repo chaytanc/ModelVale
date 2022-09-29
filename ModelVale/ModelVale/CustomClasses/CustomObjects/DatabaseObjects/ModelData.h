@@ -20,14 +20,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (retain) NSString *imagePath;
 @property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) FIRDocumentReference* firebaseRef;
+@property (strong, nonatomic) NSNumber* testedCount;
 
 + (instancetype) initWithImage: (UIImage * _Nullable)image label:(NSString *)label imagePath: (NSString*)imagePath;
-+ (instancetype)initWithDictionary:(NSDictionary *)dict storage: (FIRStorage*)storage completion:(void(^_Nullable)(ModelData*))completion;
++ (instancetype)initWithDictionary:(NSDictionary *)dict storage: (FIRStorage*)storage completion:(void(^_Nullable)(NSError*, ModelData*))completion;
 - (void) saveModelDataInSubCollection: (FIRDocumentReference*)labelRef db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(void))completion;
-- (MLDictionaryFeatureProvider*) getDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
 - (MLFeatureValue*) getImageFeatureValue: (MLImageConstraint*)modelConstraints;
 - (MLDictionaryFeatureProvider*) getUpdatableDictionaryFeatureProvider: (MLImageConstraint*) modelConstraints;
-+ (void) fetchFromReference: (FIRDocumentReference*)docRef storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(ModelData*))completion;
++ (void) fetchFromReference: (FIRDocumentReference*)docRef storage: (FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^ _Nullable)(NSError*, ModelData*))completion;
+- (void) incrementTestedCount: (FIRFirestore*)db labelRef: (FIRDocumentReference*)labelRef completion:( void(^ _Nullable )(NSError *error))completion;
 
 
 @end

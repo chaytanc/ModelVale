@@ -95,7 +95,7 @@
                         [model.labeledData addObject:doc.reference];
                     }
                     // In both cases, update the Model labeledData field to reflect labeled data that it references since models may share labels. Therefore the label may exist already, but the model doesn't yet reference it.
-                    [model updateChangeableData:db vc:vc completion:^(NSError * _Nonnull error) {
+                    [model updateChangeableData:db completion:^(NSError * _Nonnull error) {
                         if(error != nil) {
                             NSLog(@"Error in updateModelLabeledDataWithDatabase");
                         }
@@ -109,7 +109,7 @@
                 [self saveNewModelLabelWithDatabase:db vc:vc completion:^(FIRDocumentReference *ref) {
                     [model.labeledData addObject:ref];
                     // Always update model labeledData
-                    [model updateChangeableData:db vc:vc completion:^(NSError * _Nonnull error) {
+                    [model updateChangeableData:db completion:^(NSError * _Nonnull error) {
                         if(error != nil) {
                             NSLog(@"Error in updateModelLabeledDataWithDatabase");
                         }
@@ -124,7 +124,7 @@
 }
 
 - (void) saveNewModelLabelWithDatabase: (FIRFirestore*)db vc: (UIViewController*)vc completion:(void(^)(FIRDocumentReference* ref))completion {
-    // Add a new ModelData with a generated id.
+    // Add a new ModelLabel with generated id.
     __block FIRDocumentReference* ref =
         [[db collectionWithPath:@"ModelLabel"] addDocumentWithData:@{
           @"label": self.label,

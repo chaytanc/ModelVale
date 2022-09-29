@@ -82,11 +82,9 @@ NSInteger const kDataQueryLimit = 2;
 - (void) fetchModelWithCompletion:(void(^)(void))completion {
     FIRDocumentReference *modelRef = [[self.db collectionWithPath:@"Model"] documentWithPath:self.model.avatarName];
     [modelRef getDocumentWithCompletion:^(FIRDocumentSnapshot * _Nullable snapshot, NSError * _Nullable error) {
-//        self.model = [self.model initWithDictionary:snapshot.data];
         [AvatarMLModel initWithDictionary:snapshot.data storage:self.storage completion:^(AvatarMLModel * model) {
             completion();
         }];
-//        completion();
     }];
 }
 
@@ -95,7 +93,7 @@ NSInteger const kDataQueryLimit = 2;
     
     int originalLabelFetchStart = self.labelFetchStart;
     float labelFetchEnd = self.labelFetchStart + kLabelQueryLimit;
-    float labelsToFetch = MIN(labelFetchEnd, self.model.labeledData.count);
+    __block float labelsToFetch = MIN(labelFetchEnd, self.model.labeledData.count);
     __block int labelsFetched = 0;
     dispatch_group_t prepareWaitingGroup = dispatch_group_create();
     // Loop through all labels this model holds refs to, up to the kLabelQueryLimit, and create those ModelLabel objects
@@ -107,13 +105,18 @@ NSInteger const kDataQueryLimit = 2;
             modelLabel.firebaseRef = ref;
             [self.modelLabels addObject:modelLabel];
             // Fetch the data on each ModelLabel and then increment the number of labels fetched when done with self.labelFetchStart
-            [self fetchAndCreateData:modelLabel queryLimit:kDataQueryLimit completion:^{
-                if(progressCompletion) {
-                    labelsFetched += 1;
-                    float progress = labelsFetched / labelsToFetch;
-                    progressCompletion(progress);
+            [self fetchAndCreateData:modelLabel queryLimit:kDataQueryLimit completion:^(NSError * error) {
+                if(error) {
+                    labelsToFetch -= 1;
                 }
-                self.labelFetchStart += 1;
+                else {
+                    if(progressCompletion) {
+                        labelsFetched += 1;
+                        float progress = labelsFetched / labelsToFetch;
+                        progressCompletion(progress);
+                    }
+                    self.labelFetchStart += 1;
+                }
                 dispatch_group_leave(prepareWaitingGroup);
             }];
         }];
@@ -129,7 +132,7 @@ NSInteger const kDataQueryLimit = 2;
 
 // Fetches all ModelData documents in the subcollection on ModelLabel and creates those objects locally by updating fetched data on the label.localData property
 // Query is paginated so that only kDataQueryLimit data are fetched per label
-- (void) fetchAndCreateData: (ModelLabel*)label queryLimit: (NSInteger)queryLimit completion:(void(^_Nullable)(void))completion {
+- (void) fetchAndCreateData: (ModelLabel*)label queryLimit: (NSInteger)queryLimit completion:(void(^_Nullable)(NSError*))completion {
     
     // Have to make initial query if self.lastSnapshot is not yet set, otherwise, query should use self.lastSnapshot to pick up where the last query left off
     FIRQuery* dataQuery = (label.lastDataSnapshot == nil) ? [[[label.firebaseRef collectionWithPath:@"ModelData"] queryOrderedByField:@"imagePath"] queryLimitedTo:queryLimit] :
@@ -137,9 +140,11 @@ NSInteger const kDataQueryLimit = 2;
         queryStartingAfterDocument:label.lastDataSnapshot];
     dispatch_group_t initDocsWaitingGroup = dispatch_group_create();
 
+    __block NSError* queryError;
     [dataQuery getDocumentsWithCompletion:^(FIRQuerySnapshot * _Nullable snapshot, NSError * _Nullable error) {
         if(error != nil) {
             NSLog(@"Error querying more data");
+            queryError = error;
         }
         else {
             if(snapshot.documents == nil) {
@@ -149,10 +154,16 @@ NSInteger const kDataQueryLimit = 2;
                 label.lastDataSnapshot = snapshot.documents.lastObject;
                 dispatch_group_enter(initDocsWaitingGroup);
                 NSDictionary* dict = doc.data;
-                NSLog(@"Fetching %@ data for label %@", doc.documentID, label.label);
-                [ModelData initWithDictionary:dict storage:self.storage completion:^(ModelData * _Nonnull modelData) {
-                    modelData.firebaseRef = doc.reference;
-                    [label.localData addObject:modelData];
+                NSString* errorMessage = [NSString stringWithFormat:@"Fetching %@ data for label %@", doc.documentID, label.label];
+                [ModelData initWithDictionary:dict storage:self.storage completion:^(NSError* error, ModelData * _Nonnull modelData) {
+                    if(error) {
+                        queryError = error;
+                        [self presentError:@"Failed to fetch data" message:errorMessage error:error];
+                    }
+                    else {
+                        modelData.firebaseRef = doc.reference;
+                        [label.localData addObject:modelData];
+                    }
                     dispatch_group_leave(initDocsWaitingGroup);
                 }];
             }
@@ -160,7 +171,7 @@ NSInteger const kDataQueryLimit = 2;
             dispatch_group_notify(initDocsWaitingGroup, dispatch_get_main_queue(), ^{
                 NSLog(@"Fetched data.");
                 if(completion){
-                    completion();
+                    completion(queryError);
                 }
             });
         }
@@ -185,11 +196,16 @@ NSInteger const kDataQueryLimit = 2;
             if([modelLabel.testTrainType isEqualToString: dataTypeEnumToString(testTrainType)]){
                 [self.modelLabels addObject:modelLabel];
                 // Fetch the data on each ModelLabel and then increment the number of labels fetched when done with self.labelFetchStart
-                [self fetchAndCreateData:modelLabel queryLimit:dataPerLabel completion:^{
-                    if(progressCompletion) {
-                        labelsFetched += 1;
-                        float progress = labelsFetched / labelsToFetch;
-                        progressCompletion(progress);
+                [self fetchAndCreateData:modelLabel queryLimit:dataPerLabel completion:^(NSError* error) {
+                    if(error) {
+                        [self presentError:@"Failed to fetch data" message:error.localizedDescription error:error];
+                    }
+                    else {
+                        if(progressCompletion) {
+                            labelsFetched += 1;
+                            float progress = labelsFetched / labelsToFetch;
+                            progressCompletion(progress);
+                        }
                     }
                     dispatch_group_leave(prepareWaitingGroup);
                 }];

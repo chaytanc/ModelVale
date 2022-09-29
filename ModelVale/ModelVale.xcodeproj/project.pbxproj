@@ -57,6 +57,7 @@
 		9CB79C1828775C8A00F67E1C /* RetrainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1728775C8A00F67E1C /* RetrainViewController.m */; };
 		9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1A28775C9800F67E1C /* DataViewController.m */; };
 		9CB79C1E28775CB400F67E1C /* AddDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1D28775CB400F67E1C /* AddDataViewController.m */; };
+		9CE67CE528D78E230014DCF3 /* ModelPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE67CE428D78E230014DCF3 /* ModelPopupView.m */; };
 		9CEEE36E2880D06900548963 /* AvatarMLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEEE36D2880D06900548963 /* AvatarMLModel.m */; };
 		9CEEE3712880D71600548963 /* HealthBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEEE3702880D71600548963 /* HealthBarView.m */; };
 		A595EDEE3F21E8AB95A01648 /* Pods_ModelVale.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA9061DB1E6EDD323C736447 /* Pods_ModelVale.framework */; };
@@ -173,6 +174,10 @@
 		9CB79C1C28775CB400F67E1C /* AddDataViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddDataViewController.h; sourceTree = "<group>"; };
 		9CB79C1D28775CB400F67E1C /* AddDataViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddDataViewController.m; sourceTree = "<group>"; };
 		9CB79C1F2877932200F67E1C /* ModelVale-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ModelVale-Bridging-Header.h"; sourceTree = "<group>"; };
+		9CE67CE128D657170014DCF3 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		9CE67CE228D672CA0014DCF3 /* ModelConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelConstants.h; sourceTree = "<group>"; };
+		9CE67CE328D78E230014DCF3 /* ModelPopupView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelPopupView.h; sourceTree = "<group>"; };
+		9CE67CE428D78E230014DCF3 /* ModelPopupView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModelPopupView.m; sourceTree = "<group>"; };
 		9CEEE36C2880D06900548963 /* AvatarMLModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AvatarMLModel.h; sourceTree = "<group>"; };
 		9CEEE36D2880D06900548963 /* AvatarMLModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AvatarMLModel.m; sourceTree = "<group>"; };
 		9CEEE36F2880D71600548963 /* HealthBarView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HealthBarView.h; sourceTree = "<group>"; };
@@ -222,6 +227,8 @@
 		9C150577289B565A0090319A /* DatabaseObjects */ = {
 			isa = PBXGroup;
 			children = (
+				9C15059628A1C2DF0090319A /* ModelProtocol.h */,
+				9CE67CE228D672CA0014DCF3 /* ModelConstants.h */,
 				9C69F730287CAFDE0001F608 /* ModelData.h */,
 				9C69F731287CAFDE0001F608 /* ModelData.m */,
 				9C69F733287CCFC40001F608 /* ModelLabel.h */,
@@ -237,8 +244,8 @@
 		9C150578289B56F50090319A /* CustomUI */ = {
 			isa = PBXGroup;
 			children = (
-				9CB79C0D2874F21800F67E1C /* UIViewController+PresentError.h */,
 				9C0759332884D240005493D1 /* DropDownTextField.swift */,
+				9CB79C0D2874F21800F67E1C /* UIViewController+PresentError.h */,
 				9CB79C0C2874F21700F67E1C /* UIViewController+PresentError.m */,
 				9C15058C289DB8BB0090319A /* RetrainDataSectionHeader.h */,
 				9C15058D289DB8BB0090319A /* RetrainDataSectionHeader.m */,
@@ -284,7 +291,6 @@
 				9C69F73E287E4DD50001F608 /* TrainBatchData.m */,
 				9CADD487288F661800C1C6F4 /* StarterModels.h */,
 				9CADD486288F661800C1C6F4 /* StarterModels.m */,
-				9C15059628A1C2DF0090319A /* ModelProtocol.h */,
 			);
 			path = CustomGeneral;
 			sourceTree = "<group>";
@@ -350,6 +356,7 @@
 				9C74E50D28725799003FFFF7 /* AppDelegate.m */,
 				9C74E50F28725799003FFFF7 /* SceneDelegate.h */,
 				9C74E51028725799003FFFF7 /* SceneDelegate.m */,
+				9CE67CE128D657170014DCF3 /* Constants.h */,
 				9C150579289B57240090319A /* Storyboards */,
 				9CB79C0B2874F13E00F67E1C /* CustomClasses */,
 				9C74E54128736CBC003FFFF7 /* ViewControllers */,
@@ -446,9 +453,11 @@
 				9CB79C1A28775C9800F67E1C /* DataViewController.m */,
 				9CB79C1C28775CB400F67E1C /* AddDataViewController.h */,
 				9CB79C1D28775CB400F67E1C /* AddDataViewController.m */,
-				9CB79C1F2877932200F67E1C /* ModelVale-Bridging-Header.h */,
 				9C1C294928CFB53900C6214F /* ImportModelViewController.h */,
 				9C1C294A28CFB53900C6214F /* ImportModelViewController.m */,
+				9CE67CE328D78E230014DCF3 /* ModelPopupView.h */,
+				9CE67CE428D78E230014DCF3 /* ModelPopupView.m */,
+				9CB79C1F2877932200F67E1C /* ModelVale-Bridging-Header.h */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -717,6 +726,7 @@
 				9C74E54728736D7B003FFFF7 /* StatsViewController.m in Sources */,
 				9C69F72B287CA94B0001F608 /* UserDataCell.m in Sources */,
 				9C150576289B52F90090319A /* DisplayDataFirebaseViewController.m in Sources */,
+				9CE67CE528D78E230014DCF3 /* ModelPopupView.m in Sources */,
 				9C1C294B28CFB53900C6214F /* ImportModelViewController.m in Sources */,
 				9C1C294E28CFBDD300C6214F /* ImportModelCell.m in Sources */,
 				9C74E54C28736DBD003FFFF7 /* LoginViewController.m in Sources */,

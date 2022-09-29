@@ -115,8 +115,11 @@
                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mGs-eG-41X" userLabel="testButton">
                                                         <rect key="frame" x="0.0" y="95" width="248" height="44.5"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
-                                                        <buttonConfiguration key="configuration" style="plain" title="Test"/>
+                                                        <buttonConfiguration key="configuration" style="plain" title="Test">
+                                                            <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                                        </buttonConfiguration>
                                                         <connections>
                                                             <segue destination="FTE-bX-UES" kind="show" identifier="modelToTest" id="xQZ-lu-Smd"/>
                                                         </connections>
@@ -124,8 +127,11 @@
                                                     <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ef4-9f-J2e" userLabel="trainButton">
                                                         <rect key="frame" x="0.0" y="154.5" width="248" height="45"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
-                                                        <buttonConfiguration key="configuration" style="plain" title="Retrain"/>
+                                                        <buttonConfiguration key="configuration" style="plain" title="Retrain">
+                                                            <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                                        </buttonConfiguration>
                                                         <connections>
                                                             <segue destination="D26-MH-1f0" kind="show" identifier="modelToRetrain" id="7WC-gF-Hea"/>
                                                         </connections>
@@ -133,8 +139,11 @@
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ESa-hG-I2C" userLabel="dataButton">
                                                         <rect key="frame" x="0.0" y="214.5" width="248" height="44.5"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
-                                                        <buttonConfiguration key="configuration" style="plain" title="Manage Data"/>
+                                                        <buttonConfiguration key="configuration" style="plain" title="Manage Data">
+                                                            <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                                        </buttonConfiguration>
                                                         <connections>
                                                             <segue destination="kKw-Zs-x18" kind="show" identifier="modelToData" id="1lD-79-zWl"/>
                                                         </connections>
@@ -192,7 +201,7 @@
                                 <rect key="frame" x="302" y="5" width="92" height="34.5"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="plus.rectangle.on.rectangle.fill" catalog="system" title=" ">
+                                <buttonConfiguration key="configuration" style="plain" image="plus.rectangle.fill.on.folder.fill" catalog="system" title=" ">
                                     <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" scale="large"/>
                                 </buttonConfiguration>
                                 <connections>
@@ -208,8 +217,10 @@
                         <outlet property="detailsView" destination="vbN-tA-qOH" id="LaR-f9-fn8"/>
                         <outlet property="healthBarView" destination="lif-Wb-8dq" id="iCK-3i-t66"/>
                         <outlet property="healthLabel" destination="1Dw-8a-C3F" id="uhB-w5-guc"/>
+                        <outlet property="leftNextButton" destination="Pgp-gM-Y2b" id="W1Y-UV-1lM"/>
                         <outlet property="modelNameLabel" destination="75u-xE-W3I" id="FBF-0S-aVT"/>
                         <outlet property="nameLabel" destination="pnT-HL-fPk" id="Nex-bb-A9X"/>
+                        <outlet property="rightNextButton" destination="g3e-KY-bXg" id="V52-LT-TSW"/>
                         <outlet property="testButton" destination="mGs-eG-41X" id="S8B-f2-Fih"/>
                         <outlet property="trainButton" destination="ef4-9f-J2e" id="qhN-7z-W6h"/>
                     </connections>
@@ -323,8 +334,11 @@
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="35" id="Xyo-FE-EQP"/>
                                                 </constraints>
+                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Test"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Test">
+                                                    <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                                </buttonConfiguration>
                                                 <connections>
                                                     <action selector="didTapTest:" destination="FTE-bX-UES" eventType="touchUpInside" id="xeJ-kE-abF"/>
                                                 </connections>
@@ -434,8 +448,30 @@
                                     <stackView opaque="NO" alpha="0.90000000000000002" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="dvP-q9-Fnu" userLabel="addDataStackView">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="774"/>
                                         <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select training or testing data" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gmL-r4-cKp" userLabel="testTrainLabel">
+                                                <rect key="frame" x="8" y="8" width="398" height="25"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="25" id="UQS-Vz-n1t"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" systemColor="placeholderTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M7Q-VJ-8Yh" userLabel="testTrainPickerView">
+                                                <rect key="frame" x="8" y="38" width="398" height="40"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="40" id="Ieq-P2-RbU"/>
+                                                </constraints>
+                                            </pickerView>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Data Label" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xds-Lr-dQX" userLabel="labelField" customClass="DropDownTextField" customModule="ModelVale" customModuleProvider="target">
+                                                <rect key="frame" x="8" y="83" width="398" height="52.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
                                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Rx1-af-axv" userLabel="addDataCollView">
-                                                <rect key="frame" x="8" y="8" width="398" height="453"/>
+                                                <rect key="frame" x="8" y="140.5" width="398" height="453"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="200" id="5S7-46-0le"/>
@@ -475,36 +511,17 @@
                                                     </collectionViewCell>
                                                 </cells>
                                             </collectionView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select training or testing data" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gmL-r4-cKp" userLabel="testTrainLabel">
-                                                <rect key="frame" x="8" y="466" width="398" height="25"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="25" id="UQS-Vz-n1t"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <color key="textColor" systemColor="placeholderTextColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="M7Q-VJ-8Yh" userLabel="testTrainPickerView">
-                                                <rect key="frame" x="8" y="496" width="398" height="40"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="40" id="Ieq-P2-RbU"/>
-                                                </constraints>
-                                            </pickerView>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Data Label" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xds-Lr-dQX" userLabel="labelField" customClass="DropDownTextField" customModule="ModelVale" customModuleProvider="target">
-                                                <rect key="frame" x="8" y="541" width="398" height="52.5"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jEU-Js-opy" userLabel="selectDataButton">
                                                 <rect key="frame" x="8" y="598.5" width="398" height="52.5"/>
                                                 <color key="backgroundColor" systemColor="systemGray5Color"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="IuN-4M-XMg"/>
                                                 </constraints>
+                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Select Data"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Select Data">
+                                                    <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                                </buttonConfiguration>
                                                 <connections>
                                                     <action selector="didTapSelectData:" destination="XDb-gl-3KP" eventType="touchUpInside" id="G83-Ap-AcW"/>
                                                 </connections>
@@ -512,8 +529,11 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a3c-38-vDE" userLabel="createDataButton">
                                                 <rect key="frame" x="8" y="656" width="398" height="52.5"/>
                                                 <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Create Data"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Create Data">
+                                                    <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                                </buttonConfiguration>
                                                 <connections>
                                                     <action selector="didTapCreateData:" destination="XDb-gl-3KP" eventType="touchUpInside" id="nTg-nc-19t"/>
                                                 </connections>
@@ -522,15 +542,18 @@
                                                 <rect key="frame" x="8" y="713.5" width="398" height="52.5"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tVo-ZQ-rTi" userLabel="addDataButton">
-                                                        <rect key="frame" x="170" y="11" width="58.5" height="31"/>
+                                                        <rect key="frame" x="171.5" y="11" width="55.5" height="30.5"/>
                                                         <state key="normal" title="Button"/>
-                                                        <buttonConfiguration key="configuration" style="plain" title="Done"/>
+                                                        <buttonConfiguration key="configuration" style="plain" title="Done">
+                                                            <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                                        </buttonConfiguration>
                                                         <connections>
                                                             <action selector="didTapDone:" destination="XDb-gl-3KP" eventType="touchUpInside" id="9S4-Ac-1fT"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
                                                 <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstItem="tVo-ZQ-rTi" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Cq9-mu-8Fj" secondAttribute="leading" constant="50" id="BdH-pJ-7l0"/>
                                                     <constraint firstItem="tVo-ZQ-rTi" firstAttribute="centerX" secondItem="Cq9-mu-8Fj" secondAttribute="centerX" id="MSN-dk-Bsq"/>
@@ -607,7 +630,7 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="774"/>
                                 <subviews>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="XQH-3A-fv1" userLabel="userDataCollectionView">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="743"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="743.5"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="vkY-bQ-I5f">
                                             <size key="itemSize" width="128" height="128"/>
                                             <size key="headerReferenceSize" width="50" height="50"/>
@@ -664,10 +687,13 @@
                                         </collectionReusableView>
                                     </collectionView>
                                     <button opaque="NO" alpha="0.84999999999999998" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TPh-3S-aNA" userLabel="loadMoreButton">
-                                        <rect key="frame" x="10" y="733" width="394" height="31"/>
+                                        <rect key="frame" x="10" y="733.5" width="394" height="30.5"/>
                                         <color key="backgroundColor" systemColor="systemGray5Color"/>
+                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Load More"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Load More">
+                                            <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                        </buttonConfiguration>
                                         <connections>
                                             <action selector="didTapLoadMore:" destination="kKw-Zs-x18" eventType="touchUpInside" id="qHD-zY-5ZF"/>
                                         </connections>
@@ -809,8 +835,11 @@
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="35" id="bHl-do-EPX"/>
                                                 </constraints>
+                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Retrain"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Retrain">
+                                                    <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                                </buttonConfiguration>
                                                 <connections>
                                                     <action selector="didTapRetrain:" destination="D26-MH-1f0" eventType="touchUpInside" id="ghC-f3-hxr"/>
                                                 </connections>
@@ -919,8 +948,11 @@
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="40" id="HfN-xc-Gaq"/>
                                                 </constraints>
+                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Drive Sign In"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Drive Sign In">
+                                                    <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                                </buttonConfiguration>
                                                 <connections>
                                                     <action selector="didTapSignIn:" destination="wVW-gN-DZQ" eventType="touchUpInside" id="BcK-61-U9X"/>
                                                 </connections>
@@ -936,8 +968,11 @@
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="40" id="qKY-Tn-zev"/>
                                                 </constraints>
+                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" title="Search Files"/>
+                                                <buttonConfiguration key="configuration" style="plain" title="Search Files">
+                                                    <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                                </buttonConfiguration>
                                                 <connections>
                                                     <action selector="didTapSearchFiles:" destination="wVW-gN-DZQ" eventType="touchUpInside" id="940-QH-QbB"/>
                                                 </connections>
@@ -982,8 +1017,11 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="40" id="s5E-FP-mkJ"/>
                                         </constraints>
+                                        <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Import Model"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Import Model">
+                                            <fontDescription key="titleFontDescription" name="TrebuchetMS" family="Trebuchet MS" pointSize="14"/>
+                                        </buttonConfiguration>
                                         <connections>
                                             <action selector="didTapImportModel:" destination="wVW-gN-DZQ" eventType="touchUpInside" id="Ogy-Ml-Jhr"/>
                                         </connections>
@@ -1017,9 +1055,17 @@
                             <constraint firstItem="5rN-aG-lAC" firstAttribute="leading" secondItem="ntU-4i-E8g" secondAttribute="leading" id="rm9-9T-ffk"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Data" id="lSR-Ir-nH6"/>
+                    <navigationItem key="navigationItem" title="Drive" id="lSR-Ir-nH6">
+                        <barButtonItem key="rightBarButtonItem" title=" " image="questionmark.circle.fill" catalog="system" id="bt2-WZ-HLf">
+                            <connections>
+                                <action selector="didTapHelp:" destination="wVW-gN-DZQ" id="9yD-rx-9wL"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
+                        <outlet property="importButton" destination="0Fb-c5-Te3" id="8Jn-Ex-hXb"/>
                         <outlet property="modelsTableView" destination="XfB-cj-dpn" id="MlX-i7-blx"/>
+                        <outlet property="searchFilesButton" destination="jeA-5n-kHm" id="BCr-f2-vJ4"/>
                         <outlet property="searchFilesField" destination="fWf-qN-Qwg" id="f97-RL-AvY"/>
                         <outlet property="signInButton" destination="aCf-7k-HFp" id="d33-ne-JxW"/>
                     </connections>
@@ -1038,7 +1084,8 @@
         <image name="gamemountains" width="3347" height="2104"/>
         <image name="mountain" width="4651" height="3101"/>
         <image name="plus" catalog="system" width="128" height="113"/>
-        <image name="plus.rectangle.on.rectangle.fill" catalog="system" width="128" height="97"/>
+        <image name="plus.rectangle.fill.on.folder.fill" catalog="system" width="128" height="96"/>
+        <image name="questionmark.circle.fill" catalog="system" width="128" height="121"/>
         <image name="racoonavatar_glow" width="736" height="621"/>
         <systemColor name="placeholderTextColor">
             <color red="0.23529411764705882" green="0.23529411764705882" blue="0.2627450980392157" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>

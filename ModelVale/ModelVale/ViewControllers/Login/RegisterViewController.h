@@ -10,7 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface RegisterViewController : FirebaseViewController
+//@interface RegisterViewController : FirebaseViewController
+@interface RegisterViewController : UIViewController
 
 @end
 
