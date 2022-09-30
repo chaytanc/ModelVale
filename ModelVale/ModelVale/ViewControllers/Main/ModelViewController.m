@@ -44,7 +44,7 @@ NSInteger const kCornerRadius = 10;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UIView *detailsView;
 @property (weak, nonatomic) IBOutlet UIStackView *avatarStackView;
-@property (weak, nonatomic) IBOutlet HealthBarView *healthBarView;
+@property (strong, nonatomic) IBOutlet HealthBarView *healthBarView;
 @property (weak, nonatomic) IBOutlet UILabel *healthLabel;
 @property (weak, nonatomic) IBOutlet UIButton *testButton;
 @property (weak, nonatomic) IBOutlet UIButton *trainButton;
@@ -60,6 +60,7 @@ NSInteger const kCornerRadius = 10;
 @property (weak, nonatomic) IBOutlet UIButton *leftNextButton;
 @property (weak, nonatomic) IBOutlet UIButton *rightNextButton;
 @property (strong, nonatomic) SharedUsersPopup* sharedUsersPopup;
+@property (strong, nonatomic) UIStackView* horizontalStackView;
 
 @end
 
@@ -82,6 +83,8 @@ NSInteger const kCornerRadius = 10;
     [self.testButton setEnabled:NO];
     [self updateLocalUserModels];
     [self setupAvatarImageLongPress];
+    [self formatHorizontalStackView];
+    [self formatButtons];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -91,8 +94,80 @@ NSInteger const kCornerRadius = 10;
                                               object:nil];
 }
 
+//MARK: Rotated View
+-(void) viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    if(UIDeviceOrientationIsPortrait(UIDevice.currentDevice.orientation)) {
+        [self resetHealthBar];
+        [self restoreAvatarStackView];
+
+    }
+    else if(UIDeviceOrientationIsLandscape(UIDevice.currentDevice.orientation)) {
+        [self resetHealthBar];
+        [self restoreHorizontalStackView];
+    }
+    else {
+        NSLog(@"flat??");
+    }
+}
+
+- (void) resetHealthBar {
+    if([self.healthBarView isDescendantOfView:self.view])
+    {
+        [self.healthBarView removeFromSuperview];
+        [self.healthBarView animateFillingHealthBar: 0 filledBarPath:self.healthBarView.healthPath layer:self.healthBarView.healthShapeLayer];
+        [self.avatarStackView insertArrangedSubview:self.healthBarView atIndex:1];
+
+    }
+}
+
+- (void) formatHorizontalStackView {
+    self.horizontalStackView = [UIStackView new];
+    self.horizontalStackView.axis = UILayoutConstraintAxisHorizontal;
+    [self.horizontalStackView setSpacing:10];
+    [self.horizontalStackView setDistribution:UIStackViewDistributionFillEqually];
+    [self.horizontalStackView setBackgroundColor:[UIColor clearColor]];
+    self.horizontalStackView.translatesAutoresizingMaskIntoConstraints = NO;
+}
+
+- (void) formatButtons {
+    [self.testButton removeConstraints:[self.testButton constraints]];
+    [self.trainButton removeConstraints:[self.trainButton constraints]];
+    [self.dataButton removeConstraints:[self.dataButton constraints]];
+    NSLayoutConstraint *testHeight = [NSLayoutConstraint constraintWithItem:self.testButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:45];
+    NSLayoutConstraint *testWidth = [NSLayoutConstraint constraintWithItem:self.testButton attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationGreaterThanOrEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:50];
+    NSLayoutConstraint *trainHeight = [NSLayoutConstraint constraintWithItem:self.trainButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:45];
+    NSLayoutConstraint *dataHeight = [NSLayoutConstraint constraintWithItem:self.dataButton attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1 constant:45];
+    [self.testButton addConstraint:testHeight];
+    [self.trainButton addConstraint:trainHeight];
+    [self.dataButton addConstraint:dataHeight];
+    [self.testButton addConstraint:testWidth];
+}
+
+- (void) restoreHorizontalStackView {
+    [self.testButton removeFromSuperview];
+    [self.trainButton removeFromSuperview];
+    [self.dataButton removeFromSuperview];
+    [self.horizontalStackView addArrangedSubview:self.testButton];
+    [self.horizontalStackView addArrangedSubview:self.trainButton];
+    [self.horizontalStackView addArrangedSubview:self.dataButton];
+    [self.avatarStackView addArrangedSubview:self.horizontalStackView];
+}
+
+- (void) restoreAvatarStackView {
+    [self.testButton removeFromSuperview];
+    [self.trainButton removeFromSuperview];
+    [self.dataButton removeFromSuperview];
+    [self.avatarStackView addArrangedSubview:self.testButton];
+    [self.avatarStackView addArrangedSubview:self.trainButton];
+    [self.avatarStackView addArrangedSubview:self.dataButton];
+    [self.horizontalStackView removeFromSuperview];
+    [self formatButtons];
+}
+
 - (void) viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
+    //XXX redraw healthbar here?? clear existing drawings with new healthbar view??
     [self setHealthBarPropsForXP];
     [self setXPPathsAndClusterCenters:self.seed reanimate:FALSE];
 }

@@ -94,10 +94,10 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vbN-tA-qOH" userLabel="detailsView">
-                                        <rect key="frame" x="83" y="465" width="248" height="259"/>
+                                        <rect key="frame" x="83" y="465" width="248" height="245"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="6kY-bT-WRU" userLabel="avatarStackView">
-                                                <rect key="frame" x="0.0" y="0.0" width="248" height="259"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="248" height="245"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lif-Wb-8dq" userLabel="healthBarView" customClass="HealthBarView">
                                                         <rect key="frame" x="0.0" y="0.0" width="248" height="80"/>
@@ -113,8 +113,11 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <button opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mGs-eG-41X" userLabel="testButton">
-                                                        <rect key="frame" x="0.0" y="95" width="248" height="44.5"/>
+                                                        <rect key="frame" x="0.0" y="95" width="248" height="40"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="NhQ-Q4-vSg"/>
+                                                        </constraints>
                                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="plain" title="Test">
@@ -125,7 +128,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ef4-9f-J2e" userLabel="trainButton">
-                                                        <rect key="frame" x="0.0" y="154.5" width="248" height="45"/>
+                                                        <rect key="frame" x="0.0" y="150" width="248" height="40"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
@@ -137,7 +140,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ESa-hG-I2C" userLabel="dataButton">
-                                                        <rect key="frame" x="0.0" y="214.5" width="248" height="44.5"/>
+                                                        <rect key="frame" x="0.0" y="205" width="248" height="40"/>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
@@ -167,7 +170,7 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="vbN-tA-qOH" firstAttribute="top" secondItem="cS9-hf-b4l" secondAttribute="bottom" constant="20" id="2Tf-PG-dUk"/>
-                                    <constraint firstAttribute="bottom" secondItem="vbN-tA-qOH" secondAttribute="bottom" constant="50" id="Ayf-RR-js7"/>
+                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="vbN-tA-qOH" secondAttribute="bottom" constant="20" id="Ayf-RR-js7"/>
                                     <constraint firstItem="cS9-hf-b4l" firstAttribute="height" secondItem="63u-Mv-aSZ" secondAttribute="height" multiplier="0.45" id="H6Y-2L-LH8"/>
                                     <constraint firstItem="vbN-tA-qOH" firstAttribute="width" secondItem="63u-Mv-aSZ" secondAttribute="width" multiplier="0.6" id="HpC-tr-enj"/>
                                     <constraint firstItem="cS9-hf-b4l" firstAttribute="centerY" secondItem="63u-Mv-aSZ" secondAttribute="centerY" multiplier="0.7" id="RrI-vq-l2x"/>

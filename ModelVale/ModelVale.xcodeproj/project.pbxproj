@@ -16,7 +16,6 @@
 		9C15058B289DB85E0090319A /* RetrainDataCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C15058A289DB85E0090319A /* RetrainDataCell.m */; };
 		9C15058E289DB8BB0090319A /* RetrainDataSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C15058D289DB8BB0090319A /* RetrainDataSectionHeader.m */; };
 		9C150590289DCDA00090319A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C15058F289DCDA00090319A /* LaunchScreen.storyboard */; };
-		9C15059828A2C5110090319A /* XceptionOriginal.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9C15059728A2C5110090319A /* XceptionOriginal.mlmodel */; };
 		9C1505AE28A32BBD0090319A /* Xception.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9C1505AD28A32BBC0090319A /* Xception.mlmodel */; };
 		9C1505B428A431990090319A /* Resnet50.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9C1505B328A431990090319A /* Resnet50.mlmodel */; };
 		9C1C293928BFBF5E00C6214F /* UpdatableResnetO.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 9C1C293828BFBF5E00C6214F /* UpdatableResnetO.mlmodel */; };
@@ -58,6 +57,7 @@
 		9CB79C1B28775C9800F67E1C /* DataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1A28775C9800F67E1C /* DataViewController.m */; };
 		9CB79C1E28775CB400F67E1C /* AddDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB79C1D28775CB400F67E1C /* AddDataViewController.m */; };
 		9CE67CE528D78E230014DCF3 /* ModelPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE67CE428D78E230014DCF3 /* ModelPopupView.m */; };
+		9CE67D4028E3FBE40014DCF3 /* SharedUsersPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE67D3F28E3FBE40014DCF3 /* SharedUsersPopup.m */; };
 		9CEEE36E2880D06900548963 /* AvatarMLModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEEE36D2880D06900548963 /* AvatarMLModel.m */; };
 		9CEEE3712880D71600548963 /* HealthBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CEEE3702880D71600548963 /* HealthBarView.m */; };
 		A595EDEE3F21E8AB95A01648 /* Pods_ModelVale.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA9061DB1E6EDD323C736447 /* Pods_ModelVale.framework */; };
@@ -100,8 +100,6 @@
 		9C15058C289DB8BB0090319A /* RetrainDataSectionHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RetrainDataSectionHeader.h; sourceTree = "<group>"; };
 		9C15058D289DB8BB0090319A /* RetrainDataSectionHeader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RetrainDataSectionHeader.m; sourceTree = "<group>"; };
 		9C15058F289DCDA00090319A /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		9C15059628A1C2DF0090319A /* ModelProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelProtocol.h; sourceTree = "<group>"; };
-		9C15059728A2C5110090319A /* XceptionOriginal.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = XceptionOriginal.mlmodel; sourceTree = "<group>"; };
 		9C1505AD28A32BBC0090319A /* Xception.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Xception.mlmodel; sourceTree = "<group>"; };
 		9C1505B328A431990090319A /* Resnet50.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Resnet50.mlmodel; sourceTree = "<group>"; };
 		9C1C293828BFBF5E00C6214F /* UpdatableResnetO.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = UpdatableResnetO.mlmodel; sourceTree = "<group>"; };
@@ -178,6 +176,9 @@
 		9CE67CE228D672CA0014DCF3 /* ModelConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelConstants.h; sourceTree = "<group>"; };
 		9CE67CE328D78E230014DCF3 /* ModelPopupView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ModelPopupView.h; sourceTree = "<group>"; };
 		9CE67CE428D78E230014DCF3 /* ModelPopupView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ModelPopupView.m; sourceTree = "<group>"; };
+		9CE67D3D28E376350014DCF3 /* StarterConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StarterConstants.h; sourceTree = "<group>"; };
+		9CE67D3E28E3FBE40014DCF3 /* SharedUsersPopup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedUsersPopup.h; sourceTree = "<group>"; };
+		9CE67D3F28E3FBE40014DCF3 /* SharedUsersPopup.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SharedUsersPopup.m; sourceTree = "<group>"; };
 		9CEEE36C2880D06900548963 /* AvatarMLModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AvatarMLModel.h; sourceTree = "<group>"; };
 		9CEEE36D2880D06900548963 /* AvatarMLModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AvatarMLModel.m; sourceTree = "<group>"; };
 		9CEEE36F2880D71600548963 /* HealthBarView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HealthBarView.h; sourceTree = "<group>"; };
@@ -227,7 +228,6 @@
 		9C150577289B565A0090319A /* DatabaseObjects */ = {
 			isa = PBXGroup;
 			children = (
-				9C15059628A1C2DF0090319A /* ModelProtocol.h */,
 				9CE67CE228D672CA0014DCF3 /* ModelConstants.h */,
 				9C69F730287CAFDE0001F608 /* ModelData.h */,
 				9C69F731287CAFDE0001F608 /* ModelData.m */,
@@ -289,6 +289,7 @@
 				9C69F737287DF38E0001F608 /* TestTrainEnum.m */,
 				9C69F73D287E4DD50001F608 /* TrainBatchData.h */,
 				9C69F73E287E4DD50001F608 /* TrainBatchData.m */,
+				9CE67D3D28E376350014DCF3 /* StarterConstants.h */,
 				9CADD487288F661800C1C6F4 /* StarterModels.h */,
 				9CADD486288F661800C1C6F4 /* StarterModels.m */,
 			);
@@ -314,16 +315,6 @@
 				9C1C294D28CFBDD300C6214F /* ImportModelCell.m */,
 			);
 			path = Cells;
-			sourceTree = "<group>";
-		};
-		9C69F72F287CAF650001F608 /* CustomObjects */ = {
-			isa = PBXGroup;
-			children = (
-				9C1505B928A58B620090319A /* CustomGeneral */,
-				9C15057A289B57FD0090319A /* XPObjects */,
-				9C150577289B565A0090319A /* DatabaseObjects */,
-			);
-			path = CustomObjects;
 			sourceTree = "<group>";
 		};
 		9C74E50028725799003FFFF7 = {
@@ -410,7 +401,6 @@
 			isa = PBXGroup;
 			children = (
 				9C1C293E28BFBF9600C6214F /* UpdatableSqueezeNet.mlmodel */,
-				9C15059728A2C5110090319A /* XceptionOriginal.mlmodel */,
 				9C1505AD28A32BBC0090319A /* Xception.mlmodel */,
 				9C1C293828BFBF5E00C6214F /* UpdatableResnetO.mlmodel */,
 				9C1505B328A431990090319A /* Resnet50.mlmodel */,
@@ -421,7 +411,9 @@
 		9CB79C0B2874F13E00F67E1C /* CustomClasses */ = {
 			isa = PBXGroup;
 			children = (
-				9C69F72F287CAF650001F608 /* CustomObjects */,
+				9C1505B928A58B620090319A /* CustomGeneral */,
+				9C15057A289B57FD0090319A /* XPObjects */,
+				9C150577289B565A0090319A /* DatabaseObjects */,
 				9C150578289B56F50090319A /* CustomUI */,
 			);
 			path = CustomClasses;
@@ -457,6 +449,8 @@
 				9C1C294A28CFB53900C6214F /* ImportModelViewController.m */,
 				9CE67CE328D78E230014DCF3 /* ModelPopupView.h */,
 				9CE67CE428D78E230014DCF3 /* ModelPopupView.m */,
+				9CE67D3E28E3FBE40014DCF3 /* SharedUsersPopup.h */,
+				9CE67D3F28E3FBE40014DCF3 /* SharedUsersPopup.m */,
 				9CB79C1F2877932200F67E1C /* ModelVale-Bridging-Header.h */,
 			);
 			path = Main;
@@ -748,7 +742,6 @@
 				9CEEE36E2880D06900548963 /* AvatarMLModel.m in Sources */,
 				9C28EF8328877E4E00CE0F2D /* XPCluster.m in Sources */,
 				9C74E51F2872579A003FFFF7 /* main.m in Sources */,
-				9C15059828A2C5110090319A /* XceptionOriginal.mlmodel in Sources */,
 				9CADD4A12893663300C1C6F4 /* FirebaseViewController.m in Sources */,
 				9C150588289D95450090319A /* TestDataCell.m in Sources */,
 				9C15058B289DB85E0090319A /* RetrainDataCell.m in Sources */,
@@ -758,6 +751,7 @@
 				9C69F738287DF38E0001F608 /* TestTrainEnum.m in Sources */,
 				9CB79C1828775C8A00F67E1C /* RetrainViewController.m in Sources */,
 				9C69F73F287E4DD50001F608 /* TrainBatchData.m in Sources */,
+				9CE67D4028E3FBE40014DCF3 /* SharedUsersPopup.m in Sources */,
 				9C74E51128725799003FFFF7 /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -937,13 +931,14 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.chaytanc.ModelVale;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -971,13 +966,14 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = io.github.chaytanc.ModelVale;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
