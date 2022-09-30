@@ -66,22 +66,18 @@ static NSNumber* maxHealth = kMaxHealth;
 }
 
 - (NSURL*) modelURL {
+    // Take .mlmodel out of modelName, just some string cleanup
     if([self.modelName containsString:@"mlmodel"]) {
         self.modelName = [self.modelName stringByReplacingOccurrencesOfString:@".mlmodel" withString:@""];
     }
+    // Try to get compiled model file from url
     NSURL* url = [[NSBundle mainBundle] URLForResource:self.modelName withExtension:@"mlmodelc"];
-    if(!url) {
-        url = [[NSBundle mainBundle] URLForResource:self.modelName withExtension:@"mlmodel"];
-    }
+    // If url is not set, check the documents directory for downloaded model, handling cases for both the downloaded model file name containing and not containing .mlmodel
     if(!url) {
         NSFileManager *manager = [NSFileManager defaultManager];
-        NSURL* contents = [manager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
-        NSLog(@"%@", contents.path);
-        
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0];
         NSString *filePath = [documentsDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mlmodelc", self.modelName]];
-        //XXX clean this up
         if ([manager fileExistsAtPath: filePath] == YES) {
             url = [NSURL fileURLWithPath:filePath];
         }
@@ -186,7 +182,6 @@ static NSNumber* maxHealth = kMaxHealth;
                     [vc presentError:@"Failed to update Model" message:error.localizedDescription error:error];
                 }
                 else {
-                    //XXX move this user handling to completion
                     NSLog(@"Uploaded Model to Firestore");
 
                     dispatch_group_enter(uploadModelGroup);
