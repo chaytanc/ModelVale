@@ -10,14 +10,12 @@ target 'ModelVale' do
   pod 'QBImagePickerController'
   pod 'iOSDropDown'
   pod 'FirebaseAuth'
+  pod 'FirebaseAnalytics'
   pod 'FirebaseFirestore'
   pod 'FirebaseStorage'
   pod 'GTMAppAuth'
   pod 'AppAuth'
   pod 'GoogleAPIClientForREST/Drive'
-  #pod 'GoogleSignIn'
-  #pod 'GTMSessionFetcher/Core', '>= 1.0', '< 3.0'
-  
 
   target 'ModelValeTests' do
     inherit! :search_paths
