@@ -54,7 +54,8 @@ NSInteger const kDataPerLabel = 20;
     self.testCollView.dataSource = self;
     self.resultsTableView.delegate = self;
     self.resultsTableView.dataSource = self;
-    self.mlmodel = [self.model getMLModelFromModelName];
+//    self.mlmodel = [self.model getMLModelFromModelName];
+    [self setMLModelProp];
     self.testLabel.text = @"Testing Data"; // Is hidden
     self.navigationItem.hidesBackButton = YES;
     UIBarButtonItem *newBackButton = [[UIBarButtonItem alloc] initWithTitle:@"Back" style:UIBarButtonItemStylePlain target:self action:@selector(back:)];
@@ -72,6 +73,21 @@ NSInteger const kDataPerLabel = 20;
     } completion:^{
         [self.testCollView reloadData];
         [self.loadingBar setHidden:YES];
+    }];
+}
+
+- (void) setMLModelProp {
+    [self.model getMLModelFromModelName:^(NSString * _Nullable error, MLModel * _Nonnull model) {
+        if (!error) {
+            self.mlmodel = model;
+        }
+        else {
+            // transition to home after alert
+            //XXX need to completion before popping
+            [self presentError:@"Failed to load model" message:error error:nil completion:^(UIAlertAction * _Nonnull action) {
+                [self.navigationController popViewControllerAnimated:YES];
+            }];
+        }
     }];
 }
 
@@ -151,11 +167,17 @@ NSInteger const kDataPerLabel = 20;
     self.XPClustersEarned = round(self.XPEarned);
 }
 
-- (void) back:(UIBarButtonItem *)sender {
-    if ([self.navigationController.parentViewController isKindOfClass:[ModelViewController class]]) {
-        ModelViewController* targetController = (ModelViewController*) self.navigationController.presentingViewController;
-    }
+- (void) popNavController {
+//    if ([self.navigationController.parentViewController isKindOfClass:[ModelViewController class]]) {
+//        ModelViewController* targetController = (ModelViewController*) self.navigationController.presentingViewController;
+//    }
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void) back:(UIBarButtonItem *)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+
+//    [self popNavController];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {

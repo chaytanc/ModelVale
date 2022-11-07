@@ -23,6 +23,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) UIImage* avatarImage;
 @property (nonatomic, strong) NSString* avatarImagePath;
 @property (nonatomic, assign) NSNumber* duplicateCount;
+//@property (nonatomic, assign)  NSError*  _Nullable modelError;
+@property (nonatomic, assign)  NSString*  _Nullable modelError;
+
+
 // URL to the locally stored model
 @property (nonatomic, strong) NSURL* modelURL;
 // An array of ALL the ModelLabel references that an AvatarMLModel points to, but not the actual objects themselves
@@ -31,7 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)initWithDictionary:(NSDictionary *)dict storage:(FIRStorage*)storage completion:(void(^_Nullable)(AvatarMLModel*))completion;
 - (instancetype) initWithModelName: (NSString*)modelName avatarName: (NSString*)avatarName;
-- (MLModel*) getMLModelFromModelName;
+//- (MLModel*) getMLModelFromModelName;
+- (void) getMLModelFromModelName:(void(^)(NSString * _Nullable error, MLModel* model))completion;
 - (void) uploadModel: (User*)user db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
 - (void) uploadStarterModel: (User*)user db: (FIRFirestore*)db storage:(FIRStorage*)storage vc: (UIViewController*)vc completion:(void(^)(NSError *error))completion;
 + (void) fetchAndReturnExistingModel: (FIRFirestore*)db storage: (FIRStorage*)storage documentPath: (NSString*)documentPath completion:(void(^_Nullable)(AvatarMLModel*))completion;

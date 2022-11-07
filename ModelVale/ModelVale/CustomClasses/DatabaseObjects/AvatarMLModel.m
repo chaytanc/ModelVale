@@ -35,6 +35,7 @@ static NSNumber* maxHealth = kMaxHealth;
         self.avatarImage = [UIImage imageNamed:imageName];
         self.modelURL = [self modelURL];
         self.duplicateCount = @0;
+        self.modelError = nil;
     }
     return self;
 }
@@ -48,6 +49,7 @@ static NSNumber* maxHealth = kMaxHealth;
     model.labeledData = dict[@"labeledData"];
     model.modelURL = [model modelURL];
     model.duplicateCount = dict[@"duplicateCount"];
+    model.modelError = nil;
     [model fetchAvatarImage:storage completion:^{
         if(completion) {
             completion(model);
@@ -60,9 +62,15 @@ static NSNumber* maxHealth = kMaxHealth;
     return fullPath;
 }
 
-- (MLModel*) getMLModelFromModelName {
+- (void) getMLModelFromModelName:(void(^)( NSString * _Nullable error, MLModel* model))completion {
+    
     MLModel* model = [MLModel modelWithContentsOfURL:self.modelURL error:nil];
-    return model;
+    if (model && !self.modelError) {
+        completion(nil, model);
+    }
+    else {
+        completion(self.modelError, model);
+    }
 }
 
 - (NSURL*) modelURL {
@@ -86,6 +94,16 @@ static NSNumber* maxHealth = kMaxHealth;
             if ([manager fileExistsAtPath: filePath] == YES) {
                 url = [NSURL fileURLWithPath:filePath];
                 url = [MLModel compileModelAtURL:url error:nil];
+            }
+            // If despite all our file-locating efforts fail, fail to load model
+            // and do not display page / return an error that we handle later
+            else {
+                NSString* message =  @"Failed to load model from device. Maybe redownload it from Google Drive?";
+//                NSError* error = [[NSError new] initWithDomain:NSURLErrorDomain code:NSURLErrorBadURL userInfo:@{
+//                    NSLocalizedDescriptionKey : message,
+//                    NSDebugDescriptionErrorKey : message
+//                }];
+                self.modelError = message;
             }
         }
 

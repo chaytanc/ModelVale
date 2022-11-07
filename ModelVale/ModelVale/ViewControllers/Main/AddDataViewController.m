@@ -63,8 +63,7 @@
     [self.testTrainPickerView setUserInteractionEnabled:YES];
     self.testTrainPickerView.tintColor = [UIColor systemGrayColor];
 
-    MLModel* model = [self.model getMLModelFromModelName];
-    [self.labelField initPropertiesWithOptions: model.modelDescription.classLabels];
+    [self setMLModelLabels];
     [self.labelField addTarget:self action:@selector(didTapDropDown:) forControlEvents:UIControlEventTouchUpInside];
     [self.labelField addTarget:self action:@selector(didChangeLabel:) forControlEvents:UIControlEventEditingDidEnd];
     [self.labelField addTarget:self action:@selector(didChangeLabel:) forControlEvents:UIControlEventEditingDidEndOnExit];
@@ -88,6 +87,20 @@
         return YES;
     }
     return NO;
+}
+
+- (void) setMLModelLabels {
+    [self.model getMLModelFromModelName:^(NSString * _Nullable error, MLModel * _Nonnull model) {
+        if (!error) {
+            [self.labelField initPropertiesWithOptions: model.modelDescription.classLabels];
+        }
+        else {
+            // transition to home after alert
+            [self presentError:@"Failed to load model" message:error error:nil completion:^(UIAlertAction * _Nonnull action) {
+                [self.navigationController popViewControllerAnimated:YES];
+            }];
+        }
+    }];
 }
 
 //MARK: IBActions

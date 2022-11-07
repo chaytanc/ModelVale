@@ -41,7 +41,8 @@
     self.resultsTableView.dataSource = self;
     self.retrainCollView.delegate = self;
     self.retrainCollView.dataSource = self;
-    self.mlmodel = [self.model getMLModelFromModelName];
+//    self.mlmodel = [self.model getMLModelFromModelName];
+    [self setMLModelProp];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -54,6 +55,20 @@
         self.totalData = 0;
         [self.retrainCollView reloadData];
         [self.loadingBar setHidden:YES];
+    }];
+}
+
+- (void) setMLModelProp {
+    [self.model getMLModelFromModelName:^(NSString * _Nullable error, MLModel * _Nonnull model) {
+        if (!error) {
+            self.mlmodel = model;
+        }
+        else {
+            // transition to home after alert
+            [self presentError:@"Failed to load model" message:error error:nil completion:^(UIAlertAction * _Nonnull action) {
+                [self.navigationController popViewControllerAnimated:YES];
+            }];
+        }
     }];
 }
 
@@ -116,7 +131,9 @@
         }
         // Write the retrained model to disk and set the copy in memory to have that data
         [context.model writeToURL:self.model.modelURL error:nil];
-        self.mlmodel = [self.model getMLModelFromModelName];
+//        self.mlmodel = [self.model getMLModelFromModelName];
+        [self setMLModelProp];
+        
     };
     return finalCompletion;
 }
