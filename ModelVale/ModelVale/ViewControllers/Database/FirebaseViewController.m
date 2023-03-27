@@ -32,6 +32,45 @@
     [super viewWillAppear:animated];
 }
 
+- (void) deleteUser {
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Are you sure?"
+                                   message:@"This action will permanently delete your account."
+                                   preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive
+       handler:^(UIAlertAction * action) {
+        NSLog(@"Deleting account!");
+
+        // delete account
+        FIRUser *user = [FIRAuth auth].currentUser;
+        [user deleteWithCompletion:^(NSError *_Nullable error) {
+          if (error) {
+              [self presentError:@"An error occurred" message:error.debugDescription error:error];
+          } else {
+              // delete user data
+              [[[self.db collectionWithPath:@"users"] documentWithPath:self.user.uid]
+                  deleteDocumentWithCompletion:^(NSError * _Nullable error) {
+                    if (error != nil) {
+                        NSLog(@"Error removing document: %@", error);
+                        [self presentError:@"An error occurred" message:error.debugDescription error:error];
+                    } else {
+                        NSLog(@"Document successfully removed!");
+                        [FirebaseViewController transitionToLoginVC];
+                    }
+              }];
+          }
+        }];
+
+    }];
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+       handler:^(UIAlertAction * action) {
+        // dismiss alert
+    }];
+
+    [alert addAction:deleteAction];
+    [alert addAction:cancelAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
 - (void)performLogout {
     NSError *signOutError;
     BOOL status = [[FIRAuth auth] signOut:&signOutError];
@@ -65,6 +104,7 @@
     }
     [sceneDelegate.window setRootViewController:modelNavController];
 }
+
 
 - (NSString*) getImageStoragePath: (ModelLabel*)label {
 //    NSNumber* dateNum = [NSNumber numberWithDouble: CACurrentMediaTime()];

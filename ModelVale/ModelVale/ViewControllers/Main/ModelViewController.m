@@ -17,6 +17,7 @@
 #import "RetrainViewController.h"
 #import "TestViewController.h"
 #import "ImportModelViewController.h"
+#import "SettingsViewController.h"
 #import "HealthBarView.h"
 #import "XPCluster.h"
 #import "XP.h"
@@ -38,7 +39,7 @@ NSInteger const kSigmaYDivisor = 6;
 // UI consts
 NSInteger const kCornerRadius = 10;
 
-@interface ModelViewController () <CAAnimationDelegate, TestVCDelegate,UIGestureRecognizerDelegate>
+@interface ModelViewController () <CAAnimationDelegate, TestVCDelegate, UIGestureRecognizerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *modelNameLabel;
 @property (nonatomic, assign) NSInteger modelIndex;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
@@ -167,7 +168,6 @@ NSInteger const kCornerRadius = 10;
 
 - (void) viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    //XXX redraw healthbar here?? clear existing drawings with new healthbar view??
     [self setHealthBarPropsForXP];
     [self setXPPathsAndClusterCenters:self.seed reanimate:FALSE];
 }
@@ -296,6 +296,12 @@ NSInteger const kCornerRadius = 10;
     self.modelNameLabel.text = self.model.modelName;
 }
 
+//- (void) modelImportDisabledPopup {
+//    NSString* title = @"Importing Custom Models Disabled";
+//    NSString* message = @"This feature will be implemented in a very soon forthcoming version of ModelVale";
+//    [self presentError:title message:message error:nil];
+//}
+
 - (IBAction)didTapLeftNext:(id)sender {
     self.modelIndex -= 1;
     [self configUIBasedOnModel];
@@ -316,7 +322,7 @@ NSInteger const kCornerRadius = 10;
     [FirebaseViewController transitionToLoginVC];
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     [self.leftNextButton setEnabled:NO];
     [self.rightNextButton setEnabled:NO];
     if([[segue identifier] isEqualToString:@"modelToData"]) {
@@ -336,7 +342,12 @@ NSInteger const kCornerRadius = 10;
         ImportModelViewController* target = (ImportModelViewController*) [segue destinationViewController];
         target.model = self.model;
     }
+    else if([segue.identifier isEqualToString:@"modelToSettings"]) {
+        SettingsViewController* target = (SettingsViewController*) [segue destinationViewController];
+        target.username = self.user.username;
+    }
 }
+
 //MARK: XP animations
 
 - (void) earnXP:(int)XPClustersEarned {

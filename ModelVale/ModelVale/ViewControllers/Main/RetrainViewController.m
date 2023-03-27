@@ -98,25 +98,34 @@
     }
 }
 
+- (BOOL) modelHasData {
+    if (self.modelLabels.count == 0) {
+        return NO;
+    }
+    return  YES;
+}
+
 //MARK: CoreML
 - (IBAction)didTapRetrain:(id)sender {
-    [self.resultsTableView setHidden:NO];
-    NSString* inputKey = self.mlmodel.modelDescription.inputDescriptionsByName.allKeys[0];
-    
-    MLImageConstraint* constraint = self.mlmodel.modelDescription.inputDescriptionsByName[inputKey].imageConstraint;
-    TrainBatchData* trainBatchData = [[TrainBatchData new] initTrainBatch:constraint trainBatchLabels:self.modelLabels];
-    
-    void(^progHandler)(MLUpdateContext* _Nonnull context) = [self getRetrainingProgressHandler];
-    void(^retrainFinishCompletion)(MLUpdateContext* _Nonnull context) = [self getFinishRetrainCompletion];
-    
-    MLArrayBatchProvider* batchProvider = trainBatchData.trainBatch;
-    MLUpdateProgressHandlers* handlers = [[MLUpdateProgressHandlers alloc] initForEvents:MLUpdateProgressEventTrainingBegin | MLUpdateProgressEventMiniBatchEnd | MLUpdateProgressEventEpochEnd progressHandler:progHandler completionHandler:retrainFinishCompletion];
-    
-    MLUpdateTask* task = [MLUpdateTask updateTaskForModelAtURL:self.model.modelURL trainingData:batchProvider progressHandlers:handlers error:nil];
-    if(task == nil) {
-        [self presentError:@"Cannot retrain model" message:@"There is an error with the updatability of the model." error:nil];
+    if ([self modelHasData]) {
+        [self.resultsTableView setHidden:NO];
+        NSString* inputKey = self.mlmodel.modelDescription.inputDescriptionsByName.allKeys[0];
+        
+        MLImageConstraint* constraint = self.mlmodel.modelDescription.inputDescriptionsByName[inputKey].imageConstraint;
+        TrainBatchData* trainBatchData = [[TrainBatchData new] initTrainBatch:constraint trainBatchLabels:self.modelLabels];
+        
+        void(^progHandler)(MLUpdateContext* _Nonnull context) = [self getRetrainingProgressHandler];
+        void(^retrainFinishCompletion)(MLUpdateContext* _Nonnull context) = [self getFinishRetrainCompletion];
+        
+        MLArrayBatchProvider* batchProvider = trainBatchData.trainBatch;
+        MLUpdateProgressHandlers* handlers = [[MLUpdateProgressHandlers alloc] initForEvents:MLUpdateProgressEventTrainingBegin | MLUpdateProgressEventMiniBatchEnd | MLUpdateProgressEventEpochEnd progressHandler:progHandler completionHandler:retrainFinishCompletion];
+        
+        MLUpdateTask* task = [MLUpdateTask updateTaskForModelAtURL:self.model.modelURL trainingData:batchProvider progressHandlers:handlers error:nil];
+        if(task == nil) {
+            [self presentError:@"Cannot retrain model" message:@"There is an error with the updatability of the model." error:nil];
+        }
+        [task resume];
     }
-    [task resume];
 }
 
 - (void(^)(MLUpdateContext* _Nonnull context)) getFinishRetrainCompletion {

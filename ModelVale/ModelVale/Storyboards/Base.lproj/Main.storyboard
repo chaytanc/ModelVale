@@ -194,13 +194,20 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="pPM-sX-flb">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="mUu-sq-PX8">
-                            <connections>
-                                <action selector="didTapLogout:" destination="VDf-qf-hVa" id="HLF-qv-66I"/>
-                            </connections>
-                        </barButtonItem>
+                        <leftBarButtonItems>
+                            <barButtonItem image="gear" catalog="system" id="wtD-Cp-3ri" userLabel="Settings">
+                                <connections>
+                                    <segue destination="93c-Ph-boH" kind="show" identifier="modelToSettings" id="dNi-ku-eKF"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Logout" id="mUu-sq-PX8">
+                                <connections>
+                                    <action selector="didTapLogout:" destination="VDf-qf-hVa" id="HLF-qv-66I"/>
+                                </connections>
+                            </barButtonItem>
+                        </leftBarButtonItems>
                         <barButtonItem key="rightBarButtonItem" style="plain" id="G01-sf-rEy">
-                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="2Nr-jD-gf1" userLabel="importButton">
+                            <button key="customView" hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="2Nr-jD-gf1" userLabel="importButton">
                                 <rect key="frame" x="302" y="5" width="92" height="34.5"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
@@ -1077,6 +1084,102 @@
             </objects>
             <point key="canvasLocation" x="1584" y="7"/>
         </scene>
+        <!--Settings View Controller-->
+        <scene sceneID="rPm-7D-pWn">
+            <objects>
+                <viewController storyboardIdentifier="settingsViewController" title="Settings View Controller" id="93c-Ph-boH" customClass="SettingsViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="aZM-oe-YUS">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nsa-Ai-cPG" userLabel="settingsView">
+                                <rect key="frame" x="0.0" y="88" width="414" height="808"/>
+                                <subviews>
+                                    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oC6-jA-mTP">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="NRv-Aq-2k0" userLabel="settingsStackView">
+                                                <rect key="frame" x="10" y="20" width="394" height="182"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="X4C-9d-1F6" userLabel="usernameLabel">
+                                                        <rect key="frame" x="0.0" y="0.0" width="394" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cb0-Q3-Ste" userLabel="usernameField">
+                                                        <rect key="frame" x="0.0" y="35.5" width="394" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u2X-fl-HCT" userLabel="emailLabel">
+                                                        <rect key="frame" x="0.0" y="71" width="394" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zry-Ae-IOL" userLabel="emailField">
+                                                        <rect key="frame" x="0.0" y="106.5" width="394" height="20.5"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ymR-aP-7ft" userLabel="deleteButton">
+                                                        <rect key="frame" x="0.0" y="142" width="394" height="40"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="40" id="cYD-zW-yFQ"/>
+                                                        </constraints>
+                                                        <color key="tintColor" systemColor="systemRedColor"/>
+                                                        <state key="normal" title="Button"/>
+                                                        <buttonConfiguration key="configuration" style="plain" title="Delete Account"/>
+                                                        <connections>
+                                                            <action selector="didTapDelete:" destination="93c-Ph-boH" eventType="touchUpInside" id="aNA-Qe-NaS"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="NRv-Aq-2k0" firstAttribute="bottom" secondItem="Zyp-9O-o8K" secondAttribute="bottom" id="0D0-dz-Kbo"/>
+                                            <constraint firstItem="Zyp-9O-o8K" firstAttribute="top" secondItem="NRv-Aq-2k0" secondAttribute="top" constant="-20" id="6Qu-5k-UFI"/>
+                                            <constraint firstItem="NRv-Aq-2k0" firstAttribute="trailing" secondItem="Zyp-9O-o8K" secondAttribute="trailing" constant="10" id="6g6-ow-Igi"/>
+                                            <constraint firstItem="NRv-Aq-2k0" firstAttribute="leading" secondItem="TIf-vq-zxZ" secondAttribute="leading" constant="10" id="CVb-gN-9za"/>
+                                            <constraint firstItem="Zyp-9O-o8K" firstAttribute="leading" secondItem="NRv-Aq-2k0" secondAttribute="leading" constant="10" id="Rga-PC-fb2"/>
+                                            <constraint firstItem="TIf-vq-zxZ" firstAttribute="trailing" secondItem="NRv-Aq-2k0" secondAttribute="trailing" constant="10" id="u4m-S8-Qoi"/>
+                                        </constraints>
+                                        <viewLayoutGuide key="contentLayoutGuide" id="Zyp-9O-o8K"/>
+                                        <viewLayoutGuide key="frameLayoutGuide" id="TIf-vq-zxZ"/>
+                                    </scrollView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="oC6-jA-mTP" firstAttribute="leading" secondItem="Nsa-Ai-cPG" secondAttribute="leading" id="K08-aG-41m"/>
+                                    <constraint firstItem="oC6-jA-mTP" firstAttribute="top" secondItem="Nsa-Ai-cPG" secondAttribute="top" id="KME-Td-bmf"/>
+                                    <constraint firstAttribute="trailing" secondItem="oC6-jA-mTP" secondAttribute="trailing" id="dLP-2I-Pf3"/>
+                                    <constraint firstAttribute="bottom" secondItem="oC6-jA-mTP" secondAttribute="bottom" id="yjx-RI-Dva"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="FI7-g5-8oz"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="Nsa-Ai-cPG" secondAttribute="bottom" id="L4v-FK-ciT"/>
+                            <constraint firstItem="FI7-g5-8oz" firstAttribute="trailing" secondItem="Nsa-Ai-cPG" secondAttribute="trailing" id="cv2-CX-6PU"/>
+                            <constraint firstItem="Nsa-Ai-cPG" firstAttribute="leading" secondItem="FI7-g5-8oz" secondAttribute="leading" id="fSE-Jq-Out"/>
+                            <constraint firstItem="Nsa-Ai-cPG" firstAttribute="top" secondItem="FI7-g5-8oz" secondAttribute="top" id="g6p-zC-BWh"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Settings" id="5OB-7A-y9g"/>
+                    <connections>
+                        <outlet property="emailLabel" destination="zry-Ae-IOL" id="1eh-Rf-oNc"/>
+                        <outlet property="usernameLabel" destination="cb0-Q3-Ste" id="IpR-AM-lji"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="saD-qY-TqW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="680" y="-658"/>
+        </scene>
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="1lD-79-zWl"/>
@@ -1085,6 +1188,7 @@
         <image name="arrow.left.circle.fill" catalog="system" width="128" height="121"/>
         <image name="arrow.right.circle.fill" catalog="system" width="128" height="121"/>
         <image name="gamemountains" width="3347" height="2104"/>
+        <image name="gear" catalog="system" width="128" height="119"/>
         <image name="mountain" width="4651" height="3101"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="plus.rectangle.fill.on.folder.fill" catalog="system" width="128" height="96"/>
@@ -1098,6 +1202,9 @@
         </systemColor>
         <systemColor name="systemGray5Color">
             <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
