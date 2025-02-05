@@ -73,9 +73,3 @@ Optional:
  * Data Management
  * Testing
  * Training
-
-## Wireframes
-![IMG_0060](https://user-images.githubusercontent.com/35582442/177838999-1dac750c-efb7-4ad6-95c6-6cedf4e2cd83.JPG)
-
-## Query Efficiency, Database Design Diagram
-![IMG_0148](https://user-images.githubusercontent.com/35582442/183224771-aa3d47e6-fd99-4158-aedf-049efc9ed062.JPG)
