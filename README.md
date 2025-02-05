@@ -44,32 +44,3 @@ ModelVale is an app designed to bring machine learning to life. Each model is re
  **Other Possible Technical Problems**
  * Planning for very large datasets and fetching in chunks to display data
  * Use multithreading and progress bars to retrain models in the background
-
-## 2. Screen Archetypes
-
-* Launch view
-* Welcome view
- * Login view
-* Registration view
- * Model avatars view
-* Data Management view
-* Testing view
-* Retraining view
-
-## 3. Navigation
-
-Optional:
-- Achievements
-- Leaderboard
-- Stats
-
-**Flow Navigation** (Screen to Screen)
-
- * Launch
- * Welcome
- * Login
- * Registration
- * All Models
- * Data Management
- * Testing
- * Training
